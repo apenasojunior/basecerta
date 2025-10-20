@@ -1,0 +1,73 @@
+Especificação Técnica para Frontend - Plataforma de Consulta de Dados
+1. Visão Geral
+
+O projeto consiste no desenvolvimento de uma interface de frontend para uma plataforma de consulta de dados (data-as-a-service). A interface será no estilo "dashboard", com um painel de controle central, navegação lateral e áreas de gerenciamento de conta, seguindo o modelo de design apresentado nas imagens de referência.
+
+2. Estrutura de Layout Principal
+
+A aplicação terá um layout fixo dividido em três áreas principais:
+
+Navegação Lateral (Sidebar): Um menu vertical à esquerda, com funcionalidade de colapsar (recolher/expandir) ao clique de um botão, otimizando o espaço de tela.
+Cabeçalho (Header): Uma barra superior fixa contendo o logo, navegação estrutural (breadcrumbs), informações de saldo, notificações e menu de usuário.
+Área de Conteúdo Principal (Main Content): O espaço central da tela onde o conteúdo de cada página será renderizado dinamicamente.
+3. Paleta de Cores
+
+A identidade visual seguirá uma paleta de cores vibrante e moderna, focada em laranja, branco e tons neutros para garantir legibilidade e destaque para ações importantes.
+
+Cor Primária (Destaques, Botões Principais, Links Ativos): #EE4D2D (Laranja Vibrante)
+Cor Secundária (Fundos de Seções, Cards): #FFFFFF (Branco)
+Cor de Texto Principal: #333333 (Cinza Escuro)
+Cor de Texto Secundária e Ícones: #666666 (Cinza Médio)
+Cor de Fundo Principal (Background): #F4F4F4 (Cinza Claro)
+Cor de Acento e Sucesso: #28A745 (Verde)
+Cor de Erro e Alerta: #DC3545 (Vermelho)
+4. Componentes Reutilizáveis da UI
+
+A interface será construída com base em componentes para garantir consistência e manutenibilidade.
+
+4.1. Navegação Lateral (Sidebar)
+
+Estado Expandido: Exibe ícone e texto de cada item do menu.
+Estado Colapsado: Exibe apenas os ícones para economizar espaço.
+Estrutura do Menu:
+Dashboard: Link para a página inicial.
+PRODUTOS (Agrupador)
+Dados de Empresas no Brasil
+Dados Cadastrais
+Dossie Financeiro
+Pesquisas Jurídicas
+CONFIGURAÇÕES (Agrupador)
+Perfil
+Financeiro
+SITE (Agrupador)
+Central de Ajuda
+4.2. Cabeçalho (Header)
+
+Logo: Logotipo da empresa (BaseCerta.) sendo a parte "Base"em laranja e a parte "Certa" na cor preta com o ponto final na cor Laranja .
+Breadcrumbs: Navegação hierárquica (Ex: Início > Configurações > Perfil).
+Componente de Saldo: Exibe o saldo atual do usuário com um botão de ação ("Adicionar").
+Ícones de Ação: Ícones para notificações e acesso ao perfil do usuário.
+4.3. Cards
+
+Componente versátil para exibir informações em blocos.
+Tipos: Card de resumo (Dashboard, Financeiro), Card de informação (Perfil), Card promocional com imagem e botão (Dashboard).
+Estilo: Bordas arredondadas, sombra suave para dar profundidade, cabeçalho e corpo bem definidos.
+4.4. Abas (Tabs)
+
+Para navegação secundária dentro de uma mesma página (Ex: Perfil do Usuário | Perfil da Empresa | Segurança).
+A aba ativa deve ter um destaque visual claro (sublinhado com a cor primária).
+4.5. Tabelas de Dados
+
+Para exibição de dados como extratos e históricos.
+Estrutura: Cabeçalho fixo, linhas zebradas (cores alternadas) para melhor legibilidade e opção de expandir linha para ver detalhes.
+4.6. Formulários
+
+Inputs: Campos de texto, senhas (com opção de mostrar/ocultar), e busca.
+Botões: Botão primário (cor primária), secundário (contorno na cor primária) e de texto simples.
+Seletores de Data (Date Pickers): Para filtrar períodos.
+5. Recomendações Técnicas
+
+Framework Frontend: Recomenda-se o uso de um framework moderno como React ou Vue.js para facilitar a criação da arquitetura baseada em componentes.
+Biblioteca de Componentes: Para acelerar o desenvolvimento, sugere-se utilizar uma biblioteca de UI como Material-UI (MUI) para React ou Vuetify para Vue.js, que já oferecem componentes prontos (Sidebar, Cards, Tabs) e customizáveis.
+Estilização: Utilizar CSS-in-JS (como Styled Components) ou pré-processadores CSS (como SASS) para criar um sistema de design consistente e escalável.
+Esta especificação cobre os principais aspectos visuais e estruturais do frontend.
