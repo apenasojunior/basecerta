@@ -4,7 +4,8 @@ import {
   FileText,
   DollarSign,
   Scale,
-  User,
+  User as UserIcon,
+  Users,
   Wallet,
   HelpCircle,
   LucideIcon,
@@ -38,9 +39,14 @@ export const NAVIGATION: (NavItem | NavGroup)[] = [
         icon: Building2,
       },
       {
-        title: 'Dados Cadastrais',
-        href: '/produtos/dados-cadastrais',
-        icon: FileText,
+        title: 'Dados Cadastrais - PF',
+        href: '/produtos/dados-cadastrais-pf',
+        icon: UserIcon,
+      },
+      {
+        title: 'Dados Cadastrais - PJ',
+        href: '/produtos/dados-cadastrais-pj',
+        icon: Building2,
       },
       {
         title: 'Dossie Financeiro',
@@ -60,7 +66,7 @@ export const NAVIGATION: (NavItem | NavGroup)[] = [
       {
         title: 'Perfil',
         href: '/configuracoes/perfil',
-        icon: User,
+        icon: UserIcon,
       },
       {
         title: 'Financeiro',

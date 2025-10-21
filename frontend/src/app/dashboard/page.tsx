@@ -16,11 +16,17 @@ import {
   CheckCircle2,
   XCircle,
   Loader2,
+  Star,
+  History,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import Link from 'next/link'
 import { useDashboard } from '@/hooks/useDashboard'
 import { useCredits } from '@/hooks/useCredits'
+import { SearchStatsCards } from '@/components/dashboard/SearchStatsCards'
+import { RecentSearches } from '@/components/dashboard/RecentSearches'
+import { SearchChart } from '@/components/dashboard/SearchChart'
+import { TopSearched } from '@/components/dashboard/TopSearched'
 
 export default function DashboardPage() {
   // Hooks de integração com API
@@ -147,7 +153,12 @@ export default function DashboardPage() {
         </div>
       )}
 
-      {/* Stats Grid */}
+      {/* New Stats Cards - Search History & Favorites */}
+      <div className="mb-6">
+        <SearchStatsCards />
+      </div>
+
+      {/* Original Stats Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-6">
         {stats.map((stat) => {
           const Icon = stat.icon
@@ -185,6 +196,52 @@ export default function DashboardPage() {
         })}
       </div>
 
+      {/* Chart and Top 5 */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6 mb-6">
+        <SearchChart />
+        <TopSearched />
+      </div>
+
+      {/* Recent Searches and Activity */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6 mb-6">
+        {/* Recent Searches - New Component */}
+        <div className="lg:col-span-2">
+          <RecentSearches />
+        </div>
+
+        {/* Quick Links */}
+        <Card>
+          <CardHeader>
+            <CardTitle>Links Rápidos</CardTitle>
+            <CardDescription>Acesso rápido às suas informações</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-3">
+            <Link href="/favoritos">
+              <Button variant="outline" className="w-full justify-start gap-2">
+                <Star className="h-4 w-4 text-yellow-500" />
+                Ver todos os Favoritos
+                <ArrowRight className="h-4 w-4 ml-auto" />
+              </Button>
+            </Link>
+            <Link href="/historico">
+              <Button variant="outline" className="w-full justify-start gap-2">
+                <History className="h-4 w-4 text-blue-500" />
+                Ver Histórico Completo
+                <ArrowRight className="h-4 w-4 ml-auto" />
+              </Button>
+            </Link>
+            <Link href="/produtos/comparar">
+              <Button variant="outline" className="w-full justify-start gap-2">
+                <Building2 className="h-4 w-4 text-purple-500" />
+                Comparar Empresas
+                <ArrowRight className="h-4 w-4 ml-auto" />
+              </Button>
+            </Link>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Original Recent Activity */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6">
         {/* Recent Activity */}
         <Card className="lg:col-span-2">

@@ -1,8 +1,8 @@
 "use client"
 
-import { useMemo } from "react"
+import { useMemo, useState } from "react"
 import { ColumnDef } from "@tanstack/react-table"
-import { Eye, FileDown, MoreVertical } from "lucide-react"
+import { Eye, FileDown, MoreVertical, Download } from "lucide-react"
 import { DataTable } from "@/components/ui/data-table"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -13,6 +13,8 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { formatCNPJ } from "@/lib/utils/formatters"
+import { ExportModal, type ExportField } from "./ExportModal"
+import { FavoriteButton } from "./FavoriteButton"
 
 export interface CompanyData {
   cnpj: string
@@ -87,6 +89,49 @@ export function CompanyTable({
   onViewDetails,
   onDownloadPDF,
 }: CompanyTableProps) {
+  const [exportOpen, setExportOpen] = useState(false)
+
+  const exportFields: ExportField[] = [
+    { id: "cnpj", label: "CNPJ", enabled: true },
+    { id: "razaoSocial", label: "Razão Social", enabled: true },
+    { id: "nomeFantasia", label: "Nome Fantasia", enabled: true },
+    { id: "situacao", label: "Situação", enabled: true },
+    { id: "porte", label: "Porte", enabled: true },
+    { id: "uf", label: "UF", enabled: true },
+    { id: "municipio", label: "Município", enabled: true },
+    { id: "dataAbertura", label: "Data Abertura", enabled: false },
+  ]
+
+  // Prepara dados para exportação (formata valores)
+  const exportData = useMemo(() => {
+    const situacaoLabels = {
+      ATIVA: "Ativa",
+      SUSPENSA: "Suspensa",
+      INAPTA: "Inapta",
+      BAIXADA: "Baixada",
+      NULA: "Nula",
+    }
+    
+    const porteLabels = {
+      MEI: "MEI",
+      ME: "ME",
+      EPP: "EPP",
+      MEDIA: "Média",
+      GRANDE: "Grande",
+    }
+
+    return data.map(company => ({
+      cnpj: formatCNPJ(company.cnpj),
+      razaoSocial: company.razaoSocial,
+      nomeFantasia: company.nomeFantasia || "-",
+      situacao: situacaoLabels[company.situacao],
+      porte: porteLabels[company.porte],
+      uf: company.uf,
+      municipio: company.municipio,
+      dataAbertura: company.dataAbertura || "-",
+    }))
+  }, [data])
+
   const columns = useMemo<ColumnDef<CompanyData>[]>(
     () => [
       {
@@ -157,50 +202,94 @@ export function CompanyTable({
       {
         id: "actions",
         header: "Ações",
-        cell: ({ row }) => (
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button 
-                variant="ghost" 
-                size="icon" 
-                className="h-8 w-8 transition-all hover:scale-110 hover:bg-muted"
-              >
-                <MoreVertical className="h-4 w-4" />
-                <span className="sr-only">Abrir menu</span>
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="animate-slideInDown">
-              <DropdownMenuItem 
-                onClick={() => onViewDetails?.(row.original)}
-                className="transition-colors hover:bg-primary/10 cursor-pointer"
-              >
-                <Eye className="mr-2 h-4 w-4" />
-                Ver Detalhes
-              </DropdownMenuItem>
-              <DropdownMenuItem 
-                onClick={() => onDownloadPDF?.(row.original)}
-                className="transition-colors hover:bg-primary/10 cursor-pointer"
-              >
-                <FileDown className="mr-2 h-4 w-4" />
-                Baixar PDF
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        ),
-        size: 80,
-        minSize: 80,
+        cell: ({ row }) => {
+          const company = row.original
+          return (
+            <div className="flex items-center gap-2">
+              <FavoriteButton
+                item={{
+                  id: company.cnpj,
+                  type: "PJ",
+                  document: company.cnpj,
+                  name: company.razaoSocial,
+                  metadata: {
+                    uf: company.uf,
+                    municipio: company.municipio,
+                  },
+                }}
+                size="icon"
+              />
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button 
+                    variant="ghost" 
+                    size="icon" 
+                    className="h-8 w-8 transition-all hover:scale-110 hover:bg-muted"
+                  >
+                    <MoreVertical className="h-4 w-4" />
+                    <span className="sr-only">Abrir menu</span>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="animate-slideInDown">
+                  <DropdownMenuItem 
+                    onClick={() => onViewDetails?.(company)}
+                    className="transition-colors hover:bg-primary/10 cursor-pointer"
+                  >
+                    <Eye className="mr-2 h-4 w-4" />
+                    Ver Detalhes
+                  </DropdownMenuItem>
+                  <DropdownMenuItem 
+                    onClick={() => onDownloadPDF?.(company)}
+                    className="transition-colors hover:bg-primary/10 cursor-pointer"
+                  >
+                    <FileDown className="mr-2 h-4 w-4" />
+                    Baixar PDF
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
+          )
+        },
+        size: 120,
+        minSize: 120,
       },
     ],
     [onViewDetails, onDownloadPDF]
   )
 
   return (
-    <DataTable
-      columns={columns}
-      data={data}
-      loading={isLoading}
-      emptyMessage="Nenhuma empresa encontrada. Tente ajustar os filtros ou realizar uma nova busca."
-      onRowClick={(row) => onViewDetails?.(row)}
-    />
+    <div className="space-y-4">
+      {/* Header com botão de export */}
+      {data.length > 0 && (
+        <div className="flex justify-end">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setExportOpen(true)}
+          >
+            <Download className="h-4 w-4 mr-2" />
+            Exportar
+          </Button>
+        </div>
+      )}
+
+      <DataTable
+        columns={columns}
+        data={data}
+        loading={isLoading}
+        emptyMessage="Nenhuma empresa encontrada. Tente ajustar os filtros ou realizar uma nova busca."
+        onRowClick={(row) => onViewDetails?.(row)}
+      />
+
+      {/* Modal de exportação */}
+      <ExportModal
+        open={exportOpen}
+        onOpenChange={setExportOpen}
+        title="Dados Cadastrais PJ"
+        data={exportData}
+        availableFields={exportFields}
+        filename="dados-cadastrais-pj"
+      />
+    </div>
   )
 }

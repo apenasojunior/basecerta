@@ -26,7 +26,7 @@ export default function DadosEmpresasPage() {
   const totalResults = searchResponse?.total || 0
 
   const handleSearch = async (data: {
-    searchType: "CNPJ" | "RAZAO_SOCIAL" | "NOME_FANTASIA"
+    searchType: string
     searchValue: string
   }) => {
     console.log("Buscando:", data)
@@ -34,7 +34,7 @@ export default function DadosEmpresasPage() {
     setHasSearched(true)
     
     search({
-      searchType: data.searchType,
+      searchType: data.searchType as any,
       searchValue: data.searchValue,
       filters,
     })
@@ -93,6 +93,7 @@ export default function DadosEmpresasPage() {
         <main className="space-y-4 sm:space-y-6">
           {/* Mobile Filters */}
           <MobileFilters
+            type="company"
             filters={filters}
             onFiltersChange={setFilters}
             onApply={handleApplyFilters}
