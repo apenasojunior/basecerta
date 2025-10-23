@@ -5,6 +5,7 @@
 
 'use client'
 
+import { lazy, Suspense } from 'react'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Alert, AlertDescription } from '@/components/ui/alert'
@@ -16,10 +17,13 @@ import {
   Users,
   Info
 } from 'lucide-react'
-import { CPFSearchForm } from '@/components/dados360/CPFSearchForm'
-import { CostConfirmationModal } from '@/components/dados360/CostConfirmationModal'
 import { useRadarJuridico } from '@/hooks/useRadarJuridico'
 import { radarJuridicoStats } from '@/mocks/radar-juridico-pf'
+import { RadarJuridicoPFSearchSkeleton } from '@/components/radar-juridico/pf/RadarJuridicoPFSearchSkeleton'
+
+// Lazy load components para reduzir TBT
+const CPFSearchForm = lazy(() => import('@/components/dados360/CPFSearchForm').then(mod => ({ default: mod.CPFSearchForm })))
+const CostConfirmationModal = lazy(() => import('@/components/dados360/CostConfirmationModal').then(mod => ({ default: mod.CostConfirmationModal })))
 
 export default function RadarJuridicoPFSearchPage() {
   const {
@@ -133,14 +137,21 @@ export default function RadarJuridicoPFSearchPage() {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <CPFSearchForm
-                  cpf={cpfCnpj}
-                  onCpfChange={setCpfCnpj}
-                  isValid={isValid}
-                  isSearching={isSearching}
-                  onSearch={handleSearch}
-                  error={null}
-                />
+                <Suspense fallback={
+                  <div className="space-y-4">
+                    <div className="h-10 bg-gray-200 rounded animate-pulse" />
+                    <div className="h-10 bg-gray-200 rounded animate-pulse" />
+                  </div>
+                }>
+                  <CPFSearchForm
+                    cpf={cpfCnpj}
+                    onCpfChange={setCpfCnpj}
+                    isValid={isValid}
+                    isSearching={isSearching}
+                    onSearch={handleSearch}
+                    error={null}
+                  />
+                </Suspense>
 
                 <div className="mt-6 p-4 bg-orange-50 border border-orange-200 rounded-lg">
                   <h3 className="text-sm font-semibold text-orange-900 mb-2 flex items-center gap-2">
@@ -259,14 +270,16 @@ export default function RadarJuridicoPFSearchPage() {
       </div>
 
       {/* Modal de Confirmação */}
-      <CostConfirmationModal
-        open={showCostModal}
-        onConfirm={confirmSearch}
-        onCancel={cancelSearch}
-        costCredits={20}
-        productName="Radar Jurídico - Pessoa Física"
-        cpf={cpfCnpj}
-      />
+      <Suspense fallback={null}>
+        <CostConfirmationModal
+          open={showCostModal}
+          onConfirm={confirmSearch}
+          onCancel={cancelSearch}
+          costCredits={20}
+          productName="Radar Jurídico - Pessoa Física"
+          cpf={cpfCnpj}
+        />
+      </Suspense>
     </div>
   )
 }

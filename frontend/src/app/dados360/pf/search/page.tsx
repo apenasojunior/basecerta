@@ -1,14 +1,16 @@
 'use client'
 
-import { useEffect } from 'react'
+import { useEffect, lazy, Suspense } from 'react'
 import { useRouter } from 'next/navigation'
 import { User, TrendingUp, MapPin, Briefcase, Users, FileText, Shield } from 'lucide-react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import { CPFSearchForm } from '@/components/dados360/CPFSearchForm'
-import { CostConfirmationModal } from '@/components/dados360/CostConfirmationModal'
 import { useDados360PF } from '@/hooks/useDados360PF'
 import { mockPessoas } from '@/mocks/dados360-pf'
+
+// Lazy load components para reduzir TBT
+const CPFSearchForm = lazy(() => import('@/components/dados360/CPFSearchForm').then(mod => ({ default: mod.CPFSearchForm })))
+const CostConfirmationModal = lazy(() => import('@/components/dados360/CostConfirmationModal').then(mod => ({ default: mod.CostConfirmationModal })))
 
 export default function Dados360PFSearchPage() {
   const router = useRouter()
@@ -146,14 +148,21 @@ export default function Dados360PFSearchPage() {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <CPFSearchForm
-                cpf={cpf}
-                onCpfChange={setCpf}
-                onSearch={handleSearch}
-                isSearching={isSearching}
-                error={cpfError}
-                isValid={isValidCPF}
-              />
+              <Suspense fallback={
+                <div className="space-y-4">
+                  <div className="h-10 bg-gray-200 rounded animate-pulse" />
+                  <div className="h-10 bg-gray-200 rounded animate-pulse" />
+                </div>
+              }>
+                <CPFSearchForm
+                  cpf={cpf}
+                  onCpfChange={setCpf}
+                  onSearch={handleSearch}
+                  isSearching={isSearching}
+                  error={cpfError}
+                  isValid={isValidCPF}
+                />
+              </Suspense>
               
               {/* Not Found Message */}
               {notFound && (
@@ -292,14 +301,16 @@ export default function Dados360PFSearchPage() {
       </div>
       
       {/* Cost Confirmation Modal */}
-      <CostConfirmationModal
-        open={showCostModal}
-        onConfirm={confirmSearch}
-        onCancel={cancelSearch}
-        costCredits={costCredits}
-        productName="Dossiê 360° PF"
-        cpf={cpf}
-      />
+      <Suspense fallback={null}>
+        <CostConfirmationModal
+          open={showCostModal}
+          onConfirm={confirmSearch}
+          onCancel={cancelSearch}
+          costCredits={costCredits}
+          productName="Dossiê 360° PF"
+          cpf={cpf}
+        />
+      </Suspense>
     </div>
   )
 }

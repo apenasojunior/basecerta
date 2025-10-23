@@ -1,12 +1,15 @@
 'use client'
 
+import { lazy, Suspense } from 'react'
 import { useRouter } from 'next/navigation'
 import { useSmartCNPJ } from '@/hooks/useSmartCNPJ'
-import { SearchForm } from '@/components/smart-cnpj/SearchForm'
-import { FilterPanel } from '@/components/smart-cnpj/FilterPanel'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Building2, Search, TrendingUp, Users, MapPin } from 'lucide-react'
+
+// Lazy load components para reduzir TBT
+const SearchForm = lazy(() => import('@/components/smart-cnpj/SearchForm').then(mod => ({ default: mod.SearchForm })))
+const FilterPanel = lazy(() => import('@/components/smart-cnpj/FilterPanel').then(mod => ({ default: mod.FilterPanel })))
 
 export default function SmartCNPJSearchPage() {
   const router = useRouter()
@@ -116,14 +119,22 @@ export default function SmartCNPJSearchPage() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Search Form - 2 colunas */}
         <div className="lg:col-span-2">
-          <SearchForm
-            searchType={searchType}
-            searchValue={searchValue}
-            onSearchTypeChange={setSearchType}
-            onSearchValueChange={setSearchValue}
-            onSearch={handleSearch}
-            isSearching={isSearching}
-          />
+          <Suspense fallback={
+            <div className="space-y-4 p-6 bg-white rounded-lg border">
+              <div className="h-12 bg-gray-200 rounded animate-pulse" />
+              <div className="h-10 bg-gray-200 rounded animate-pulse" />
+              <div className="h-10 bg-gray-200 rounded animate-pulse" />
+            </div>
+          }>
+            <SearchForm
+              searchType={searchType}
+              searchValue={searchValue}
+              onSearchTypeChange={setSearchType}
+              onSearchValueChange={setSearchValue}
+              onSearch={handleSearch}
+              isSearching={isSearching}
+            />
+          </Suspense>
 
           {/* Dicas de Busca */}
           <Card className="mt-6">
@@ -164,13 +175,24 @@ export default function SmartCNPJSearchPage() {
 
         {/* Filter Panel - 1 coluna */}
         <div>
-          <FilterPanel
-            filters={filters}
-            onFiltersChange={setFilters}
-            onClearFilters={clearFilters}
-            hasActiveFilters={hasActiveFilters}
-            resultsCount={hasSearched ? filteredResults.length : undefined}
-          />
+          <Suspense fallback={
+            <div className="p-6 bg-white rounded-lg border">
+              <div className="h-6 bg-gray-200 rounded animate-pulse mb-4" />
+              <div className="space-y-3">
+                {[1, 2, 3].map((i) => (
+                  <div key={i} className="h-4 bg-gray-200 rounded animate-pulse" />
+                ))}
+              </div>
+            </div>
+          }>
+            <FilterPanel
+              filters={filters}
+              onFiltersChange={setFilters}
+              onClearFilters={clearFilters}
+              hasActiveFilters={hasActiveFilters}
+              resultsCount={hasSearched ? filteredResults.length : undefined}
+            />
+          </Suspense>
         </div>
       </div>
 

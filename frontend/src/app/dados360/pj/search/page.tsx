@@ -1,12 +1,15 @@
 'use client'
 
+import { lazy, Suspense } from 'react'
 import { Building2, TrendingUp, Users, Briefcase } from 'lucide-react'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import { CNPJSearchForm } from '@/components/dados360/CNPJSearchForm'
-import { CostConfirmationModal } from '@/components/dados360/CostConfirmationModal'
 import { useDados360PJ } from '@/hooks/useDados360PJ'
 import { stats } from '@/mocks/dados360-pj'
+
+// Lazy load components para reduzir TBT
+const CNPJSearchForm = lazy(() => import('@/components/dados360/CNPJSearchForm').then(mod => ({ default: mod.CNPJSearchForm })))
+const CostConfirmationModal = lazy(() => import('@/components/dados360/CostConfirmationModal').then(mod => ({ default: mod.CostConfirmationModal })))
 
 export default function SearchDados360PJPage() {
   const {
@@ -120,14 +123,21 @@ export default function SearchDados360PJPage() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Search Form */}
           <div className="lg:col-span-2">
-            <CNPJSearchForm
-              cnpj={cnpj}
-              isValid={isValid}
-              isLoading={isLoading}
-              error={error}
-              onCnpjChange={handleCnpjChange}
-              onSearch={handleSearch}
-            />
+            <Suspense fallback={
+              <div className="space-y-4 p-6 bg-white rounded-lg border">
+                <div className="h-10 bg-gray-200 rounded animate-pulse" />
+                <div className="h-10 bg-gray-200 rounded animate-pulse" />
+              </div>
+            }>
+              <CNPJSearchForm
+                cnpj={cnpj}
+                isValid={isValid}
+                isLoading={isLoading}
+                error={error}
+                onCnpjChange={handleCnpjChange}
+                onSearch={handleSearch}
+              />
+            </Suspense>
           </div>
           
           {/* Sidebar */}
@@ -212,14 +222,16 @@ export default function SearchDados360PJPage() {
       </div>
       
       {/* Modal de Confirmação de Custo */}
-      <CostConfirmationModal
-        open={showCostModal}
-        onConfirm={confirmSearch}
-        onCancel={cancelSearch}
-        costCredits={12}
-        productName="Dossiê 360° - Pessoa Jurídica"
-        cpf={cnpj}
-      />
+      <Suspense fallback={null}>
+        <CostConfirmationModal
+          open={showCostModal}
+          onConfirm={confirmSearch}
+          onCancel={cancelSearch}
+          costCredits={12}
+          productName="Dossiê 360° - Pessoa Jurídica"
+          cpf={cnpj}
+        />
+      </Suspense>
     </div>
   )
 }
