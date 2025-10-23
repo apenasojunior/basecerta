@@ -123,7 +123,7 @@ export default function DashboardPage() {
       title: 'Upgrade seu Plano',
       description: 'Assine o plano Premium e ganhe 1000 créditos bônus',
       cta: 'Ver Planos',
-      href: '/configuracoes/financeiro',
+      href: '/credits',
       gradient: 'from-primary-500 to-orange-600',
     },
     {

@@ -12,8 +12,9 @@ import { formatCurrency, formatDate } from '@/lib/formatters'
 interface CompanyCardProps {
   company: SmartCNPJCompany
   isFavorite?: boolean
-  onToggleFavorite?: (cnpj: string) => void
+  onToggleFavorite?: () => void
   className?: string
+  from?: string // Origem da navegação (results, search, etc)
 }
 
 export function CompanyCard({
@@ -21,6 +22,7 @@ export function CompanyCard({
   isFavorite = false,
   onToggleFavorite,
   className,
+  from = 'results', // Default para results
 }: CompanyCardProps) {
   // Remove formatting from CNPJ for URL
   const cleanCnpj = company.cnpj.replace(/[.\-\/]/g, '')
@@ -75,7 +77,7 @@ export function CompanyCard({
             <button
               onClick={(e) => {
                 e.preventDefault()
-                onToggleFavorite(company.cnpj)
+                onToggleFavorite()
               }}
               className={cn(
                 'p-2 rounded-full transition-all duration-200',
@@ -174,7 +176,7 @@ export function CompanyCard({
 
       {/* Footer com Botão */}
       <CardFooter className="p-4 bg-gray-50 border-t border-gray-200">
-        <Link href={`/smart-cnpj/${cleanCnpj}`} className="w-full">
+        <Link href={`/smart-cnpj/${cleanCnpj}?from=${from}`} className="w-full">
           <Button
             variant="outline"
             className="w-full group-hover:bg-primary-600 group-hover:text-white group-hover:border-primary-600 transition-all duration-200"

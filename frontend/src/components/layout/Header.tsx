@@ -115,7 +115,7 @@ export function Header({ className, breadcrumbs = [] }: HeaderProps) {
       <div className="flex items-center gap-2 md:gap-4">
         {/* Credits Display */}
         <Link
-          href="/configuracoes/financeiro"
+          href="/credits"
           className="hidden sm:flex items-center gap-2 px-3 py-2 rounded-lg bg-primary-50 hover:bg-primary-100 transition-colors group"
         >
           {isLoadingBalance ? (
@@ -133,7 +133,7 @@ export function Header({ className, breadcrumbs = [] }: HeaderProps) {
 
         {/* Mobile Credits - Icon only */}
         <Link
-          href="/configuracoes/financeiro"
+          href="/credits"
           className="sm:hidden p-2 rounded-lg bg-primary-50 hover:bg-primary-100 transition-colors"
         >
           {isLoadingBalance ? (
@@ -216,7 +216,7 @@ export function Header({ className, breadcrumbs = [] }: HeaderProps) {
               </Link>
             </DropdownMenuItem>
             <DropdownMenuItem asChild>
-              <Link href="/configuracoes/financeiro" className="cursor-pointer">
+              <Link href="/credits" className="cursor-pointer">
                 Financeiro
               </Link>
             </DropdownMenuItem>

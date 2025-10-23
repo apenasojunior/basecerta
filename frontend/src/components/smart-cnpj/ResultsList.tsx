@@ -1,8 +1,9 @@
 'use client'
 
-import { useState } from 'react'
 import { CompanyCard } from './CompanyCard'
 import { Pagination } from '@/components/ui/pagination'
+import { useFavorites } from '@/hooks/useFavorites'
+import { toast } from '@/lib/toast'
 import type { SmartCNPJCompany } from '@/mocks/smart-cnpj'
 
 interface ResultsListProps {
@@ -12,6 +13,7 @@ interface ResultsListProps {
   itemsPerPage: number
   onPageChange: (page: number) => void
   className?: string
+  from?: string // Origem da navegação
 }
 
 export function ResultsList({
@@ -21,20 +23,37 @@ export function ResultsList({
   itemsPerPage,
   onPageChange,
   className,
+  from = 'results', // Default
 }: ResultsListProps) {
-  // Manage favorites locally (could be moved to a global state later)
-  const [favorites, setFavorites] = useState<Set<string>>(new Set())
+  const { isFavorite, toggleFavorite, getStats } = useFavorites()
+  const stats = getStats()
 
-  const handleToggleFavorite = (cnpj: string) => {
-    setFavorites((prev) => {
-      const newFavorites = new Set(prev)
-      if (newFavorites.has(cnpj)) {
-        newFavorites.delete(cnpj)
-      } else {
-        newFavorites.add(cnpj)
-      }
-      return newFavorites
+  const handleToggleFavorite = (cnpj: string, company: SmartCNPJCompany) => {
+    const favorited = isFavorite(cnpj)
+
+    // Verifica limite antes de adicionar
+    if (!favorited && stats.isFull) {
+      toast.warning(`Limite de ${stats.total} favoritos atingido. Remova alguns para adicionar novos.`)
+      return
+    }
+
+    toggleFavorite({
+      id: cnpj,
+      type: 'PJ',
+      document: cnpj,
+      name: company.razaoSocial,
+      metadata: {
+        status: company.situacaoCadastral,
+        uf: company.endereco.uf,
+        municipio: company.endereco.municipio,
+      },
     })
+
+    if (!favorited) {
+      toast.success(`"${company.razaoSocial}" adicionado aos favoritos`)
+    } else {
+      toast.success(`"${company.razaoSocial}" removido dos favoritos`)
+    }
   }
 
   if (companies.length === 0) {
@@ -75,8 +94,9 @@ export function ResultsList({
           <CompanyCard
             key={company.cnpj}
             company={company}
-            isFavorite={favorites.has(company.cnpj)}
-            onToggleFavorite={handleToggleFavorite}
+            isFavorite={isFavorite(company.cnpj)}
+            onToggleFavorite={() => handleToggleFavorite(company.cnpj, company)}
+            from={from}
           />
         ))}
       </div>

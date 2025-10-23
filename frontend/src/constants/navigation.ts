@@ -86,17 +86,17 @@ export const NAVIGATION: (NavItem | NavGroup)[] = [
       },
       {
         title: 'Favoritos',
-        href: '/favorites',
+        href: '/favoritos',
         icon: Star,
       },
       {
         title: 'Alertas',
-        href: '/alerts',
+        href: '/alertas',
         icon: Bell,
       },
       {
         title: 'Relatórios',
-        href: '/reports',
+        href: '/relatorios',
         icon: FileBarChart,
       },
     ],

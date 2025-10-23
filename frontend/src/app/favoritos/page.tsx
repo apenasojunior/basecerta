@@ -70,13 +70,19 @@ export default function FavoritosPage() {
 
   // Navega para a página de consulta
   const handleView = (type: FavoriteType, document: string) => {
+    // Remove formatação do documento
+    const cleanDocument = document.replace(/[.\-\/]/g, '')
+    
     if (type === "PF") {
-      router.push(`/produtos/dados-cadastrais-pf?cpf=${document}`)
+      // Pessoa Física → Dados 360° PF
+      router.push(`/dados360/pf/${cleanDocument}?from=favoritos`)
     } else if (type === "PJ") {
-      router.push(`/produtos/dados-cadastrais-pj?cnpj=${document}`)
+      // Pessoa Jurídica → Smart CNPJ Detalhes
+      router.push(`/smart-cnpj/${cleanDocument}?from=favoritos`)
     } else if (type === "FINANCEIRO") {
-      const docType = document.length === 14 ? "cnpj" : "cpf"
-      router.push(`/produtos/dossie-financeiro?${docType}=${document}`)
+      // Dossiê Financeiro
+      const docType = document.length === 14 || cleanDocument.length === 14 ? "cnpj" : "cpf"
+      router.push(`/produtos/dossie-financeiro?${docType}=${cleanDocument}&from=favoritos`)
     }
   }
 

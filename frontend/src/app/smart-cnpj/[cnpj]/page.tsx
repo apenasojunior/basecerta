@@ -1,7 +1,7 @@
 'use client'
 
-import { use, useState } from 'react'
-import { useRouter } from 'next/navigation'
+import { use } from 'react'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { ArrowLeft, Loader2 } from 'lucide-react'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
@@ -13,6 +13,8 @@ import { ContactCard } from '@/components/smart-cnpj/ContactCard'
 import { StatusCard } from '@/components/smart-cnpj/StatusCard'
 import { getCompanyByCNPJ } from '@/mocks/smart-cnpj'
 import { Card, CardContent } from '@/components/ui/card'
+import { useFavorites } from '@/hooks/useFavorites'
+import { toast } from '@/lib/toast'
 
 interface CompanyDetailsPageProps {
   params: Promise<{
@@ -23,18 +25,62 @@ interface CompanyDetailsPageProps {
 export default function CompanyDetailsPage({ params }: CompanyDetailsPageProps) {
   const resolvedParams = use(params)
   const router = useRouter()
-  const [isFavorite, setIsFavorite] = useState(false)
+  const searchParams = useSearchParams()
+  const { isFavorite, toggleFavorite, getStats } = useFavorites()
+  const stats = getStats()
 
   // Decode CNPJ from URL
   const cnpj = decodeURIComponent(resolvedParams.cnpj)
+  
+  // Get origin page from query params
+  const from = searchParams.get('from')
+  
+  // Define back link and text based on origin
+  const getBackLink = () => {
+    switch (from) {
+      case 'favoritos':
+        return { href: '/favoritos', text: 'Voltar aos Favoritos' }
+      case 'search':
+        return { href: '/smart-cnpj/search', text: 'Voltar à Busca' }
+      default:
+        return { href: '/smart-cnpj/results', text: 'Voltar aos Resultados' }
+    }
+  }
+  
+  const backLink = getBackLink()
   
   // Get company data
   const company = getCompanyByCNPJ(cnpj)
 
   // Handle favorite toggle
   const handleToggleFavorite = () => {
-    setIsFavorite(!isFavorite)
-    // TODO: Persist to localStorage or API
+    if (!company) return
+
+    const favorited = isFavorite(company.cnpj)
+
+    // Verifica limite antes de adicionar
+    if (!favorited && stats.isFull) {
+      toast.warning(`Limite de ${stats.total} favoritos atingido. Remova alguns para adicionar novos.`)
+      return
+    }
+
+    toggleFavorite({
+      id: company.cnpj,
+      type: 'PJ',
+      document: company.cnpj,
+      name: company.razaoSocial,
+      metadata: {
+        status: company.situacaoCadastral,
+        uf: company.endereco.uf,
+        municipio: company.endereco.municipio,
+      },
+    })
+
+    if (!favorited) {
+      toast.success(`"${company.razaoSocial}" adicionado aos favoritos`)
+    } else {
+      toast.success(`"${company.razaoSocial}" removido dos favoritos`)
+    }
   }
 
   // Loading state (simulated)
@@ -43,10 +89,10 @@ export default function CompanyDetailsPage({ params }: CompanyDetailsPageProps) 
       <div className="space-y-6">
         {/* Header */}
         <div className="flex items-center gap-3">
-          <Link href="/smart-cnpj/results">
+          <Link href={backLink.href}>
             <Button variant="outline" size="sm">
               <ArrowLeft className="h-4 w-4" />
-              <span>Voltar</span>
+              <span>{backLink.text}</span>
             </Button>
           </Link>
           <h1 className="text-2xl md:text-3xl font-bold text-gray-900">
@@ -94,10 +140,10 @@ export default function CompanyDetailsPage({ params }: CompanyDetailsPageProps) 
     <div className="space-y-6">
       {/* Back Button */}
       <div className="flex items-center gap-3">
-        <Link href="/smart-cnpj/results">
+        <Link href={backLink.href}>
           <Button variant="outline" size="sm">
             <ArrowLeft className="h-4 w-4" />
-            <span className="hidden sm:inline">Voltar aos Resultados</span>
+            <span className="hidden sm:inline">{backLink.text}</span>
             <span className="sm:hidden">Voltar</span>
           </Button>
         </Link>
@@ -106,7 +152,7 @@ export default function CompanyDetailsPage({ params }: CompanyDetailsPageProps) 
       {/* Company Header */}
       <CompanyHeader
         company={company}
-        isFavorite={isFavorite}
+        isFavorite={isFavorite(company.cnpj)}
         onToggleFavorite={handleToggleFavorite}
       />
 

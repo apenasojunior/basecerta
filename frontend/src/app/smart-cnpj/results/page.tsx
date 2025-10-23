@@ -226,6 +226,7 @@ function ResultsContent() {
               totalPages={totalPages}
               itemsPerPage={itemsPerPage}
               onPageChange={goToPage}
+              from="results"
             />
           </div>
         </div>

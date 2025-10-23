@@ -1,7 +1,7 @@
 'use client'
 
-import { use, useState } from 'react'
-import { useRouter } from 'next/navigation'
+import { use } from 'react'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { ArrowLeft, AlertCircle } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
@@ -15,6 +15,8 @@ import { EmployeesHistoryCard } from '@/components/dados360/pj/EmployeesHistoryC
 import { AddressesPJCard } from '@/components/dados360/pj/AddressesPJCard'
 import { ContactsPJCard } from '@/components/dados360/pj/ContactsPJCard'
 import { SocialMediaCard } from '@/components/dados360/pj/SocialMediaCard'
+import { useFavorites } from '@/hooks/useFavorites'
+import { toast } from '@/lib/toast'
 
 interface PageProps {
   params: Promise<{
@@ -25,15 +27,61 @@ interface PageProps {
 export default function DossierPJPage({ params }: PageProps) {
   const router = useRouter()
   const { cnpj } = use(params)
+  const searchParams = useSearchParams()
+  const { isFavorite, toggleFavorite, getStats } = useFavorites()
+  const stats = getStats()
   
   // Limpar CNPJ para busca (remover pontos, traços, barra)
   const cleanCNPJ = cnpj.replace(/[^\d]/g, '')
   
+  // Get origin page from query params
+  const from = searchParams.get('from')
+  
+  // Define back link and text based on origin
+  const getBackLink = () => {
+    switch (from) {
+      case 'favoritos':
+        return { href: '/favoritos', text: 'Voltar aos Favoritos' }
+      default:
+        return { href: '/dados360/pj/search', text: 'Voltar para Busca' }
+    }
+  }
+  
+  const backLink = getBackLink()
+  
   // Buscar empresa nos dados mock
   const company = searchCompanyByCNPJ(cleanCNPJ)
   
-  // State para favoritos (será integrado com backend posteriormente)
-  const [isFavorite, setIsFavorite] = useState(false)
+  // Handle favorite toggle
+  const handleToggleFavorite = () => {
+    if (!company) return
+
+    const favorited = isFavorite(cleanCNPJ)
+
+    // Verifica limite antes de adicionar
+    if (!favorited && stats.isFull) {
+      toast.warning(`Limite de ${stats.total} favoritos atingido. Remova alguns para adicionar novos.`)
+      return
+    }
+
+    toggleFavorite({
+      id: cleanCNPJ,
+      type: 'PJ',
+      document: cleanCNPJ,
+      name: company.razaoSocial,
+      metadata: {
+        status: company.situacao,
+        uf: company.enderecos?.[0]?.uf || '',
+        municipio: company.enderecos?.[0]?.municipio || '',
+      }
+    })
+
+    if (!favorited) {
+      toast.success(`"${company.razaoSocial}" adicionado aos favoritos`)
+    } else {
+      toast.success(`"${company.razaoSocial}" removido dos favoritos`)
+    }
+  }
   
   // Se empresa não encontrada
   if (!company) {
@@ -44,11 +92,11 @@ export default function DossierPJPage({ params }: PageProps) {
           <div className="mb-6">
             <Button
               variant="ghost"
-              onClick={() => router.push('/dados360/pj/search')}
+              onClick={() => router.push(backLink.href)}
               className="mb-4"
             >
               <ArrowLeft className="h-4 w-4 mr-2" />
-              Voltar para Busca
+              {backLink.text}
             </Button>
           </div>
           
@@ -66,9 +114,9 @@ export default function DossierPJPage({ params }: PageProps) {
                   Não foram encontrados dados para o CNPJ <span className="font-mono font-semibold">{cnpj}</span>.
                   Verifique se o CNPJ está correto e tente novamente.
                 </p>
-                <Button onClick={() => router.push('/dados360/pj/search')}>
+                <Button onClick={() => router.push(backLink.href)}>
                   <ArrowLeft className="h-4 w-4 mr-2" />
-                  Voltar para Busca
+                  {backLink.text}
                 </Button>
               </div>
             </CardContent>
@@ -85,18 +133,18 @@ export default function DossierPJPage({ params }: PageProps) {
         <div className="mb-6">
           <Button
             variant="ghost"
-            onClick={() => router.push('/dados360/pj/search')}
+            onClick={() => router.push(backLink.href)}
           >
             <ArrowLeft className="h-4 w-4 mr-2" />
-            Voltar para Busca
+            {backLink.text}
           </Button>
         </div>
         
         {/* Company Header */}
         <CompanyHeaderFull
           company={company}
-          isFavorite={isFavorite}
-          onToggleFavorite={() => setIsFavorite(!isFavorite)}
+          isFavorite={isFavorite(cleanCNPJ)}
+          onToggleFavorite={handleToggleFavorite}
         />
         
         {/* Grid de Cards */}
