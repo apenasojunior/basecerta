@@ -80,6 +80,7 @@ export default function FavoritosPage() {
     } else if (type === "PJ") {
       // Pessoa Jurídica → Smart CNPJ Detalhes
       router.push(`/smart-cnpj/${cleanDocument}?from=favoritos`)
+      router.push(`/smart-cnpj/${cleanDocument}?from=favoritos`)
     } else if (type === "FINANCEIRO") {
       // Dossiê Financeiro
       const docType = document.length === 14 || cleanDocument.length === 14 ? "cnpj" : "cpf"
@@ -123,10 +124,10 @@ export default function FavoritosPage() {
   return (
     <div className="container mx-auto p-6 space-y-6" style={{ minHeight: '800px' }}>
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+      <header className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <h1 className="text-3xl font-bold flex items-center gap-2">
-            <Star className="h-8 w-8 text-yellow-500 fill-yellow-500" />
+            <Star className="h-8 w-8 text-yellow-500 fill-yellow-500" aria-hidden="true" />
             Meus Favoritos
           </h1>
           <p className="text-muted-foreground mt-1">
@@ -139,15 +140,18 @@ export default function FavoritosPage() {
             variant="destructive"
             size="sm"
             onClick={() => setClearDialogOpen(true)}
+            aria-label="Limpar todos os favoritos"
           >
-            <Trash2 className="h-4 w-4 mr-2" />
+            <Trash2 className="h-4 w-4 mr-2" aria-hidden="true" />
             Limpar Todos
           </Button>
         )}
-      </div>
+      </header>
 
       {/* Estatísticas */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+      <section aria-labelledby="stats-heading">
+        <h2 id="stats-heading" className="sr-only">Estatísticas de Favoritos</h2>
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <Card>
           <CardHeader className="pb-3">
             <CardTitle className="text-sm font-medium text-muted-foreground">
@@ -197,9 +201,11 @@ export default function FavoritosPage() {
           </CardContent>
         </Card>
       </div>
+      </section>
 
       {/* Filtros */}
-      <Card>
+      <main role="main">
+        <Card>
         <CardHeader>
           <div className="flex items-center justify-between">
             <div>
@@ -210,12 +216,13 @@ export default function FavoritosPage() {
             </div>
 
             <div className="flex items-center gap-2">
-              <Filter className="h-4 w-4 text-muted-foreground" />
-              <div className="flex gap-2">
+              <Filter className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
+              <div className="flex gap-2" role="group" aria-label="Filtros de tipo">
                 <Button
                   variant={filterType === "ALL" ? "default" : "outline"}
                   size="sm"
                   onClick={() => setFilterType("ALL")}
+                  aria-pressed={filterType === "ALL"}
                 >
                   Todos
                 </Button>
@@ -301,8 +308,9 @@ export default function FavoritosPage() {
                             onClick={() =>
                               handleView(favorite.type, favorite.document)
                             }
+                            aria-label={`Ver detalhes de ${favorite.name}`}
                           >
-                            <Eye className="h-4 w-4 mr-1" />
+                            <Eye className="h-4 w-4 mr-1" aria-hidden="true" />
                             Ver
                           </Button>
                           <Button
@@ -311,8 +319,9 @@ export default function FavoritosPage() {
                             onClick={() =>
                               handleRemove(favorite.id, favorite.name)
                             }
+                            aria-label={`Remover ${favorite.name} dos favoritos`}
                           >
-                            <Trash2 className="h-4 w-4 mr-1" />
+                            <Trash2 className="h-4 w-4 mr-1" aria-hidden="true" />
                             Remover
                           </Button>
                         </div>
@@ -325,6 +334,7 @@ export default function FavoritosPage() {
           )}
         </CardContent>
       </Card>
+      </main>
 
       {/* Dialog de confirmação para limpar todos */}
       <AlertDialog open={clearDialogOpen} onOpenChange={setClearDialogOpen}>
