@@ -48,7 +48,7 @@ export default function CreditsPage() {
     <div className="container mx-auto px-4 py-8">
       <div className="space-y-6">
         {/* Header */}
-        <div className="flex items-center justify-between">
+        <header className="flex items-center justify-between">
           <div className="space-y-1">
             <h1 className="text-3xl font-bold text-gray-900">
               💳 Créditos
@@ -58,131 +58,141 @@ export default function CreditsPage() {
             </p>
           </div>
           
-          <div className="flex gap-3">
-            <Link href="/plans">
-              <Button variant="outline" size="lg">
-                <Calendar className="mr-2 h-4 w-4" />
-                Ver Planos
-              </Button>
-            </Link>
-            <Link href="/packages">
-              <Button size="lg">
-                <ShoppingCart className="mr-2 h-4 w-4" />
-                Comprar Créditos
-              </Button>
-            </Link>
-          </div>
-        </div>
+          <nav aria-label="Ações de créditos">
+            <div className="flex gap-3">
+              <Link href="/plans">
+                <Button variant="outline" size="lg" aria-label="Ver planos disponíveis">
+                  <Calendar aria-hidden="true" className="mr-2 h-4 w-4" />
+                  Ver Planos
+                </Button>
+              </Link>
+              <Link href="/packages">
+                <Button size="lg" aria-label="Comprar pacotes de créditos">
+                  <ShoppingCart aria-hidden="true" className="mr-2 h-4 w-4" />
+                  Comprar Créditos
+                </Button>
+              </Link>
+            </div>
+          </nav>
+        </header>
 
         {/* Saldo Atual */}
-        <Card className="bg-gradient-to-br from-primary to-orange-600 text-white">
-          <CardContent className="pt-6">
-            <div className="space-y-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm opacity-90">Saldo Disponível</p>
-                  <h2 className="text-5xl font-bold">{balance.currentBalance.toLocaleString('pt-BR')}</h2>
-                  <p className="text-sm opacity-90 mt-1">créditos</p>
-                </div>
-                
-                <div className="p-4 bg-white/20 rounded-full">
-                  <CreditCard className="h-12 w-12" />
-                </div>
-              </div>
-              
-              {balance.currentPlan && (
-                <div className="pt-4 border-t border-white/20">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-sm opacity-90">Plano Atual</p>
-                      <p className="font-semibold">{balance.currentPlan}</p>
-                    </div>
-                    {balance.planRenewalDate && (
-                      <div className="text-right">
-                        <p className="text-sm opacity-90">Renovação</p>
-                        <p className="font-semibold">
-                          {new Date(balance.planRenewalDate).toLocaleDateString('pt-BR')}
-                        </p>
-                      </div>
-                    )}
+        <section aria-labelledby="balance-heading">
+          <h2 id="balance-heading" className="sr-only">Saldo de Créditos</h2>
+          <Card className="bg-gradient-to-br from-primary to-orange-600 text-white">
+            <CardContent className="pt-6">
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm opacity-90">Saldo Disponível</p>
+                    <h3 className="text-5xl font-bold">{balance.currentBalance.toLocaleString('pt-BR')}</h3>
+                    <p className="text-sm opacity-90 mt-1">créditos</p>
+                  </div>
+                  
+                  <div className="p-4 bg-white/20 rounded-full" aria-hidden="true">
+                    <CreditCard className="h-12 w-12" />
                   </div>
                 </div>
-              )}
-            </div>
-          </CardContent>
-        </Card>
+                
+                {balance.currentPlan && (
+                  <div className="pt-4 border-t border-white/20">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-sm opacity-90">Plano Atual</p>
+                        <p className="font-semibold">{balance.currentPlan}</p>
+                      </div>
+                      {balance.planRenewalDate && (
+                        <div className="text-right">
+                          <p className="text-sm opacity-90">Renovação</p>
+                          <p className="font-semibold">
+                            {new Date(balance.planRenewalDate).toLocaleDateString('pt-BR')}
+                          </p>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                )}
+              </div>
+            </CardContent>
+          </Card>
+        </section>
 
         {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-          <Card>
-            <CardContent className="pt-6">
-              <div className="space-y-2">
-                <div className="flex items-center justify-between">
-                  <p className="text-sm text-gray-600">Total Adquirido</p>
-                  <TrendingUp className="h-4 w-4 text-green-600" />
+        <section aria-labelledby="stats-heading">
+          <h2 id="stats-heading" className="sr-only">Estatísticas de Uso</h2>
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <Card>
+              <CardContent className="pt-6">
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <p className="text-sm text-gray-600">Total Adquirido</p>
+                    <TrendingUp aria-hidden="true" className="h-4 w-4 text-green-600" />
+                  </div>
+                  <p className="text-2xl font-bold text-gray-900">
+                    {balance.totalPurchased.toLocaleString('pt-BR')}
+                  </p>
+                  <p className="text-xs text-gray-500">créditos comprados</p>
                 </div>
-                <p className="text-2xl font-bold text-gray-900">
-                  {balance.totalPurchased.toLocaleString('pt-BR')}
-                </p>
-                <p className="text-xs text-gray-500">créditos comprados</p>
-              </div>
-            </CardContent>
-          </Card>
-          
-          <Card>
-            <CardContent className="pt-6">
-              <div className="space-y-2">
-                <div className="flex items-center justify-between">
-                  <p className="text-sm text-gray-600">Total Usado</p>
-                  <TrendingDown className="h-4 w-4 text-red-600" />
+              </CardContent>
+            </Card>
+            
+            <Card>
+              <CardContent className="pt-6">
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <p className="text-sm text-gray-600">Total Usado</p>
+                    <TrendingDown aria-hidden="true" className="h-4 w-4 text-red-600" />
+                  </div>
+                  <p className="text-2xl font-bold text-gray-900">
+                    {balance.totalUsed.toLocaleString('pt-BR')}
+                  </p>
+                  <p className="text-xs text-gray-500">créditos consumidos</p>
                 </div>
-                <p className="text-2xl font-bold text-gray-900">
-                  {balance.totalUsed.toLocaleString('pt-BR')}
-                </p>
-                <p className="text-xs text-gray-500">créditos consumidos</p>
-              </div>
-            </CardContent>
-          </Card>
-          
-          <Card>
-            <CardContent className="pt-6">
-              <div className="space-y-2">
-                <div className="flex items-center justify-between">
-                  <p className="text-sm text-gray-600">Taxa de Uso</p>
-                  <Clock className="h-4 w-4 text-blue-600" />
+              </CardContent>
+            </Card>
+            
+            <Card>
+              <CardContent className="pt-6">
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <p className="text-sm text-gray-600">Taxa de Uso</p>
+                    <Clock aria-hidden="true" className="h-4 w-4 text-blue-600" />
+                  </div>
+                  <p className="text-2xl font-bold text-gray-900">
+                    {usageRate}%
+                  </p>
+                  <p className="text-xs text-gray-500">dos créditos comprados</p>
                 </div>
-                <p className="text-2xl font-bold text-gray-900">
-                  {usageRate}%
-                </p>
-                <p className="text-xs text-gray-500">dos créditos comprados</p>
-              </div>
-            </CardContent>
-          </Card>
-          
-          <Card>
-            <CardContent className="pt-6">
-              <div className="space-y-2">
-                <div className="flex items-center justify-between">
-                  <p className="text-sm text-gray-600">Consultas Realizadas</p>
-                  <CheckCircle className="h-4 w-4 text-purple-600" />
+              </CardContent>
+            </Card>
+            
+            <Card>
+              <CardContent className="pt-6">
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <p className="text-sm text-gray-600">Consultas Realizadas</p>
+                    <CheckCircle aria-hidden="true" className="h-4 w-4 text-purple-600" />
+                  </div>
+                  <p className="text-2xl font-bold text-gray-900">
+                    {usages.length}
+                  </p>
+                  <p className="text-xs text-gray-500">no último mês</p>
                 </div>
-                <p className="text-2xl font-bold text-gray-900">
-                  {usages.length}
-                </p>
-                <p className="text-xs text-gray-500">no último mês</p>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
+              </CardContent>
+            </Card>
+          </div>
+        </section>
 
         {/* Uso por Produto e Histórico Mensal */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {/* Uso por Produto */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Uso por Produto</CardTitle>
-              <CardDescription>Distribuição de créditos por tipo de consulta</CardDescription>
-            </CardHeader>
+        <main role="main">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* Uso por Produto */}
+            <section aria-labelledby="product-usage-heading">
+              <Card>
+                <CardHeader>
+                  <CardTitle id="product-usage-heading">Uso por Produto</CardTitle>
+                  <CardDescription>Distribuição de créditos por tipo de consulta</CardDescription>
+                </CardHeader>
             <CardContent>
               <div className="space-y-4">
                 {productUsage.map((item) => (
@@ -205,11 +215,13 @@ export default function CreditsPage() {
               </div>
             </CardContent>
           </Card>
+        </section>
 
-          {/* Histórico Mensal */}
+        {/* Histórico Mensal */}
+        <section aria-labelledby="monthly-history-heading">
           <Card>
             <CardHeader>
-              <CardTitle>Histórico Mensal</CardTitle>
+              <CardTitle id="monthly-history-heading">Histórico Mensal</CardTitle>
               <CardDescription>Uso e compras nos últimos 6 meses</CardDescription>
             </CardHeader>
             <CardContent>
@@ -240,19 +252,21 @@ export default function CreditsPage() {
               </div>
             </CardContent>
           </Card>
-        </div>
+        </section>
+      </div>
 
-        {/* Últimas Transações */}
+      {/* Últimas Transações */}
+      <section aria-labelledby="transactions-heading">
         <Card>
           <CardHeader>
             <div className="flex items-center justify-between">
               <div>
-                <CardTitle>Últimas Transações</CardTitle>
+                <CardTitle id="transactions-heading">Últimas Transações</CardTitle>
                 <CardDescription>Histórico completo de compras e uso de créditos</CardDescription>
               </div>
-              <Button variant="outline" size="sm">
+              <Button variant="outline" size="sm" aria-label="Ver todas as transações">
                 Ver Todas
-                <ArrowRight className="ml-2 h-4 w-4" />
+                <ArrowRight aria-hidden="true" className="ml-2 h-4 w-4" />
               </Button>
             </div>
           </CardHeader>
@@ -264,6 +278,8 @@ export default function CreditsPage() {
             </div>
           </CardContent>
         </Card>
+      </section>
+    </main>
       </div>
     </div>
   )
@@ -286,7 +302,7 @@ function TransactionItem({ transaction }: { transaction: CreditTransaction }) {
   return (
     <div className="flex items-center justify-between p-4 border rounded-lg hover:bg-gray-50 transition-colors">
       <div className="flex items-center gap-4">
-        <div className={`p-2 ${config.bg} rounded-lg`}>
+        <div className={`p-2 ${config.bg} rounded-lg`} aria-hidden="true">
           <Icon className={`h-5 w-5 ${config.color}`} />
         </div>
         
@@ -303,7 +319,7 @@ function TransactionItem({ transaction }: { transaction: CreditTransaction }) {
             </p>
             {transaction.documentSearched && (
               <>
-                <span className="text-gray-400">•</span>
+                <span className="text-gray-400" aria-hidden="true">•</span>
                 <p className="text-sm text-gray-600 font-mono">
                   {transaction.documentSearched}
                 </p>
@@ -319,11 +335,11 @@ function TransactionItem({ transaction }: { transaction: CreditTransaction }) {
         </p>
         
         {transaction.status === 'COMPLETED' ? (
-          <CheckCircle className="h-5 w-5 text-green-600" />
+          <CheckCircle aria-hidden="true" className="h-5 w-5 text-green-600" />
         ) : transaction.status === 'FAILED' ? (
-          <XCircle className="h-5 w-5 text-red-600" />
+          <XCircle aria-hidden="true" className="h-5 w-5 text-red-600" />
         ) : (
-          <Clock className="h-5 w-5 text-yellow-600" />
+          <Clock aria-hidden="true" className="h-5 w-5 text-yellow-600" />
         )}
       </div>
     </div>

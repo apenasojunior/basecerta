@@ -84,38 +84,41 @@ export default function DossierPFPage({ params }: PageProps) {
       <div className="min-h-screen bg-gray-50 p-6">
         <div className="max-w-7xl mx-auto">
           {/* Header com botão voltar */}
-          <div className="mb-6">
+          <nav aria-label="Navegação">
             <Button
               variant="ghost"
               onClick={() => router.push(backLink.href)}
               className="mb-4"
+              aria-label="Voltar para busca de pessoas"
             >
-              <ArrowLeft className="h-4 w-4 mr-2" />
+              <ArrowLeft aria-hidden="true" className="h-4 w-4 mr-2" />
               {backLink.text}
             </Button>
-          </div>
+          </nav>
           
           {/* Card de erro */}
-          <Card className="max-w-2xl mx-auto">
-            <CardContent className="pt-6">
-              <div className="flex flex-col items-center justify-center py-12 text-center">
-                <div className="p-4 bg-red-100 rounded-full mb-4">
-                  <AlertCircle className="h-12 w-12 text-red-600" />
+          <main role="main">
+            <Card className="max-w-2xl mx-auto">
+              <CardContent className="pt-6">
+                <div className="flex flex-col items-center justify-center py-12 text-center">
+                  <div className="p-4 bg-red-100 rounded-full mb-4" aria-hidden="true">
+                    <AlertCircle className="h-12 w-12 text-red-600" />
+                  </div>
+                  <h1 className="text-xl font-bold text-gray-900 mb-2">
+                    Pessoa não encontrada
+                  </h1>
+                  <p className="text-sm text-gray-600 mb-6 max-w-md">
+                    Não foram encontrados dados para o CPF <span className="font-mono font-semibold">{cpf}</span>.
+                    Verifique se o CPF está correto e tente novamente.
+                  </p>
+                  <Button onClick={() => router.push(backLink.href)} aria-label="Voltar para busca">
+                    <ArrowLeft aria-hidden="true" className="h-4 w-4 mr-2" />
+                    {backLink.text}
+                  </Button>
                 </div>
-                <h2 className="text-xl font-bold text-gray-900 mb-2">
-                  Pessoa não encontrada
-                </h2>
-                <p className="text-sm text-gray-600 mb-6 max-w-md">
-                  Não foram encontrados dados para o CPF <span className="font-mono font-semibold">{cpf}</span>.
-                  Verifique se o CPF está correto e tente novamente.
-                </p>
-                <Button onClick={() => router.push(backLink.href)}>
-                  <ArrowLeft className="h-4 w-4 mr-2" />
-                  {backLink.text}
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
+              </CardContent>
+            </Card>
+          </main>
         </div>
       </div>
     )
@@ -125,51 +128,75 @@ export default function DossierPFPage({ params }: PageProps) {
     <div className="min-h-screen bg-gray-50 p-6">
       <div className="max-w-7xl mx-auto">
         {/* Header com botão voltar */}
-        <div className="mb-6">
+        <nav aria-label="Navegação">
           <Button
             variant="ghost"
             onClick={() => router.push(backLink.href)}
+            aria-label="Voltar para busca de pessoas"
           >
-            <ArrowLeft className="h-4 w-4 mr-2" />
+            <ArrowLeft aria-hidden="true" className="h-4 w-4 mr-2" />
             {backLink.text}
           </Button>
-        </div>
+        </nav>
         
         {/* Person Header */}
-        <PersonHeader
-          person={person}
-          isFavorite={isFavorite(cleanCPF)}
-          onToggleFavorite={handleToggleFavorite}
-        />
+        <header>
+          <PersonHeader
+            person={person}
+            isFavorite={isFavorite(cleanCPF)}
+            onToggleFavorite={handleToggleFavorite}
+          />
+        </header>
         
         {/* Grid de Cards */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Coluna Principal (2/3) */}
-          <div className="lg:col-span-2 space-y-6">
+          <main role="main" className="lg:col-span-2 space-y-6">
             {/* Dados Pessoais */}
-            <PersonalDataCard person={person} />
+            <section aria-labelledby="personal-data-heading">
+              <h2 id="personal-data-heading" className="sr-only">Dados Pessoais</h2>
+              <PersonalDataCard person={person} />
+            </section>
             
             {/* Renda e Score */}
-            <IncomeCard person={person} />
+            <section aria-labelledby="income-heading">
+              <h2 id="income-heading" className="sr-only">Renda e Score</h2>
+              <IncomeCard person={person} />
+            </section>
             
             {/* Endereços */}
-            <AddressesPFCard person={person} />
+            <section aria-labelledby="addresses-heading">
+              <h2 id="addresses-heading" className="sr-only">Endereços</h2>
+              <AddressesPFCard person={person} />
+            </section>
             
             {/* Contatos */}
-            <ContactsPFCard person={person} />
-          </div>
+            <section aria-labelledby="contacts-heading">
+              <h2 id="contacts-heading" className="sr-only">Contatos</h2>
+              <ContactsPFCard person={person} />
+            </section>
+          </main>
           
           {/* Coluna Lateral (1/3) */}
-          <div className="space-y-6">
+          <aside aria-label="Informações Complementares" className="space-y-6">
             {/* Familiares */}
-            <RelativesCard person={person} />
+            <section aria-labelledby="relatives-heading">
+              <h2 id="relatives-heading" className="sr-only">Familiares</h2>
+              <RelativesCard person={person} />
+            </section>
             
             {/* Experiência Profissional */}
-            <ProfessionalExperienceCard person={person} />
+            <section aria-labelledby="professional-heading">
+              <h2 id="professional-heading" className="sr-only">Experiência Profissional</h2>
+              <ProfessionalExperienceCard person={person} />
+            </section>
             
             {/* Vínculos Empresariais */}
-            <CompanyLinksCard person={person} />
-          </div>
+            <section aria-labelledby="company-links-heading">
+              <h2 id="company-links-heading" className="sr-only">Vínculos Empresariais</h2>
+              <CompanyLinksCard person={person} />
+            </section>
+          </aside>
         </div>
       </div>
     </div>

@@ -99,6 +99,11 @@ const config: Config = {
   				'Inter',
   				'sans-serif'
   			],
+  			display: [
+  				'var(--font-poppins)',
+  				'Poppins',
+  				'sans-serif'
+  			],
   			mono: [
   				'var(--font-roboto-mono)',
   				'Roboto Mono',

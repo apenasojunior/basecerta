@@ -138,31 +138,8 @@ async def health_check():
 
 
 # Include API routers
-from app.api.v1.endpoints import users, plans, packages, credits
-
-app.include_router(
-    users.router,
-    prefix=f"/api/{settings.API_VERSION}/users",
-    tags=["Users"]
-)
-
-app.include_router(
-    plans.router,
-    prefix=f"/api/{settings.API_VERSION}/plans",
-    tags=["Plans"]
-)
-
-app.include_router(
-    packages.router,
-    prefix=f"/api/{settings.API_VERSION}/packages",
-    tags=["Credit Packages"]
-)
-
-app.include_router(
-    credits.router,
-    prefix=f"/api/{settings.API_VERSION}/credits",
-    tags=["Credits"]
-)
+# DELIVERY 1: Nenhum router - Frontend usa mockdata
+# DELIVERY 2: Incluir routers reconstruídos aqui
 
 
 if __name__ == "__main__":

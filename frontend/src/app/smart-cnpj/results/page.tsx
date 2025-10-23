@@ -91,14 +91,16 @@ function ResultsContent() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+      <header className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div className="flex items-center gap-3">
-          <Link href="/smart-cnpj/search">
-            <Button variant="outline" size="sm">
-              <ArrowLeft className="h-4 w-4" />
-              <span className="hidden sm:inline">Voltar</span>
-            </Button>
-          </Link>
+          <nav aria-label="Navegação">
+            <Link href="/smart-cnpj/search">
+              <Button variant="outline" size="sm" aria-label="Voltar para busca">
+                <ArrowLeft aria-hidden="true" className="h-4 w-4" />
+                <span className="hidden sm:inline">Voltar</span>
+              </Button>
+            </Link>
+          </nav>
           <div>
             <h1 className="text-2xl md:text-3xl font-bold text-gray-900">
               Resultados da Busca
@@ -113,160 +115,175 @@ function ResultsContent() {
         </div>
 
         {/* Actions */}
-        <div className="flex items-center gap-2">
-          <Button variant="outline" size="sm" className="hidden sm:flex">
-            <Download className="h-4 w-4" />
-            Exportar
-          </Button>
-          <Button variant="outline" size="sm" className="hidden sm:flex">
-            <Share2 className="h-4 w-4" />
-            Compartilhar
-          </Button>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => setShowFilters(!showFilters)}
-            className="sm:hidden"
-          >
-            <Filter className="h-4 w-4" />
-            {hasActiveFilters && (
-              <Badge variant="default" className="ml-1 h-5 w-5 p-0 flex items-center justify-center bg-primary-600">
-                {Object.keys(filters).length}
-              </Badge>
-            )}
-          </Button>
+        <div role="group" aria-label="Ações">
+          <div className="flex items-center gap-2">
+            <Button variant="outline" size="sm" className="hidden sm:flex" aria-label="Exportar resultados">
+              <Download aria-hidden="true" className="h-4 w-4" />
+              Exportar
+            </Button>
+            <Button variant="outline" size="sm" className="hidden sm:flex" aria-label="Compartilhar resultados">
+              <Share2 aria-hidden="true" className="h-4 w-4" />
+              Compartilhar
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setShowFilters(!showFilters)}
+              className="sm:hidden"
+              aria-label={showFilters ? "Ocultar filtros" : "Mostrar filtros"}
+              aria-pressed={showFilters}
+            >
+              <Filter aria-hidden="true" className="h-4 w-4" />
+              {hasActiveFilters && (
+                <Badge variant="default" className="ml-1 h-5 w-5 p-0 flex items-center justify-center bg-primary-600" aria-label={`${Object.keys(filters).length} filtros ativos`}>
+                  {Object.keys(filters).length}
+                </Badge>
+              )}
+            </Button>
+          </div>
         </div>
-      </div>
+      </header>
 
       {/* Active Filters Summary */}
       {hasActiveFilters && (
-        <Card className="bg-primary-50 border-primary-200">
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2 flex-wrap">
-                <Filter className="h-4 w-4 text-primary-600 flex-shrink-0" />
-                <span className="text-sm font-medium text-primary-900">Filtros ativos:</span>
-                
-                {filters.situacaoCadastral && filters.situacaoCadastral.length > 0 && (
-                  <Badge variant="secondary" className="bg-white">
-                    Situação: {filters.situacaoCadastral.length}
-                  </Badge>
-                )}
-                {filters.tipo && (
-                  <Badge variant="secondary" className="bg-white">
-                    Tipo: {filters.tipo}
-                  </Badge>
-                )}
-                {filters.porte && filters.porte.length > 0 && (
-                  <Badge variant="secondary" className="bg-white">
-                    Porte: {filters.porte.length}
-                  </Badge>
-                )}
-                {filters.isMEI && (
-                  <Badge variant="secondary" className="bg-white">
-                    Apenas MEI
-                  </Badge>
-                )}
-                {filters.isSimplesNacional && (
-                  <Badge variant="secondary" className="bg-white">
-                    Simples Nacional
-                  </Badge>
-                )}
+        <section aria-labelledby="active-filters-heading">
+          <h2 id="active-filters-heading" className="sr-only">Filtros Ativos</h2>
+          <Card className="bg-primary-50 border-primary-200">
+            <CardContent className="p-4">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2 flex-wrap">
+                  <Filter aria-hidden="true" className="h-4 w-4 text-primary-600 flex-shrink-0" />
+                  <span className="text-sm font-medium text-primary-900">Filtros ativos:</span>
+                  
+                  {filters.situacaoCadastral && filters.situacaoCadastral.length > 0 && (
+                    <Badge variant="secondary" className="bg-white">
+                      Situação: {filters.situacaoCadastral.length}
+                    </Badge>
+                  )}
+                  {filters.tipo && (
+                    <Badge variant="secondary" className="bg-white">
+                      Tipo: {filters.tipo}
+                    </Badge>
+                  )}
+                  {filters.porte && filters.porte.length > 0 && (
+                    <Badge variant="secondary" className="bg-white">
+                      Porte: {filters.porte.length}
+                    </Badge>
+                  )}
+                  {filters.isMEI && (
+                    <Badge variant="secondary" className="bg-white">
+                      Apenas MEI
+                    </Badge>
+                  )}
+                  {filters.isSimplesNacional && (
+                    <Badge variant="secondary" className="bg-white">
+                      Simples Nacional
+                    </Badge>
+                  )}
+                </div>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={clearFilters}
+                  className="text-primary-700 hover:text-primary-800 hover:bg-primary-100"
+                  aria-label="Limpar todos os filtros"
+                >
+                  Limpar filtros
+                </Button>
               </div>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={clearFilters}
-                className="text-primary-700 hover:text-primary-800 hover:bg-primary-100"
-              >
-                Limpar filtros
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
+            </CardContent>
+          </Card>
+        </section>
       )}
 
       {/* Loading State */}
       {isSearching && (
-        <Card>
-          <CardContent className="p-12 text-center">
-            <Loader2 className="h-12 w-12 animate-spin text-primary-600 mx-auto mb-4" />
-            <p className="text-lg font-medium text-gray-900 mb-2">Buscando empresas...</p>
-            <p className="text-sm text-gray-600">Isso pode levar alguns segundos</p>
-          </CardContent>
-        </Card>
+        <section aria-live="polite" aria-busy="true">
+          <Card>
+            <CardContent className="p-12 text-center">
+              <Loader2 aria-hidden="true" className="h-12 w-12 animate-spin text-primary-600 mx-auto mb-4" />
+              <p className="text-lg font-medium text-gray-900 mb-2">Buscando empresas...</p>
+              <p className="text-sm text-gray-600">Isso pode levar alguns segundos</p>
+            </CardContent>
+          </Card>
+        </section>
       )}
 
       {/* Results Grid - Show when not searching and has results */}
       {!isSearching && filteredResults.length > 0 && (
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6" style={{ minHeight: '600px' }}>
-          {/* Filter Panel - Desktop */}
-          <div className="hidden lg:block">
-            <div className="sticky top-6">
+        <main role="main">
+          <div className="grid grid-cols-1 lg:grid-cols-4 gap-6" style={{ minHeight: '600px' }}>
+            {/* Filter Panel - Desktop */}
+            <aside aria-label="Filtros de busca" className="hidden lg:block">
+              <div className="sticky top-6">
+                <Suspense fallback={<div className="h-96 animate-pulse bg-gray-100 rounded-lg" />}>
+                  <FilterPanel
+                    filters={filters}
+                    onFiltersChange={setFilters}
+                    onClearFilters={clearFilters}
+                    hasActiveFilters={hasActiveFilters}
+                    resultsCount={filteredResults.length}
+                  />
+                </Suspense>
+              </div>
+            </aside>
+
+            {/* Filter Panel - Mobile */}
+            {showFilters && (
+              <aside aria-label="Filtros de busca" className="lg:hidden">
+                <Suspense fallback={<div className="h-96 animate-pulse bg-gray-100 rounded-lg" />}>
+                  <FilterPanel
+                    filters={filters}
+                    onFiltersChange={setFilters}
+                    onClearFilters={clearFilters}
+                    hasActiveFilters={hasActiveFilters}
+                    resultsCount={filteredResults.length}
+                  />
+                </Suspense>
+              </aside>
+            )}
+
+            {/* Results List */}
+            <section aria-labelledby="results-heading" className="lg:col-span-3">
+              <h2 id="results-heading" className="sr-only">Lista de Resultados</h2>
               <Suspense fallback={<div className="h-96 animate-pulse bg-gray-100 rounded-lg" />}>
-                <FilterPanel
-                  filters={filters}
-                  onFiltersChange={setFilters}
-                  onClearFilters={clearFilters}
-                  hasActiveFilters={hasActiveFilters}
-                  resultsCount={filteredResults.length}
+                <ResultsList
+                  companies={paginatedResults}
+                  currentPage={currentPage}
+                  totalPages={totalPages}
+                  itemsPerPage={itemsPerPage}
+                  onPageChange={goToPage}
+                  from="results"
                 />
               </Suspense>
-            </div>
+            </section>
           </div>
-
-          {/* Filter Panel - Mobile */}
-          {showFilters && (
-            <div className="lg:hidden">
-              <Suspense fallback={<div className="h-96 animate-pulse bg-gray-100 rounded-lg" />}>
-                <FilterPanel
-                  filters={filters}
-                  onFiltersChange={setFilters}
-                  onClearFilters={clearFilters}
-                  hasActiveFilters={hasActiveFilters}
-                  resultsCount={filteredResults.length}
-                />
-              </Suspense>
-            </div>
-          )}
-
-          {/* Results List */}
-          <div className="lg:col-span-3">
-            <Suspense fallback={<div className="h-96 animate-pulse bg-gray-100 rounded-lg" />}>
-              <ResultsList
-                companies={paginatedResults}
-                currentPage={currentPage}
-                totalPages={totalPages}
-                itemsPerPage={itemsPerPage}
-                onPageChange={goToPage}
-                from="results"
-              />
-            </Suspense>
-          </div>
-        </div>
+        </main>
       )}
 
       {/* No Results Found */}
       {!isSearching && hasSearched && filteredResults.length === 0 && (
-        <Card>
-          <CardContent className="p-12 text-center">
-            <div className="inline-flex items-center justify-center w-16 h-16 bg-primary-100 rounded-full mb-4">
-              <Building2 className="h-8 w-8 text-primary-600" />
-            </div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">
-              Nenhum resultado encontrado
-            </h3>
-            <p className="text-gray-600 max-w-md mx-auto mb-6">
-              Tente ajustar seus filtros ou fazer uma nova busca.
-            </p>
-            <Link href="/smart-cnpj/search">
-              <Button>
-                <ArrowLeft className="h-4 w-4" />
-                Nova Busca
-              </Button>
-            </Link>
-          </CardContent>
-        </Card>
+        <section aria-live="polite">
+          <Card>
+            <CardContent className="p-12 text-center">
+              <div className="inline-flex items-center justify-center w-16 h-16 bg-primary-100 rounded-full mb-4" aria-hidden="true">
+                <Building2 className="h-8 w-8 text-primary-600" />
+              </div>
+              <h2 className="text-lg font-semibold text-gray-900 mb-2">
+                Nenhum resultado encontrado
+              </h2>
+              <p className="text-gray-600 max-w-md mx-auto mb-6">
+                Tente ajustar seus filtros ou fazer uma nova busca.
+              </p>
+              <Link href="/smart-cnpj/search">
+                <Button aria-label="Fazer nova busca">
+                  <ArrowLeft aria-hidden="true" className="h-4 w-4" />
+                  Nova Busca
+                </Button>
+              </Link>
+            </CardContent>
+          </Card>
+        </section>
       )}
     </div>
   )

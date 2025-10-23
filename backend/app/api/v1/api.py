@@ -1,16 +1,10 @@
 """
 API Router for v1
-Aggregates all endpoint routers
+DELIVERY 1: API vazia - Frontend usa mockdata
+DELIVERY 2: Reconstruir routers do zero
 """
 from fastapi import APIRouter
 
-# Import routers (will be added in future sprints)
-# from app.api.v1.endpoints import health, companies, credits, research
-
 api_router = APIRouter()
 
-# Include routers
-# api_router.include_router(health.router, tags=["health"])
-# api_router.include_router(companies.router, prefix="/companies", tags=["companies"])
-# api_router.include_router(credits.router, prefix="/credits", tags=["credits"])
-# api_router.include_router(research.router, prefix="/research", tags=["research"])
+# DELIVERY 2: Adicionar routers aqui
