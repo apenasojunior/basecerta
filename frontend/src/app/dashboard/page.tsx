@@ -22,10 +22,14 @@ import { cn } from '@/lib/utils'
 import Link from 'next/link'
 import { useDashboard } from '@/hooks/useDashboard'
 import { useCredits } from '@/hooks/useCredits'
-import { SearchStatsCards } from '@/components/dashboard/SearchStatsCards'
-import { RecentSearches } from '@/components/dashboard/RecentSearches'
-import { SearchChart } from '@/components/dashboard/SearchChart'
-import { TopSearched } from '@/components/dashboard/TopSearched'
+import { Suspense, lazy } from 'react'
+import { DashboardSkeleton } from '@/components/dashboard/DashboardSkeleton'
+
+// Lazy load heavy components for better LCP
+const SearchStatsCards = lazy(() => import('@/components/dashboard/SearchStatsCards').then(mod => ({ default: mod.SearchStatsCards })))
+const RecentSearches = lazy(() => import('@/components/dashboard/RecentSearches').then(mod => ({ default: mod.RecentSearches })))
+const SearchChart = lazy(() => import('@/components/dashboard/SearchChart').then(mod => ({ default: mod.SearchChart })))
+const TopSearched = lazy(() => import('@/components/dashboard/TopSearched').then(mod => ({ default: mod.TopSearched })))
 
 export default function DashboardPage() {
   // Hooks de integração com API
@@ -137,202 +141,209 @@ export default function DashboardPage() {
 
   return (
     <>
-      {/* Loading Indicator */}
-      {isLoading && (
-        <div className="mb-4 flex items-center gap-2 text-sm text-muted-foreground">
-          <Loader2 className="h-4 w-4 animate-spin" />
-          <span>Carregando dados...</span>
-        </div>
-      )}
-
-      {/* Error State */}
-      {isErrorStats && !isLoading && (
-        <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-lg text-sm text-red-700">
-          Erro ao carregar estatísticas. Os dados exibidos são de demonstração.
-        </div>
-      )}
-
-      {/* New Stats Cards - Search History & Favorites */}
-      <div className="mb-6">
-        <SearchStatsCards />
-      </div>
-
-      {/* Original Stats Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-6">
-        {stats.map((stat) => {
-          const Icon = stat.icon
-          return (
-            <Card key={stat.title} className="hover:shadow-lg transition-shadow">
-              <CardContent className="p-4 md:p-6">
-                <div className="flex items-center justify-between mb-4">
-                  <div className={cn('p-3 rounded-lg', stat.bgColor)}>
-                    <Icon className={cn('h-6 w-6', stat.color)} />
-                  </div>
-                  <Badge
-                    variant={stat.trend === 'up' ? 'default' : 'secondary'}
-                    className={cn(
-                      'flex items-center gap-1',
-                      stat.trend === 'up'
-                        ? 'bg-green-100 text-green-700'
-                        : 'bg-red-100 text-red-700'
-                    )}
-                  >
-                    {stat.trend === 'up' ? (
-                      <TrendingUp className="h-3 w-3" />
-                    ) : (
-                      <TrendingDown className="h-3 w-3" />
-                    )}
-                    {stat.change}
-                  </Badge>
-                </div>
-                <div className="space-y-1">
-                  <p className="text-2xl md:text-3xl font-bold text-gray-900">{stat.value}</p>
-                  <p className="text-xs md:text-sm text-gray-600">{stat.title}</p>
-                </div>
-              </CardContent>
-            </Card>
-          )
-        })}
-      </div>
-
-      {/* Chart and Top 5 */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6 mb-6">
-        <SearchChart />
-        <TopSearched />
-      </div>
-
-      {/* Recent Searches and Activity */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6 mb-6">
-        {/* Recent Searches - New Component */}
-        <div className="lg:col-span-2">
-          <RecentSearches />
-        </div>
-
-        {/* Quick Links */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Links Rápidos</CardTitle>
-            <CardDescription>Acesso rápido às suas informações</CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-3">
-            <Link href="/favoritos">
-              <Button variant="outline" className="w-full justify-start gap-2">
-                <Star className="h-4 w-4 text-yellow-500" />
-                Ver todos os Favoritos
-                <ArrowRight className="h-4 w-4 ml-auto" />
-              </Button>
-            </Link>
-            <Link href="/historico">
-              <Button variant="outline" className="w-full justify-start gap-2">
-                <History className="h-4 w-4 text-blue-500" />
-                Ver Histórico Completo
-                <ArrowRight className="h-4 w-4 ml-auto" />
-              </Button>
-            </Link>
-            <Link href="/produtos/comparar">
-              <Button variant="outline" className="w-full justify-start gap-2">
-                <Building2 className="h-4 w-4 text-purple-500" />
-                Comparar Empresas
-                <ArrowRight className="h-4 w-4 ml-auto" />
-              </Button>
-            </Link>
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* Original Recent Activity */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6">
-        {/* Recent Activity */}
-        <Card className="lg:col-span-2">
-          <CardHeader>
-            <CardTitle>Atividade Recente</CardTitle>
-            <CardDescription>Suas últimas consultas e transações</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              {recentActivity.map((activity) => (
-                <div
-                  key={activity.id}
-                  className="flex items-start gap-4 p-4 rounded-lg hover:bg-gray-50 transition-colors"
-                >
-                  <div
-                    className={cn(
-                      'p-2 rounded-full mt-1',
-                      activity.type === 'success' && 'bg-green-100',
-                      activity.type === 'pending' && 'bg-yellow-100',
-                      activity.type === 'error' && 'bg-red-100'
-                    )}
-                  >
-                    {activity.type === 'success' && (
-                      <CheckCircle2 className="h-4 w-4 text-green-600" />
-                    )}
-                    {activity.type === 'pending' && (
-                      <Clock className="h-4 w-4 text-yellow-600" />
-                    )}
-                    {activity.type === 'error' && (
-                      <XCircle className="h-4 w-4 text-red-600" />
-                    )}
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-gray-900">
-                      {activity.title}
-                    </p>
-                    <p className="text-sm text-gray-600 truncate">
-                      {activity.description}
-                    </p>
-                    <div className="flex items-center gap-3 mt-1">
-                      <span className="text-xs text-gray-500">{activity.time}</span>
-                      {activity.credits !== 0 && (
-                        <span
-                          className={cn(
-                            'text-xs font-medium',
-                            activity.credits < 0
-                              ? 'text-red-600'
-                              : 'text-green-600'
-                          )}
-                        >
-                          {activity.credits} créditos
-                        </span>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              ))}
+      {/* Show skeleton during initial load */}
+      {isLoading ? (
+        <DashboardSkeleton />
+      ) : (
+        <>
+          {/* Error State */}
+          {isErrorStats && (
+            <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-lg text-sm text-red-700">
+              Erro ao carregar estatísticas. Os dados exibidos são de demonstração.
             </div>
-          </CardContent>
-        </Card>
+          )}
 
-        {/* Promotional Cards */}
-        <div className="space-y-6">
-          {promotionalCards.map((promo) => (
-            <Card
-              key={promo.title}
-              className={cn(
-                'bg-gradient-to-br text-white border-0 overflow-hidden relative',
-                promo.gradient
-              )}
-            >
+          {/* New Stats Cards - Search History & Favorites */}
+          <div className="mb-6" style={{ minHeight: '140px' }}>
+            <Suspense fallback={<div className="h-32 animate-pulse bg-gray-100 rounded-lg" />}>
+              <SearchStatsCards />
+            </Suspense>
+          </div>
+
+          {/* Original Stats Grid */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-6" style={{ minHeight: '160px' }}>
+            {stats.map((stat) => {
+              const Icon = stat.icon
+              return (
+                <Card key={stat.title} className="hover:shadow-lg transition-shadow">
+                  <CardContent className="p-4 md:p-6">
+                    <div className="flex items-center justify-between mb-4">
+                      <div className={cn('p-3 rounded-lg', stat.bgColor)}>
+                        <Icon className={cn('h-6 w-6', stat.color)} />
+                      </div>
+                      <Badge
+                        variant={stat.trend === 'up' ? 'default' : 'secondary'}
+                        className={cn(
+                          'flex items-center gap-1',
+                          stat.trend === 'up'
+                            ? 'bg-green-100 text-green-700'
+                            : 'bg-red-100 text-red-700'
+                        )}
+                      >
+                        {stat.trend === 'up' ? (
+                          <TrendingUp className="h-3 w-3" />
+                        ) : (
+                          <TrendingDown className="h-3 w-3" />
+                        )}
+                        {stat.change}
+                      </Badge>
+                    </div>
+                    <div className="space-y-1">
+                      <p className="text-2xl md:text-3xl font-bold text-gray-900">{stat.value}</p>
+                      <p className="text-xs md:text-sm text-gray-600">{stat.title}</p>
+                    </div>
+                  </CardContent>
+                </Card>
+              )
+            })}
+          </div>
+
+          {/* Chart and Top 5 */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6 mb-6">
+            <Suspense fallback={<div className="h-80 animate-pulse bg-gray-100 rounded-lg" />}>
+              <SearchChart />
+            </Suspense>
+            <Suspense fallback={<div className="h-80 animate-pulse bg-gray-100 rounded-lg" />}>
+              <TopSearched />
+            </Suspense>
+          </div>
+
+          {/* Recent Searches and Activity */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6 mb-6">
+            {/* Recent Searches - New Component */}
+            <div className="lg:col-span-2">
+              <Suspense fallback={<div className="h-96 animate-pulse bg-gray-100 rounded-lg" />}>
+                <RecentSearches />
+              </Suspense>
+            </div>
+
+            {/* Quick Links */}
+            <Card>
               <CardHeader>
-                <CardTitle className="text-white">{promo.title}</CardTitle>
-                <CardDescription className="text-white/90">
-                  {promo.description}
-                </CardDescription>
+                <CardTitle>Links Rápidos</CardTitle>
+                <CardDescription>Acesso rápido às suas informações</CardDescription>
               </CardHeader>
-              <CardContent>
-                <Link href={promo.href}>
-                  <Button
-                    variant="secondary"
-                    className="bg-white/20 hover:bg-white/30 text-white border-0"
-                  >
-                    {promo.cta}
-                    <ArrowRight className="h-4 w-4" />
+              <CardContent className="space-y-3">
+                <Link href="/favoritos">
+                  <Button variant="outline" className="w-full justify-start gap-2">
+                    <Star className="h-4 w-4 text-yellow-500" />
+                    Ver todos os Favoritos
+                    <ArrowRight className="h-4 w-4 ml-auto" />
+                  </Button>
+                </Link>
+                <Link href="/historico">
+                  <Button variant="outline" className="w-full justify-start gap-2">
+                    <History className="h-4 w-4 text-blue-500" />
+                    Ver Histórico Completo
+                    <ArrowRight className="h-4 w-4 ml-auto" />
+                  </Button>
+                </Link>
+                <Link href="/produtos/comparar">
+                  <Button variant="outline" className="w-full justify-start gap-2">
+                    <Building2 className="h-4 w-4 text-purple-500" />
+                    Comparar Empresas
+                    <ArrowRight className="h-4 w-4 ml-auto" />
                   </Button>
                 </Link>
               </CardContent>
             </Card>
-          ))}
-        </div>
-      </div>
+          </div>
+
+          {/* Original Recent Activity */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6">
+            {/* Recent Activity */}
+            <Card className="lg:col-span-2">
+              <CardHeader>
+                <CardTitle>Atividade Recente</CardTitle>
+                <CardDescription>Suas últimas consultas e transações</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  {recentActivity.map((activity) => (
+                    <div
+                      key={activity.id}
+                      className="flex items-start gap-4 p-4 rounded-lg hover:bg-gray-50 transition-colors"
+                    >
+                      <div
+                        className={cn(
+                          'p-2 rounded-full mt-1',
+                          activity.type === 'success' && 'bg-green-100',
+                          activity.type === 'pending' && 'bg-yellow-100',
+                          activity.type === 'error' && 'bg-red-100'
+                        )}
+                      >
+                        {activity.type === 'success' && (
+                          <CheckCircle2 className="h-4 w-4 text-green-600" />
+                        )}
+                        {activity.type === 'pending' && (
+                          <Clock className="h-4 w-4 text-yellow-600" />
+                        )}
+                        {activity.type === 'error' && (
+                          <XCircle className="h-4 w-4 text-red-600" />
+                        )}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-medium text-gray-900">
+                          {activity.title}
+                        </p>
+                        <p className="text-sm text-gray-600 truncate">
+                          {activity.description}
+                        </p>
+                        <div className="flex items-center gap-3 mt-1">
+                          <span className="text-xs text-gray-500">{activity.time}</span>
+                          {activity.credits !== 0 && (
+                            <span
+                              className={cn(
+                                'text-xs font-medium',
+                                activity.credits < 0
+                                  ? 'text-red-600'
+                                  : 'text-green-600'
+                              )}
+                            >
+                              {activity.credits} créditos
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Promotional Cards */}
+            <div className="space-y-6">
+              {promotionalCards.map((promo) => (
+                <Card
+                  key={promo.title}
+                  className={cn(
+                    'bg-gradient-to-br text-white border-0 overflow-hidden relative',
+                    promo.gradient
+                  )}
+                >
+                  <CardHeader>
+                    <CardTitle className="text-white">{promo.title}</CardTitle>
+                    <CardDescription className="text-white/90">
+                      {promo.description}
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <Link href={promo.href}>
+                      <Button
+                        variant="secondary"
+                        className="bg-white/20 hover:bg-white/30 text-white border-0"
+                      >
+                        {promo.cta}
+                        <ArrowRight className="h-4 w-4" />
+                      </Button>
+                    </Link>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </div>
+        </>
+      )}
     </>
   )
 }

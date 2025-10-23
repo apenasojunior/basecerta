@@ -33,6 +33,7 @@ import {
 } from "@/components/ui/alert-dialog"
 import { formatCPF, formatCNPJ } from "@/lib/utils/formatters"
 import { toast } from "@/lib/toast"
+import { FavoritosSkeleton } from "@/components/favoritos/FavoritosSkeleton"
 
 const TYPE_LABELS: Record<FavoriteType, string> = {
   PF: "Pessoa Física",
@@ -110,18 +111,17 @@ export default function FavoritosPage() {
     }).format(new Date(timestamp))
   }
 
+  // Show skeleton during initial load
   if (isLoading) {
     return (
       <div className="container mx-auto p-6">
-        <div className="flex items-center justify-center h-64">
-          <p className="text-muted-foreground">Carregando favoritos...</p>
-        </div>
+        <FavoritosSkeleton />
       </div>
     )
   }
 
   return (
-    <div className="container mx-auto p-6 space-y-6">
+    <div className="container mx-auto p-6 space-y-6" style={{ minHeight: '800px' }}>
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
