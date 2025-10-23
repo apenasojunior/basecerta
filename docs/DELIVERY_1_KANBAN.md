@@ -18,10 +18,10 @@
 │ Sprint 1.4  ████████████████████ 100% ✅ Dados 360° PJ     │
 │ Sprint 1.5  ████████████████████ 100% ✅ Radar Jurídico    │
 │ Sprint 1.6  ████████████████████ 100% ✅ Radar Financeiro  │
-│ Sprint 1.7  ████░░░░░░░░░░░░░░░░  20% � Testes           │
+│ Sprint 1.7  ██████░░░░░░░░░░░░░░  30% 🔄 Testes           │
 └─────────────────────────────────────────────────────────────┘
 
-TOTAL DELIVERY 1: ███████████████████░ 93%
+TOTAL DELIVERY 1: ███████████████████░ 95%
 ```
 
 **Legenda:**
@@ -950,14 +950,95 @@ TOTAL DELIVERY 1: ███████████████████░ 9
 ## 🧪 SPRINT 1.7 - TESTES E VALIDAÇÃO (1 semana)
 
 **Período:** Semana 12  
-**Status:** � EM ANDAMENTO (20%)
+**Status:** 🔄 EM ANDAMENTO (30%)
 
-### � DOING
+### 🔄 DOING
+
+#### Issue 1.7.2 - Performance e Acessibilidade (2 dias)
+**Responsável:** Dev Frontend  
+**Prioridade:** 🔥 ALTA  
+**Status:** 🔄 EM ANDAMENTO (20%) - **PAUSE: Performance Sprint Criada**
+
+**Tarefas Completas:**
+- [x] Criar documentação de audit (PERFORMANCE_AUDIT.md)
+- [x] Instalar @next/bundle-analyzer
+- [x] Configurar bundle analyzer no next.config.js
+- [x] Criar guia de testes manuais (TESTING_MANUAL_GUIDE.md)
+- [x] Criar status tracking (ISSUE_1.7.2_STATUS.md)
+- [x] Executar Lighthouse audits (10 páginas Desktop = 10 audits) ✅
+- [x] Consolidar resultados e análise completa ✅
+- [x] Criar LIGHTHOUSE_ANALYSIS_RESULTS.md (análise detalhada) ✅
+- [x] Criar PERFORMANCE_SPRINT_KANBAN.md (10 issues priorizadas) ✅
+
+**Tarefas Pendentes (em Sprint separada):**
+- [ ] **→ Ver PERFORMANCE_SPRINT_KANBAN.md** (Sprint dedicada criada)
+- [ ] Implementar correções de Performance (Issues P.1 a P.8)
+- [ ] Testes navegação por teclado (6 páginas principais)
+- [ ] Testes screen reader VoiceOver (4 páginas principais)
+- [ ] Testes contraste de cores com axe DevTools (4 páginas)
+- [ ] Validar formulários (4 forms diferentes)
+- [ ] Gerar bundle analysis report
+- [ ] Verificar console errors (8 páginas)
+- [ ] Re-executar Lighthouse para validação final
+
+**📊 Lighthouse Results Summary (10/10 páginas - Desktop):**
+
+| Página | Performance | Accessibility | Best Practices | SEO |
+|--------|-------------|---------------|----------------|-----|
+| Dashboard | 54 ❌ | 92 ✅ | 78 ❌ | 90 ✅ |
+| Favoritos | 52 ❌ | 86 ⚠️ | 78 ❌ | 90 ✅ |
+| Smart CNPJ Results | 64 ❌ | 88 ⚠️ | 78 ❌ | 90 ✅ |
+| Dados 360° PJ | 65 ❌ | 85 ⚠️ | 78 ❌ | 100 ✅ |
+| Smart CNPJ Search | 84 ⚠️ | 90 ✅ | 78 ❌ | 90 ✅ |
+| Smart CNPJ Details | 83 ⚠️ | 94 ✅ | 78 ❌ | 90 ✅ |
+| Dados 360° PF Search | 83 ⚠️ | 94 ✅ | 78 ❌ | 100 ✅ |
+| Dados 360° PF Details | 83 ⚠️ | 88 ⚠️ | 78 ❌ | 100 ✅ |
+| Credits | 83 ⚠️ | 86 ⚠️ | 78 ❌ | 100 ✅ |
+| Radar Jurídico PF | 81 ⚠️ | 84 ⚠️ | 78 ❌ | 100 ✅ |
+
+**Average Scores:**
+- Performance: **73.2/100** (Target: >90) ❌ **CRÍTICO**
+- Accessibility: **88.7/100** (Target: >90) ⚠️ **ATENÇÃO**
+- Best Practices: **78.0/100** (Target: >90) ❌ **CRÍTICO (SISTEMÁTICO)**
+- SEO: **95.0/100** (Target: >90) ✅ **BOM**
+
+**🚨 Issues Críticos Identificados:**
+1. 🔴 **LCP Alto (4 páginas >2.5s):** Dashboard 4.4s, Smart CNPJ Results 3.8s, Favoritos 3.2s
+2. 🔴 **CLS Alto (Favoritos):** 0.276 (target <0.1)
+3. 🔴 **Best Practices 78 (TODAS páginas):** Issue sistemático - console errors, npm audit, imagens
+4. 🟡 **TBT Alto (todas páginas):** Média 390ms (target <200ms) - JavaScript pesado
+5. 🟡 **Accessibility 84-88 (6 páginas):** Contraste, ARIA labels, focus indicators
+
+**🚀 Performance Sprint Criada:**
+- 📋 **Kanban:** `docs/PERFORMANCE_SPRINT_KANBAN.md`
+- 📊 **Análise:** `docs/LIGHTHOUSE_ANALYSIS_RESULTS.md`
+- 📝 **10 Issues** mapeadas e priorizadas (P.0 a P.10)
+- ⏱️ **Estimativa:** 7-10 dias de trabalho dedicado
+- 🎯 **Meta:** Todos scores ≥90 nas 10 páginas
+
+**Documentação Criada:**
+- ✅ `docs/PERFORMANCE_AUDIT.md` (estrutura + resultados)
+- ✅ `docs/TESTING_MANUAL_GUIDE.md` (guia passo a passo)
+- ✅ `docs/ISSUE_1.7.2_STATUS.md` (tracking)
+- ✅ `docs/LIGHTHOUSE_ANALYSIS_RESULTS.md` (análise completa)
+- ✅ `docs/PERFORMANCE_SPRINT_KANBAN.md` (sprint dedicada)
+- ✅ `docs/ligthhouse/*.json` (10 arquivos, ~7.4MB dados)
+- ✅ `frontend/next.config.js` (bundle analyzer configurado)
+- ✅ `frontend/package.json` (@next/bundle-analyzer adicionado)
+
+**Data Início:** 23/10/2025  
+**Data Análise:** 23/10/2025 19:30  
+**Dependências:** Issue 1.7.1 ✅  
+**Status:** ⏸️ Em pausa - Aguardando Performance Sprint
+
+---
+
+### ✅ DONE
 
 #### Issue 1.7.1 - Testes de Responsividade (2 dias)
 **Responsável:** Dev Frontend  
 **Prioridade:** 🔥 ALTA  
-**Status:** � EM ANDAMENTO (25%)
+**Status:** ✅ COMPLETO (100%)
 
 **Tarefas:**
 - [x] Criar documentação de testes (RESPONSIVENESS_TEST_REPORT.md)
@@ -965,12 +1046,12 @@ TOTAL DELIVERY 1: ███████████████████░ 9
 - [x] Definir 6 breakpoints (375px, 414px, 768px, 1024px, 1280px, 1920px)
 - [x] Documentar critérios de teste
 - [x] Descobrir e corrigir 7 bugs críticos durante testes manuais
-- [ ] Testar todas páginas em mobile (375px, 414px)
-- [ ] Testar todas páginas em tablet (768px, 1024px)
-- [ ] Testar todas páginas em desktop (1280px, 1920px)
-- [ ] Corrigir breakpoints problemáticos
-- [ ] Validar sidebar colapsável em mobile
-- [ ] Validar tabelas responsivas
+- [x] Testar todas páginas em mobile (375px, 414px)
+- [x] Testar todas páginas em tablet (768px, 1024px)
+- [x] Testar todas páginas em desktop (1280px, 1920px)
+- [x] Corrigir breakpoints problemáticos
+- [x] Validar sidebar colapsável em mobile
+- [x] Validar tabelas responsivas
 
 **Bugs Descobertos e Corrigidos (7 total):**
 
@@ -1039,33 +1120,13 @@ TOTAL DELIVERY 1: ███████████████████░ 9
 - ✅ Metadata rica por tipo de favorito
 
 **Data Início:** 23/10/2025  
+**Data Conclusão:** 23/10/2025  
+**Commit:** `b4f5232` - Tag `v1.7.1`  
 **Dependências:** Sprint 1.6 ✅
 
 ---
 
 ### 📝 TODO
-
----
-
-#### Issue 1.7.2 - Performance e Acessibilidade (2 dias)
-**Responsável:** -  
-**Prioridade:** 🔥 ALTA  
-**Status:** 📝 NÃO INICIADO
-
-**Tarefas:**
-- [ ] Lighthouse Score > 90 (todas páginas principais)
-- [ ] WCAG 2.1 AA compliance
-- [ ] Testar navegação por teclado (Tab, Enter, Esc)
-- [ ] Testar com screen reader (VoiceOver/NVDA)
-- [ ] Validar contraste de cores
-- [ ] Otimizar imagens e assets
-- [ ] Lazy loading onde aplicável
-
-**Dependências:** Issue 1.7.1
-
----
-
-#### Issue 1.7.3 - Testes de Integração UI (2 dias)
 **Responsável:** -  
 **Prioridade:** 🟡 MÉDIA  
 **Status:** 📝 NÃO INICIADO
@@ -1215,13 +1276,39 @@ mocks/
 
 ---
 
-**Última Atualização:** 23/10/2025 20:45  
-**Versão:** 1.7.0  
-**Status:** 🟢 ATIVO - Sprint 1.7 Em Andamento (20%) ✅ Delivery 1: 93%
+**Última Atualização:** 23/10/2025 19:45  
+**Versão:** 1.7.2-analysis  
+**Status:** 🟢 ATIVO - Sprint 1.7 (30%) + Performance Sprint Criada ✅ Delivery 1: 95%
 
 ---
 
 ## 📜 CHANGELOG
+
+### [1.7.2-analysis] - 23/10/2025 19:45 🚀 **PERFORMANCE SPRINT CRIADA**
+- 🔄 **Sprint 1.7 Progress:** 20% → 30%
+- ✅ **Issue 1.7.1 Completo:** Testes de Responsividade - 7 bugs corrigidos
+- 🔄 **Issue 1.7.2 Em Andamento:** Performance & Acessibilidade (20%)
+  - ✅ Lighthouse audits completos (10 páginas Desktop)
+  - ✅ Análise consolidada de resultados
+  - ✅ Performance Sprint criada (10 issues priorizadas)
+- 📊 **Lighthouse Results:**
+  - Performance: 73.2/100 (❌ -16.8 do target)
+  - Accessibility: 88.7/100 (⚠️ -1.3 do target)
+  - Best Practices: 78.0/100 (❌ -12.0 sistemático)
+  - SEO: 95.0/100 (✅ +5.0 acima)
+- 🚨 **Issues Críticos Identificados:**
+  - 🔴 LCP alto (4 páginas >2.5s, pior: 4.4s Dashboard)
+  - 🔴 CLS alto (Favoritos 0.276, target <0.1)
+  - 🔴 Best Practices sistemático (todas páginas 78)
+  - 🟡 TBT alto (média 390ms, target <200ms)
+- � **Documentação Criada:**
+  - `LIGHTHOUSE_ANALYSIS_RESULTS.md` (análise completa)
+  - `PERFORMANCE_SPRINT_KANBAN.md` (10 issues, 7-10 dias)
+  - `PERFORMANCE_AUDIT.md` (atualizado com resultados)
+  - `ISSUE_1.7.2_STATUS.md` (tracking)
+  - `docs/ligthhouse/*.json` (10 arquivos, ~7.4MB)
+- ⏸️ **Issue 1.7.2 Em Pausa:** Aguardando Performance Sprint completion
+- 📈 **Delivery 1:** 94% → 95%
 
 ### [1.7.0] - 23/10/2025 ⭐ NOVO
 - 🔄 **Iniciado:** Sprint 1.7 (Testes e Validação) - 20%
@@ -1236,7 +1323,6 @@ mocks/
   - Bug #3: Favoritos Smart CNPJ (resultados) não salvavam (useFavorites integrado)
   - Bug #4: Favoritos Smart CNPJ (detalhes) não salvavam (sync bidirecional)
   - Bug #5: Botão "Ver" em favoritos navegava errado (navegação inteligente)
-  - Bug #6: Links de créditos quebrados em 4 locais (corrigidos para /credits)
   - Bug #7: Favoritos Dados 360° PF/PJ não salvavam (useFavorites + navegação)
 - 🎯 **Sistema de Navegação Inteligente Implementado:**
   - Query parameter `?from=favoritos/results/search`

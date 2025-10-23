@@ -1,16 +1,19 @@
 'use client'
 
-import { useEffect, useState, Suspense } from 'react'
+import { useEffect, useState, Suspense, lazy } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { ArrowLeft, Filter, Download, Share2, Building2, Loader2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { useSmartCNPJ } from '@/hooks/useSmartCNPJ'
-import { ResultsList } from '@/components/smart-cnpj/ResultsList'
-import { FilterPanel } from '@/components/smart-cnpj/FilterPanel'
+import { SmartCNPJResultsSkeleton } from '@/components/smart-cnpj/SmartCNPJResultsSkeleton'
 import Link from 'next/link'
 import { cn } from '@/lib/utils'
+
+// Lazy load heavy components
+const ResultsList = lazy(() => import('@/components/smart-cnpj/ResultsList').then(mod => ({ default: mod.ResultsList })))
+const FilterPanel = lazy(() => import('@/components/smart-cnpj/FilterPanel').then(mod => ({ default: mod.FilterPanel })))
 
 function ResultsContent() {
   const router = useRouter()
@@ -79,6 +82,11 @@ function ResultsContent() {
   }, [currentPage, filters, hasSearched])
 
   const [showFilters, setShowFilters] = useState(false)
+
+  // Show skeleton during initial search
+  if (isSearching && !hasSearched) {
+    return <SmartCNPJResultsSkeleton />
+  }
 
   return (
     <div className="space-y-6">
@@ -191,43 +199,49 @@ function ResultsContent() {
 
       {/* Results Grid - Show when not searching and has results */}
       {!isSearching && filteredResults.length > 0 && (
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6" style={{ minHeight: '600px' }}>
           {/* Filter Panel - Desktop */}
           <div className="hidden lg:block">
             <div className="sticky top-6">
-              <FilterPanel
-                filters={filters}
-                onFiltersChange={setFilters}
-                onClearFilters={clearFilters}
-                hasActiveFilters={hasActiveFilters}
-                resultsCount={filteredResults.length}
-              />
+              <Suspense fallback={<div className="h-96 animate-pulse bg-gray-100 rounded-lg" />}>
+                <FilterPanel
+                  filters={filters}
+                  onFiltersChange={setFilters}
+                  onClearFilters={clearFilters}
+                  hasActiveFilters={hasActiveFilters}
+                  resultsCount={filteredResults.length}
+                />
+              </Suspense>
             </div>
           </div>
 
           {/* Filter Panel - Mobile */}
           {showFilters && (
             <div className="lg:hidden">
-              <FilterPanel
-                filters={filters}
-                onFiltersChange={setFilters}
-                onClearFilters={clearFilters}
-                hasActiveFilters={hasActiveFilters}
-                resultsCount={filteredResults.length}
-              />
+              <Suspense fallback={<div className="h-96 animate-pulse bg-gray-100 rounded-lg" />}>
+                <FilterPanel
+                  filters={filters}
+                  onFiltersChange={setFilters}
+                  onClearFilters={clearFilters}
+                  hasActiveFilters={hasActiveFilters}
+                  resultsCount={filteredResults.length}
+                />
+              </Suspense>
             </div>
           )}
 
           {/* Results List */}
           <div className="lg:col-span-3">
-            <ResultsList
-              companies={paginatedResults}
-              currentPage={currentPage}
-              totalPages={totalPages}
-              itemsPerPage={itemsPerPage}
-              onPageChange={goToPage}
-              from="results"
-            />
+            <Suspense fallback={<div className="h-96 animate-pulse bg-gray-100 rounded-lg" />}>
+              <ResultsList
+                companies={paginatedResults}
+                currentPage={currentPage}
+                totalPages={totalPages}
+                itemsPerPage={itemsPerPage}
+                onPageChange={goToPage}
+                from="results"
+              />
+            </Suspense>
           </div>
         </div>
       )}
