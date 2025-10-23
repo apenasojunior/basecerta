@@ -1,3 +1,8 @@
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
 # Backups
 backups/
 *.sql
@@ -25,3 +30,9 @@ logs/
 # Temporary
 tmp/
 temp/
+
+# Build outputs
+dist/
+build/
+.next/
+out/
