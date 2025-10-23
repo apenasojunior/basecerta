@@ -9,20 +9,20 @@ const badgeVariants = cva(
     variants: {
       variant: {
         default:
-          "bg-primary-100 text-primary-700 border border-transparent",
+          "bg-primary-600 text-white border border-transparent hover:bg-primary-700",
         secondary:
-          "bg-secondary text-secondary-foreground border border-transparent",
+          "bg-gray-600 text-white border border-transparent hover:bg-gray-700",
         destructive:
           "bg-destructive text-destructive-foreground border border-transparent shadow hover:bg-destructive/80",
-        outline: "text-foreground border",
+        outline: "text-foreground border border-gray-300 hover:bg-gray-50",
         success:
-          "bg-success-light text-success-dark border border-transparent",
+          "bg-success text-white border border-transparent hover:bg-success-dark",
         error:
-          "bg-error-light text-error-dark border border-transparent",
+          "bg-error text-white border border-transparent hover:bg-error-dark",
         warning:
-          "bg-warning-light text-warning-dark border border-transparent",
+          "bg-warning-dark text-gray-900 border border-transparent hover:bg-warning font-semibold",
         info:
-          "bg-info-light text-info-dark border border-transparent",
+          "bg-info text-white border border-transparent hover:bg-info-dark",
       },
     },
     defaultVariants: {

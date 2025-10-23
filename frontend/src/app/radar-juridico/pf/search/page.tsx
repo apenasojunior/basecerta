@@ -47,9 +47,9 @@ export default function RadarJuridicoPFSearchPage() {
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
       <div className="container mx-auto px-4 py-8 max-w-7xl">
         {/* Header */}
-        <div className="mb-8">
+        <header className="mb-8">
           <div className="flex items-center gap-3 mb-4">
-            <div className="p-3 bg-primary/10 rounded-lg">
+            <div className="p-3 bg-primary/10 rounded-lg" aria-hidden="true">
               <Scale className="h-8 w-8 text-primary" />
             </div>
             <div>
@@ -60,20 +60,22 @@ export default function RadarJuridicoPFSearchPage() {
             </div>
           </div>
 
-          <Alert className="border-blue-200 bg-blue-50">
-            <Info className="h-4 w-4 text-blue-600" />
+          <Alert className="border-blue-200 bg-blue-50" role="status">
+            <Info className="h-4 w-4 text-blue-600" aria-hidden="true" />
             <AlertDescription className="text-blue-800">
               O Radar Jurídico pesquisa processos em mais de 90 tribunais brasileiros, incluindo
               TJSP, TRT, STJ, TST e tribunais estaduais.
             </AlertDescription>
           </Alert>
-        </div>
+        </header>
 
         <div className="grid lg:grid-cols-3 gap-6">
           {/* Coluna Principal - Busca */}
-          <div className="lg:col-span-2 space-y-6">
+          <div className="lg:col-span-2 space-y-6" role="main">
             {/* Stats Cards */}
-            <div className="grid md:grid-cols-4 gap-4">
+            <section aria-labelledby="stats-heading">
+              <h2 id="stats-heading" className="sr-only">Estatísticas da Base de Dados</h2>
+              <div className="grid md:grid-cols-4 gap-4">
               <Card>
                 <CardContent className="pt-6">
                   <div className="flex items-center justify-between">
@@ -81,7 +83,7 @@ export default function RadarJuridicoPFSearchPage() {
                       <p className="text-sm text-gray-600">Total de Pessoas</p>
                       <p className="text-2xl font-bold text-gray-900">{radarJuridicoStats.totalPessoas}</p>
                     </div>
-                    <Users className="h-8 w-8 text-blue-500" />
+                    <Users className="h-8 w-8 text-blue-500" aria-hidden="true" />
                   </div>
                 </CardContent>
               </Card>
@@ -93,7 +95,7 @@ export default function RadarJuridicoPFSearchPage() {
                       <p className="text-sm text-gray-600">Total Processos</p>
                       <p className="text-2xl font-bold text-gray-900">{radarJuridicoStats.totalProcessos}</p>
                     </div>
-                    <FileText className="h-8 w-8 text-purple-500" />
+                    <FileText className="h-8 w-8 text-purple-500" aria-hidden="true" />
                   </div>
                 </CardContent>
               </Card>
@@ -105,11 +107,11 @@ export default function RadarJuridicoPFSearchPage() {
                       <p className="text-sm text-gray-600">Processos Ativos</p>
                       <p className="text-2xl font-bold text-gray-900">{radarJuridicoStats.processosAtivos}</p>
                       <div className="flex items-center text-green-600 text-xs mt-1">
-                        <TrendingUp className="h-3 w-3 mr-1" />
+                        <TrendingUp className="h-3 w-3 mr-1" aria-hidden="true" />
                         <span>Em andamento</span>
                       </div>
                     </div>
-                    <Scale className="h-8 w-8 text-green-500" />
+                    <Scale className="h-8 w-8 text-green-500" aria-hidden="true" />
                   </div>
                 </CardContent>
               </Card>
@@ -122,13 +124,16 @@ export default function RadarJuridicoPFSearchPage() {
                       <p className="text-2xl font-bold text-gray-900">{radarJuridicoStats.tribunaisUnicos}</p>
                       <p className="text-xs text-gray-500 mt-1">Diferentes</p>
                     </div>
-                    <AlertCircle className="h-8 w-8 text-orange-500" />
+                    <AlertCircle className="h-8 w-8 text-orange-500" aria-hidden="true" />
                   </div>
                 </CardContent>
               </Card>
             </div>
+            </section>
 
             {/* Formulário de Busca */}
+            <section aria-labelledby="search-heading">
+              <h2 id="search-heading" className="sr-only">Formulário de Busca de CPF</h2>
             <Card>
               <CardHeader>
                 <CardTitle>Consultar Processos Jurídicos</CardTitle>
@@ -170,11 +175,14 @@ export default function RadarJuridicoPFSearchPage() {
                 </div>
               </CardContent>
             </Card>
+            </section>
           </div>
 
           {/* Coluna Lateral - Exemplos e Dicas */}
-          <div className="space-y-6">
+          <aside className="space-y-6" aria-label="Informações Complementares">
             {/* Exemplos de CPF */}
+            <section aria-labelledby="examples-heading">
+              <h2 id="examples-heading" className="sr-only">Exemplos de CPF para Consulta</h2>
             <Card>
               <CardHeader>
                 <CardTitle className="text-lg">Exemplos de Consulta</CardTitle>
@@ -185,7 +193,8 @@ export default function RadarJuridicoPFSearchPage() {
                   <button
                     key={example.cpf}
                     onClick={() => setCpfCnpj(example.cpf)}
-                    className="w-full text-left p-3 border border-gray-200 rounded-lg hover:border-primary hover:bg-primary/5 transition-all"
+                    aria-label={`Consultar processos de ${example.nome}, CPF ${example.cpf}`}
+                    className="w-full text-left p-3 border border-gray-200 rounded-lg hover:border-primary hover:bg-primary/5 transition-all focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
                   >
                     <div className="flex items-start justify-between">
                       <div>
@@ -200,8 +209,11 @@ export default function RadarJuridicoPFSearchPage() {
                 ))}
               </CardContent>
             </Card>
+            </section>
 
             {/* Dicas */}
+            <section aria-labelledby="tips-heading">
+              <h2 id="tips-heading" className="sr-only">Dicas de Uso do Radar Jurídico</h2>
             <Card>
               <CardHeader>
                 <CardTitle className="text-lg">Dicas de Uso</CardTitle>
@@ -265,7 +277,8 @@ export default function RadarJuridicoPFSearchPage() {
                 </div>
               </CardContent>
             </Card>
-          </div>
+            </section>
+          </aside>
         </div>
       </div>
 
