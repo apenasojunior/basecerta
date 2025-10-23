@@ -2,12 +2,18 @@ import {
   LayoutDashboard,
   Building2,
   FileText,
-  DollarSign,
+  TrendingUp,
   Scale,
   User as UserIcon,
-  Users,
+  CreditCard,
+  Star,
+  Bell,
+  FileBarChart,
   Wallet,
   HelpCircle,
+  Search,
+  Users,
+  Building,
   LucideIcon,
 } from 'lucide-react'
 
@@ -34,53 +40,73 @@ export const NAVIGATION: (NavItem | NavGroup)[] = [
     title: 'PRODUTOS',
     items: [
       {
-        title: 'Dados de Empresas no Brasil',
-        href: '/produtos/dados-empresas',
-        icon: Building2,
+        title: 'Smart CNPJ 360°',
+        href: '/smart-cnpj/search',
+        icon: Search,
       },
       {
-        title: 'Dados Cadastrais - PF',
-        href: '/produtos/dados-cadastrais-pf',
+        title: 'Dados 360° - Pessoa Física',
+        href: '/dados360/pf/search',
         icon: UserIcon,
       },
       {
-        title: 'Dados Cadastrais - PJ',
-        href: '/produtos/dados-cadastrais-pj',
+        title: 'Dados 360° - Pessoa Jurídica',
+        href: '/dados360/pj/search',
         icon: Building2,
       },
       {
-        title: 'Dossie Financeiro',
-        href: '/produtos/dossie-financeiro',
-        icon: DollarSign,
-      },
-      {
-        title: 'Pesquisas Jurídicas',
-        href: '/produtos/pesquisas-juridicas',
-        icon: Scale,
+        title: 'Radar Financeiro',
+        href: '/radar-financeiro',
+        icon: TrendingUp,
       },
     ],
   },
   {
-    title: 'CONFIGURAÇÕES',
+    title: 'RADAR JURÍDICO',
     items: [
       {
-        title: 'Perfil',
-        href: '/configuracoes/perfil',
-        icon: UserIcon,
+        title: 'Pessoa Física',
+        href: '/radar-juridico/pf/search',
+        icon: Users,
       },
       {
-        title: 'Financeiro',
-        href: '/configuracoes/financeiro',
-        icon: Wallet,
+        title: 'Pessoa Jurídica',
+        href: '/radar-juridico/pj/search',
+        icon: Building,
       },
     ],
   },
   {
-    title: 'SITE',
+    title: 'GESTÃO',
+    items: [
+      {
+        title: 'Créditos e Planos',
+        href: '/credits',
+        icon: CreditCard,
+      },
+      {
+        title: 'Favoritos',
+        href: '/favorites',
+        icon: Star,
+      },
+      {
+        title: 'Alertas',
+        href: '/alerts',
+        icon: Bell,
+      },
+      {
+        title: 'Relatórios',
+        href: '/reports',
+        icon: FileBarChart,
+      },
+    ],
+  },
+  {
+    title: 'AJUDA',
     items: [
       {
         title: 'Central de Ajuda',
-        href: '/ajuda',
+        href: '/help',
         icon: HelpCircle,
       },
     ],

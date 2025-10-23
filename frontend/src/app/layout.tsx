@@ -1,10 +1,22 @@
 import type { Metadata } from 'next'
-import { Inter } from 'next/font/google'
+import { Inter, Poppins } from 'next/font/google'
 import './globals.css'
 import { ReactQueryProvider } from '@/components/providers/ReactQueryProvider'
 import { SonnerToaster } from '@/components/ui/sonner-toaster'
+import { AppLayout } from '@/components/layout/AppLayout'
 
-const inter = Inter({ subsets: ['latin'], variable: '--font-inter' })
+const inter = Inter({ 
+  subsets: ['latin'], 
+  variable: '--font-inter',
+  display: 'swap',
+})
+
+const poppins = Poppins({ 
+  subsets: ['latin'], 
+  weight: ['400', '500', '600', '700', '800'],
+  variable: '--font-poppins',
+  display: 'swap',
+})
 
 export const metadata: Metadata = {
   title: 'BaseCerta - Plataforma de Consulta de Dados',
@@ -31,9 +43,11 @@ export default function RootLayout({
 }) {
   return (
     <html lang="pt-BR" suppressHydrationWarning>
-      <body className={inter.variable}>
+      <body className={`${inter.variable} ${poppins.variable} font-sans antialiased`}>
         <ReactQueryProvider>
-          {children}
+          <AppLayout>
+            {children}
+          </AppLayout>
           <SonnerToaster />
         </ReactQueryProvider>
       </body>

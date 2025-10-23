@@ -1,6 +1,5 @@
 'use client'
 
-import { DashboardLayout } from '@/components/layout/DashboardLayout'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -137,7 +136,7 @@ export default function DashboardPage() {
   ]
 
   return (
-    <DashboardLayout>
+    <>
       {/* Loading Indicator */}
       {isLoading && (
         <div className="mb-4 flex items-center gap-2 text-sm text-muted-foreground">
@@ -334,6 +333,6 @@ export default function DashboardPage() {
           ))}
         </div>
       </div>
-    </DashboardLayout>
+    </>
   )
 }
