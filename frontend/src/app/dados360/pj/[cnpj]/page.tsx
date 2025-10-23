@@ -1,22 +1,25 @@
 'use client'
 
-import { use } from 'react'
+import { use, Suspense, lazy } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { ArrowLeft, AlertCircle } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { searchCompanyByCNPJ } from '@/mocks/dados360-pj'
-import { CompanyHeaderFull } from '@/components/dados360/pj/CompanyHeaderFull'
-import { CompanyIdentificationCard } from '@/components/dados360/pj/CompanyIdentificationCard'
-import { CompanyActivityCard } from '@/components/dados360/pj/CompanyActivityCard'
-import { PartnersCard } from '@/components/dados360/pj/PartnersCard'
-import { DebtsCard } from '@/components/dados360/pj/DebtsCard'
-import { EmployeesHistoryCard } from '@/components/dados360/pj/EmployeesHistoryCard'
-import { AddressesPJCard } from '@/components/dados360/pj/AddressesPJCard'
-import { ContactsPJCard } from '@/components/dados360/pj/ContactsPJCard'
-import { SocialMediaCard } from '@/components/dados360/pj/SocialMediaCard'
+import { Dados360PJSkeleton } from '@/components/dados360/pj/Dados360PJSkeleton'
 import { useFavorites } from '@/hooks/useFavorites'
 import { toast } from '@/lib/toast'
+
+// Lazy load heavy components
+const CompanyHeaderFull = lazy(() => import('@/components/dados360/pj/CompanyHeaderFull').then(mod => ({ default: mod.CompanyHeaderFull })))
+const CompanyIdentificationCard = lazy(() => import('@/components/dados360/pj/CompanyIdentificationCard').then(mod => ({ default: mod.CompanyIdentificationCard })))
+const CompanyActivityCard = lazy(() => import('@/components/dados360/pj/CompanyActivityCard').then(mod => ({ default: mod.CompanyActivityCard })))
+const PartnersCard = lazy(() => import('@/components/dados360/pj/PartnersCard').then(mod => ({ default: mod.PartnersCard })))
+const DebtsCard = lazy(() => import('@/components/dados360/pj/DebtsCard').then(mod => ({ default: mod.DebtsCard })))
+const EmployeesHistoryCard = lazy(() => import('@/components/dados360/pj/EmployeesHistoryCard').then(mod => ({ default: mod.EmployeesHistoryCard })))
+const AddressesPJCard = lazy(() => import('@/components/dados360/pj/AddressesPJCard').then(mod => ({ default: mod.AddressesPJCard })))
+const ContactsPJCard = lazy(() => import('@/components/dados360/pj/ContactsPJCard').then(mod => ({ default: mod.ContactsPJCard })))
+const SocialMediaCard = lazy(() => import('@/components/dados360/pj/SocialMediaCard').then(mod => ({ default: mod.SocialMediaCard })))
 
 interface PageProps {
   params: Promise<{
@@ -127,59 +130,79 @@ export default function DossierPJPage({ params }: PageProps) {
   }
   
   return (
-    <div className="min-h-screen bg-gray-50 p-6">
-      <div className="max-w-7xl mx-auto">
-        {/* Header com botão voltar */}
-        <div className="mb-6">
-          <Button
-            variant="ghost"
-            onClick={() => router.push(backLink.href)}
-          >
-            <ArrowLeft className="h-4 w-4 mr-2" />
-            {backLink.text}
-          </Button>
-        </div>
-        
-        {/* Company Header */}
-        <CompanyHeaderFull
-          company={company}
-          isFavorite={isFavorite(cleanCNPJ)}
-          onToggleFavorite={handleToggleFavorite}
-        />
-        
-        {/* Grid de Cards */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Coluna Principal (2/3) */}
-          <div className="lg:col-span-2 space-y-6">
-            {/* Identificação */}
-            <CompanyIdentificationCard company={company} />
-            
-            {/* Atividade */}
-            <CompanyActivityCard company={company} />
-            
-            {/* Endereços */}
-            <AddressesPJCard company={company} />
-            
-            {/* Contatos */}
-            <ContactsPJCard company={company} />
+    <Suspense fallback={<Dados360PJSkeleton />}>
+      <div className="min-h-screen bg-gray-50 p-6">
+        <div className="max-w-7xl mx-auto">
+          {/* Header com botão voltar */}
+          <div className="mb-6">
+            <Button
+              variant="ghost"
+              onClick={() => router.push(backLink.href)}
+            >
+              <ArrowLeft className="h-4 w-4 mr-2" />
+              {backLink.text}
+            </Button>
           </div>
           
-          {/* Coluna Lateral (1/3) */}
-          <div className="space-y-6">
-            {/* Sócios */}
-            <PartnersCard company={company} />
+          {/* Company Header */}
+          <Suspense fallback={<div className="h-64 animate-pulse bg-gray-100 rounded-lg mb-6" />}>
+            <CompanyHeaderFull
+              company={company}
+              isFavorite={isFavorite(cleanCNPJ)}
+              onToggleFavorite={handleToggleFavorite}
+            />
+          </Suspense>
+          
+          {/* Grid de Cards */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6" style={{ minHeight: '800px' }}>
+            {/* Coluna Principal (2/3) */}
+            <div className="lg:col-span-2 space-y-6">
+              {/* Identificação */}
+              <Suspense fallback={<div className="h-96 animate-pulse bg-gray-100 rounded-lg" />}>
+                <CompanyIdentificationCard company={company} />
+              </Suspense>
+              
+              {/* Atividade */}
+              <Suspense fallback={<div className="h-64 animate-pulse bg-gray-100 rounded-lg" />}>
+                <CompanyActivityCard company={company} />
+              </Suspense>
+              
+              {/* Endereços */}
+              <Suspense fallback={<div className="h-64 animate-pulse bg-gray-100 rounded-lg" />}>
+                <AddressesPJCard company={company} />
+              </Suspense>
+              
+              {/* Contatos */}
+              <Suspense fallback={<div className="h-48 animate-pulse bg-gray-100 rounded-lg" />}>
+                <ContactsPJCard company={company} />
+              </Suspense>
+            </div>
             
-            {/* Dívidas e Restrições */}
-            <DebtsCard company={company} />
-            
-            {/* Histórico de Funcionários */}
-            <EmployeesHistoryCard company={company} />
-            
-            {/* Redes Sociais */}
-            <SocialMediaCard company={company} />
+            {/* Coluna Lateral (1/3) */}
+            <div className="space-y-6">
+              {/* Sócios */}
+              <Suspense fallback={<div className="h-80 animate-pulse bg-gray-100 rounded-lg" />}>
+                <PartnersCard company={company} />
+              </Suspense>
+              
+              {/* Dívidas e Restrições */}
+              <Suspense fallback={<div className="h-48 animate-pulse bg-gray-100 rounded-lg" />}>
+                <DebtsCard company={company} />
+              </Suspense>
+              
+              {/* Histórico de Funcionários */}
+              <Suspense fallback={<div className="h-64 animate-pulse bg-gray-100 rounded-lg" />}>
+                <EmployeesHistoryCard company={company} />
+              </Suspense>
+              
+              {/* Redes Sociais */}
+              <Suspense fallback={<div className="h-48 animate-pulse bg-gray-100 rounded-lg" />}>
+                <SocialMediaCard company={company} />
+              </Suspense>
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </Suspense>
   )
 }
