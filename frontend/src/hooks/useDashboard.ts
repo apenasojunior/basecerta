@@ -14,6 +14,10 @@ const MOCK_USER_ID = 1
 
 /**
  * Hook para obter estatísticas do dashboard
+ * 
+ * P.9.3: Retry agressivo para evitar blocking time
+ * - retry: 1 (não 3) = 500ms até fallback (não 6s)
+ * - refetchInterval removido (causava polling desnecessário)
  */
 export function useDashboardStats() {
   return useQuery({
@@ -21,7 +25,8 @@ export function useDashboardStats() {
     queryFn: () => api.stats.getDashboardStats(MOCK_USER_ID),
     staleTime: 1000 * 60 * 5, // 5 minutos
     refetchOnWindowFocus: true,
-    refetchInterval: 1000 * 60 * 5, // Atualizar a cada 5 minutos
+    retry: 1, // Apenas 1 retry para evitar blocking (P.9.3)
+    retryDelay: 500, // 500ms (rápido para first load)
   })
 }
 

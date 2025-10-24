@@ -20,6 +20,10 @@ const MOCK_USER_ID = 1
 
 /**
  * Hook para obter saldo de créditos
+ * 
+ * P.9.3: Retry agressivo + deduplicação para evitar blocking time
+ * - retry: 1 = 500ms até fallback (não 6s)
+ * - refetchOnMount: false = evita requests duplicadas
  */
 export function useCreditsBalance() {
   return useQuery({
@@ -27,6 +31,9 @@ export function useCreditsBalance() {
     queryFn: () => api.credits.getBalance(MOCK_USER_ID),
     staleTime: 1000 * 60 * 5, // 5 minutos
     refetchOnWindowFocus: true,
+    refetchOnMount: false, // Evitar requests duplicadas (P.9.3)
+    retry: 1, // Apenas 1 retry para evitar blocking (P.9.3)
+    retryDelay: 500, // 500ms (rápido para first load)
   })
 }
 

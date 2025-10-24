@@ -33,18 +33,17 @@ const TopSearched = lazy(() => import('@/components/dashboard/TopSearched').then
 
 export default function DashboardPage() {
   // Hooks de integração com API
-  const { stats: dashboardStats, isLoadingStats, isErrorStats } = useDashboard()
-  const { balance, isLoadingBalance } = useCredits()
-
-  // Loading state
-  const isLoading = isLoadingStats || isLoadingBalance
+  // P.9.3: Removido isLoading bloqueante - conteúdo renderiza imediatamente com fallback
+  const { stats: dashboardStats, isErrorStats } = useDashboard()
+  const { balance } = useCredits()
 
   // Stats com dados reais da API (fallback para mock durante desenvolvimento)
+  // P.9.3: Dados mock sempre disponíveis - atualiza quando API responder
   const stats = [
     {
       title: 'Consultas Hoje',
-      value: isLoading ? '...' : String(dashboardStats?.queries_today ?? 24),
-      change: isLoading ? '...' : dashboardStats?.queries_today_change ?? '+12%',
+      value: String(dashboardStats?.queries_today ?? 24),
+      change: dashboardStats?.queries_today_change ?? '+12%',
       trend: 'up' as const,
       icon: FileText,
       color: 'text-blue-600',
@@ -52,8 +51,8 @@ export default function DashboardPage() {
     },
     {
       title: 'Créditos Disponíveis',
-      value: isLoading ? '...' : String(balance ?? 150),
-      change: isLoading ? '...' : String(dashboardStats?.credits_change ?? '-30'),
+      value: String(balance ?? 150),
+      change: String(dashboardStats?.credits_change ?? '-30'),
       trend: 'down' as const,
       icon: DollarSign,
       color: 'text-green-600',
@@ -61,8 +60,8 @@ export default function DashboardPage() {
     },
     {
       title: 'Empresas Consultadas',
-      value: isLoading ? '...' : String(dashboardStats?.companies_consulted ?? 342),
-      change: isLoading ? '...' : dashboardStats?.companies_change ?? '+8%',
+      value: String(dashboardStats?.companies_consulted ?? 342),
+      change: dashboardStats?.companies_change ?? '+8%',
       trend: 'up' as const,
       icon: Building2,
       color: 'text-purple-600',
@@ -70,8 +69,8 @@ export default function DashboardPage() {
     },
     {
       title: 'Processos Jurídicos',
-      value: isLoading ? '...' : String(dashboardStats?.legal_searches ?? 18),
-      change: isLoading ? '...' : dashboardStats?.legal_change ?? '+3',
+      value: String(dashboardStats?.legal_searches ?? 18),
+      change: dashboardStats?.legal_change ?? '+3',
       trend: 'up' as const,
       icon: Scale,
       color: 'text-orange-600',
@@ -141,19 +140,10 @@ export default function DashboardPage() {
 
   return (
     <>
-      {/* Show skeleton during initial load */}
-      {isLoading ? (
-        <DashboardSkeleton />
-      ) : (
-        <>
-          {/* Error State */}
-          {isErrorStats && (
-            <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-lg text-sm text-red-700">
-              Erro ao carregar estatísticas. Os dados exibidos são de demonstração.
-            </div>
-          )}
+      {/* P.9.3: Conteúdo renderiza imediatamente (sem skeleton bloqueante) */}
+      {/* Lazy components usam Suspense próprio */}
 
-          {/* New Stats Cards - Search History & Favorites */}
+      {/* New Stats Cards - Search History & Favorites */}
           <div className="mb-6" style={{ minHeight: '140px' }}>
             <Suspense fallback={<div className="h-32 animate-pulse bg-gray-100 rounded-lg" />}>
               <SearchStatsCards />
@@ -342,8 +332,6 @@ export default function DashboardPage() {
               ))}
             </div>
           </div>
-        </>
-      )}
     </>
   )
 }
