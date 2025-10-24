@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import { Inter, Poppins } from 'next/font/google'
+import { Inter, Poppins, Roboto_Mono } from 'next/font/google'
 import './globals.css'
 import { ReactQueryProvider } from '@/components/providers/ReactQueryProvider'
 import { SonnerToaster } from '@/components/ui/sonner-toaster'
@@ -15,6 +15,13 @@ const poppins = Poppins({
   subsets: ['latin'], 
   weight: ['400', '500', '600', '700', '800'],
   variable: '--font-poppins',
+  display: 'swap',
+})
+
+const robotoMono = Roboto_Mono({
+  subsets: ['latin'],
+  weight: ['400', '500', '600', '700'],
+  variable: '--font-roboto-mono',
   display: 'swap',
 })
 
@@ -50,7 +57,7 @@ export default function RootLayout({
         {/* DNS prefetch for other potential origins */}
         <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
       </head>
-      <body className={`${inter.variable} ${poppins.variable} font-sans antialiased`}>
+      <body className={`${inter.variable} ${poppins.variable} ${robotoMono.variable} font-sans antialiased`}>
         <ReactQueryProvider>
           <AppLayout>
             {children}

@@ -8,6 +8,9 @@ const nextConfig = {
   poweredByHeader: false,
   compress: true,
   
+  // Enable source maps for better debugging (P.9.1 - Best Practices)
+  productionBrowserSourceMaps: true,
+  
   // Output configuration
   output: 'standalone',
   
