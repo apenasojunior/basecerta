@@ -318,23 +318,23 @@ class SmartCNPJService:
             "numero": estabelecimento.numero or "",
             "complemento": estabelecimento.complemento or "",
             "bairro": estabelecimento.bairro or "",
-            "municipio": estabelecimento.municipio.descricao if estabelecimento.municipio else "",
+            "municipio": estabelecimento.municipio_obj.descricao if estabelecimento.municipio_obj else "",
             "uf": estabelecimento.uf or ""
         }
         
         # Montar contatos
         contatos = {
             "email": estabelecimento.correio_eletronico or "",
-            "telefone1": f"{estabelecimento.ddd_telefone_1 or ''}{estabelecimento.telefone_1 or ''}",
-            "telefone2": f"{estabelecimento.ddd_telefone_2 or ''}{estabelecimento.telefone_2 or ''}"
+            "telefone1": f"{estabelecimento.ddd_1 or ''}{estabelecimento.telefone_1 or ''}",
+            "telefone2": f"{estabelecimento.ddd_2 or ''}{estabelecimento.telefone_2 or ''}"
         }
         
         # Montar CNAE principal
         cnae_principal = None
-        if estabelecimento.cnae_fiscal:
+        if estabelecimento.cnae_principal:
             cnae_principal = {
                 "codigo": estabelecimento.cnae_fiscal_principal,
-                "descricao": estabelecimento.cnae_fiscal.descricao
+                "descricao": estabelecimento.cnae_principal.descricao
             }
         
         # Montar sócios

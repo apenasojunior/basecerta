@@ -71,11 +71,11 @@ def get_empresa_by_cnpj(
     cnpj_ordem = cnpj_limpo[8:12]
     cnpj_dv = cnpj_limpo[12:14]
     
-    # Query base com eager loading
+    # Base query com joins
     query = db.query(Estabelecimento).options(
         joinedload(Estabelecimento.empresa),
-        joinedload(Estabelecimento.municipio),
-        joinedload(Estabelecimento.cnae_fiscal)
+        joinedload(Estabelecimento.municipio_obj),
+        joinedload(Estabelecimento.cnae_principal)
     )
     
     # Filtro por CNPJ (composite key)
