@@ -6,6 +6,7 @@ import { Header } from './Header'
 import { Sidebar } from './Sidebar'
 import { Footer } from './Footer'
 import { LayoutProvider, useLayout } from '@/contexts/LayoutContext'
+import { ErrorBoundary } from '@/components/error/ErrorBoundary'
 
 interface AppLayoutProps {
   children: React.ReactNode
@@ -64,8 +65,10 @@ function AppLayoutContent({ children }: AppLayoutProps) {
 
 export function AppLayout({ children }: AppLayoutProps) {
   return (
-    <LayoutProvider>
-      <AppLayoutContent>{children}</AppLayoutContent>
-    </LayoutProvider>
+    <ErrorBoundary>
+      <LayoutProvider>
+        <AppLayoutContent>{children}</AppLayoutContent>
+      </LayoutProvider>
+    </ErrorBoundary>
   )
 }

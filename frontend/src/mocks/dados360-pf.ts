@@ -118,12 +118,14 @@ function randomDate(start: Date, end: Date): string {
 }
 
 // Helper: Calcular idade
+// P.9.2: Fix hydration mismatch - usar data fixa para SSR consistente
+// Usando 2025-10-23 como referência (data do audit)
 function calculateAge(birthDate: string): number {
-  const today = new Date()
+  const referenceDate = new Date('2025-10-23') // Data fixa para consistência SSR
   const birth = new Date(birthDate)
-  let age = today.getFullYear() - birth.getFullYear()
-  const monthDiff = today.getMonth() - birth.getMonth()
-  if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birth.getDate())) {
+  let age = referenceDate.getFullYear() - birth.getFullYear()
+  const monthDiff = referenceDate.getMonth() - birth.getMonth()
+  if (monthDiff < 0 || (monthDiff === 0 && referenceDate.getDate() < birth.getDate())) {
     age--
   }
   return age
