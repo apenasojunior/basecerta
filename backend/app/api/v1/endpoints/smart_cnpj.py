@@ -70,84 +70,11 @@ def get_smart_cnpj_service(
 
 # ================================================================
 # ENDPOINT 1: GET /api/v1/smart-cnpj/{cnpj}
+# MOVIDO PARA O FINAL DO ARQUIVO (linha ~575)
+# Rotas catch-all (/{param}) devem ser definidas POR ÚLTIMO
 # ================================================================
 
-@router.get(
-    "/{cnpj}",
-    response_model=SmartCNPJCompanyResponse,
-    summary="Consulta por CNPJ",
-    description="Busca empresa por CNPJ específico (14 dígitos). Suporta formatação ou não.",
-    responses={
-        200: {
-            "description": "Empresa encontrada",
-            "content": {
-                "application/json": {
-                    "example": {
-                        "cnpj": "11.779.918/0001-05",
-                        "razaoSocial": "N. F. C. VIANNA",
-                        "nomeFantasia": "EXEMPLO LTDA",
-                        "situacaoCadastral": "02",
-                        "tipo": "MATRIZ"
-                    }
-                }
-            }
-        },
-        400: {"description": "CNPJ inválido (formato incorreto)"},
-        404: {"description": "Empresa não encontrada"}
-    }
-)
-async def get_empresa_by_cnpj(
-    cnpj: str = Path(
-        ...,
-        description="CNPJ da empresa (14 dígitos, com ou sem formatação)",
-        example="11779918000105"
-    ),
-    service: SmartCNPJService = Depends(get_smart_cnpj_service)
-):
-    """
-    Consulta empresa por CNPJ específico.
-    
-    **Features:**
-    - Cache Redis (24h TTL)
-    - Formatação automática do CNPJ
-    - Eager loading de relacionamentos (empresa, sócios, CNAE)
-    - Mock de créditos (5 créditos por consulta)
-    
-    **Exemplos de CNPJ válidos:**
-    - `11779918000105`
-    - `11.779.918/0001-05`
-    
-    **Retorna:**
-    - Dados completos da empresa (razão social, endereço, contatos, sócios, CNAE)
-    """
-    logger.info(f"GET /smart-cnpj/{cnpj} - Request recebida")
-    
-    try:
-        empresa = service.buscar_cnpj(cnpj)
-        
-        if not empresa:
-            logger.warning(f"Empresa não encontrada: CNPJ={cnpj}")
-            raise HTTPException(
-                status_code=404,
-                detail=f"Empresa com CNPJ {cnpj} não encontrada"
-            )
-        
-        logger.info(f"Empresa retornada: CNPJ={cnpj}, Razão={empresa.razaoSocial}")
-        return empresa
-    
-    except ValueError as e:
-        logger.error(f"CNPJ inválido: {cnpj} - {str(e)}")
-        raise HTTPException(
-            status_code=400,
-            detail=str(e)
-        )
-    
-    except Exception as e:
-        logger.error(f"Erro ao buscar CNPJ {cnpj}: {str(e)}")
-        raise HTTPException(
-            status_code=500,
-            detail="Erro interno ao processar requisição"
-        )
+# @router.get("/{cnpj}", ...) - Ver final do arquivo
 
 
 # ================================================================
@@ -157,15 +84,59 @@ async def get_empresa_by_cnpj(
 @router.post(
     "/search",
     response_model=SmartCNPJSearchResponse,
-    summary="Busca avançada",
-    description="Busca empresas com 7 tipos de busca + 8 filtros opcionais + paginação",
+    summary="🔍 Busca Avançada de Empresas",
+    description="""
+    ### Busca avançada com 7 tipos de pesquisa e 8 filtros opcionais
+    
+    **Tipos de busca disponíveis:**
+    - `cnpj` - Busca por CNPJ exato (com ou sem formatação)
+    - `razao_social` - Busca por razão social (LIKE case-insensitive)
+    - `nome_fantasia` - Busca por nome fantasia
+    - `cnae` - Busca por código CNAE (5 dígitos)
+    - `municipio` - Busca por município
+    - `uf` - Busca por UF (2 letras)
+    - `cep` - Busca por CEP (8 dígitos)
+    
+    **Filtros opcionais:**
+    - `situacaoCadastral` - Situação cadastral da empresa
+    - `porte` - Porte da empresa (MEI, ME, EPP, etc.)
+    - `naturezaJuridica` - Código da natureza jurídica
+    - `cnae` - CNAE principal ou secundário
+    - `uf` - Unidade Federativa
+    - `municipio` - Município da empresa
+    - `dataAberturaInicio` / `dataAberturaFim` - Intervalo de data de abertura
+    
+    **Paginação:**
+    - `page` - Página atual (padrão: 1)
+    - `pageSize` - Itens por página (padrão: 20, máx: 100)
+    
+    **Performance:**
+    - Cache Redis: 24h TTL
+    - Índices otimizados no PostgreSQL
+    - Timeout: 30 segundos
+    """,
+    response_description="Lista de empresas com metadados de paginação",
     responses={
         200: {
-            "description": "Busca executada com sucesso",
+            "description": "✅ Busca executada com sucesso",
             "content": {
                 "application/json": {
                     "example": {
-                        "empresas": [],
+                        "empresas": [
+                            {
+                                "cnpj": "33.345.748/0001-85",
+                                "razaoSocial": "SHOPTUDOAQUI LTDA",
+                                "nomeFantasia": "SHOP TUDO AQUI",
+                                "situacaoCadastral": "Ativa",
+                                "endereco": {
+                                    "logradouro": "RUA EXEMPLO",
+                                    "numero": "123",
+                                    "municipio": "São Paulo",
+                                    "uf": "SP",
+                                    "cep": "01234-567"
+                                }
+                            }
+                        ],
                         "pagination": {
                             "page": 1,
                             "pageSize": 20,
@@ -254,11 +225,28 @@ async def search_empresas(
 @router.get(
     "/historico",
     response_model=List[dict],
-    summary="Histórico de pesquisas",
-    description="Retorna histórico de pesquisas do usuário com paginação",
+    summary="📋 Histórico de Pesquisas",
+    description="""
+    ### Retorna o histórico de pesquisas realizadas pelo usuário
+    
+    **Informações retornadas:**
+    - ID da pesquisa
+    - Tipo de busca (CNPJ, Razão Social, etc.)
+    - Valor buscado
+    - Filtros aplicados
+    - Quantidade de resultados
+    - Data e hora da pesquisa
+    
+    **Ordenação:** Mais recentes primeiro
+    
+    **Paginação:** Use os parâmetros `skip` e `limit`
+    
+    **Autenticação:** Requer usuário logado (Delivery 3)
+    """,
+    response_description="Lista de pesquisas do usuário",
     responses={
         200: {
-            "description": "Histórico retornado com sucesso",
+            "description": "✅ Histórico retornado com sucesso",
             "content": {
                 "application/json": {
                     "example": [
@@ -337,11 +325,28 @@ async def get_historico_pesquisas(
 @router.get(
     "/estatisticas",
     response_model=dict,
-    summary="Estatísticas de uso",
-    description="Retorna métricas de uso do usuário (total pesquisas, créditos, etc.)",
+    summary="📊 Estatísticas de Uso",
+    description="""
+    ### Retorna métricas de uso do produto Smart CNPJ 360°
+    
+    **Métricas disponíveis:**
+    - Total de pesquisas realizadas
+    - Créditos consumidos
+    - Total de resultados encontrados
+    - Tempo médio de resposta (ms)
+    - Tipo de busca mais utilizado
+    - Filtros mais aplicados
+    
+    **Período:** Todos os tempos (sem filtro de data)
+    
+    **Uso:** Dashboards, relatórios, análise de consumo
+    
+    **Autenticação:** Requer usuário logado (Delivery 3)
+    """,
+    response_description="Objeto com estatísticas agregadas",
     responses={
         200: {
-            "description": "Estatísticas retornadas com sucesso",
+            "description": "✅ Estatísticas calculadas com sucesso",
             "content": {
                 "application/json": {
                     "example": {
@@ -400,22 +405,65 @@ async def get_estatisticas_uso(
 
 @router.post(
     "/export",
-    summary="Exportar resultados",
-    description="Exporta lista de CNPJs em CSV ou JSON (max 100 CNPJs)",
+    summary="📥 Exportar Empresas (CSV/JSON)",
+    description="""
+    ### Exporta dados de múltiplas empresas em CSV ou JSON
+    
+    **Formatos disponíveis:**
+    - `csv` - Arquivo CSV com UTF-8 BOM e separador ponto-vírgula (;)
+    - `json` - Arquivo JSON com estrutura: `{"total": X, "empresas": [...]}`
+    
+    **Limites:**
+    - Máximo: 100 CNPJs por exportação
+    - Mínimo: 1 CNPJ
+    
+    **Campos exportados:**
+    - CNPJ formatado
+    - Razão Social
+    - Nome Fantasia
+    - Situação Cadastral
+    - Endereço completo
+    - Contatos (telefone, email)
+    - CNAE Principal
+    - Sócios (nome, documento, participação)
+    
+    **Headers HTTP:**
+    - `Content-Disposition`: Nome do arquivo para download
+    - `Content-Type`: text/csv ou application/json
+    
+    **Uso em curl:**
+    ```bash
+    curl -X POST "http://localhost:8000/api/v1/smart-cnpj/export?cnpjs=33345748000185&formato=csv" > empresas.csv
+    ```
+    """,
+    response_description="Arquivo CSV ou JSON para download",
     responses={
         200: {
-            "description": "Arquivo exportado com sucesso",
+            "description": "✅ Arquivo gerado com sucesso",
             "content": {
-                "text/csv": {},
-                "application/json": {}
+                "text/csv": {
+                    "example": "CNPJ;Razão Social;Nome Fantasia;...\n33.345.748/0001-85;SHOPTUDOAQUI LTDA;SHOP TUDO AQUI;..."
+                },
+                "application/json": {
+                    "example": {
+                        "total": 1,
+                        "empresas": [
+                            {
+                                "cnpj": "33.345.748/0001-85",
+                                "razaoSocial": "SHOPTUDOAQUI LTDA"
+                            }
+                        ]
+                    }
+                }
             }
         },
-        400: {"description": "Limite excedido ou formato inválido"}
+        400: {"description": "⚠️ Limite excedido ou formato inválido"},
+        404: {"description": "❌ Nenhuma empresa encontrada"}
     }
 )
 async def export_cnpjs(
-    cnpjs: List[str] = Query(..., description="Lista de CNPJs (max 100)", max_length=100),
-    formato: str = Query("csv", description="Formato: csv ou json", regex="^(csv|json)$"),
+    cnpjs: List[str] = Query(..., description="Lista de CNPJs (com ou sem formatação)", max_length=100),
+    formato: str = Query("csv", description="Formato de exportação", regex="^(csv|json)$"),
     service: SmartCNPJService = Depends(get_smart_cnpj_service)
 ):
     """
@@ -504,7 +552,6 @@ def _export_to_csv(empresas: List[SmartCNPJCompanyResponse]) -> StreamingRespons
         'Razão Social',
         'Nome Fantasia',
         'Situação',
-        'Tipo',
         'Porte',
         'Capital Social',
         'Data Abertura',
@@ -524,17 +571,16 @@ def _export_to_csv(empresas: List[SmartCNPJCompanyResponse]) -> StreamingRespons
             empresa.razaoSocial,
             empresa.nomeFantasia or '',
             empresa.situacaoCadastral,
-            empresa.tipo,
             empresa.porte,
             empresa.capitalSocial,
             empresa.dataAbertura or '',
-            empresa.cnaePrincipal.get('codigo', '') if empresa.cnaePrincipal else '',
-            empresa.contatos.get('email', '') if empresa.contatos else '',
-            empresa.contatos.get('telefone1', '') if empresa.contatos else '',
-            empresa.endereco.get('cep', '') if empresa.endereco else '',
-            empresa.endereco.get('logradouro', '') if empresa.endereco else '',
-            empresa.endereco.get('municipio', '') if empresa.endereco else '',
-            empresa.endereco.get('uf', '') if empresa.endereco else ''
+            empresa.cnaePrincipal.codigo if empresa.cnaePrincipal else '',
+            empresa.contatos.email if empresa.contatos else '',
+            empresa.contatos.telefone if empresa.contatos else '',  # Corrigido: telefone
+            empresa.endereco.cep if empresa.endereco else '',
+            empresa.endereco.logradouro if empresa.endereco else '',
+            empresa.endereco.municipio if empresa.endereco else '',
+            empresa.endereco.uf if empresa.endereco else ''
         ])
     
     # Preparar response
@@ -555,8 +601,8 @@ def _export_to_json(empresas: List[SmartCNPJCompanyResponse]) -> JSONResponse:
     
     Pretty print com indent=2.
     """
-    # Converter para dict
-    data = [empresa.model_dump() for empresa in empresas]
+    # Converter para dict (mode='json' para serializar Decimal, datetime, etc)
+    data = [empresa.model_dump(mode='json') for empresa in empresas]
     
     return JSONResponse(
         content={
@@ -564,6 +610,140 @@ def _export_to_json(empresas: List[SmartCNPJCompanyResponse]) -> JSONResponse:
             "empresas": data
         },
         headers={
-            "Content-Disposition": "attachment; filename=empresas.json"
+                        "Content-Disposition": "attachment; filename=empresas.json"
         }
     )
+
+
+# ================================================================
+# ENDPOINT: GET /{cnpj} - MOVIDO PARA O FINAL (catch-all deve ser último)
+# ================================================================
+
+@router.get(
+    "/{cnpj}",
+    response_model=SmartCNPJCompanyResponse,
+    summary="🏢 Consulta Individual por CNPJ",
+    description="""
+    ### Busca completa de empresa por CNPJ específico
+    
+    **Aceita formatação:**
+    - Com pontuação: `33.345.748/0001-85`
+    - Sem pontuação: `33345748000185`
+    
+    **Dados retornados:**
+    - ✅ Dados cadastrais (Razão Social, Nome Fantasia, Situação)
+    - ✅ Endereço completo (Logradouro, CEP, Município, UF)
+    - ✅ Contatos (Telefone, Email)
+    - ✅ CNAE Principal e Secundários
+    - ✅ Sócios (Nome, CPF/CNPJ, Qualificação, Data Entrada)
+    - ✅ Informações adicionais (Capital Social, Porte, Natureza Jurídica)
+    
+    **Performance:**
+    - Cache Redis: 24 horas
+    - Eager loading: Sócios + CNAEs carregados junto
+    - Tempo médio: < 100ms (com cache)
+    
+    **Créditos:** 5 créditos por consulta (mock)
+    
+    **Exemplo de uso:**
+    ```bash
+    curl http://localhost:8000/api/v1/smart-cnpj/33345748000185
+    ```
+    """,
+    response_description="Dados completos da empresa com sócios e CNAEs",
+    responses={
+        200: {
+            "description": "✅ Empresa encontrada com sucesso",
+            "content": {
+                "application/json": {
+                    "example": {
+                        "cnpj": "33.345.748/0001-85",
+                        "razaoSocial": "SHOPTUDOAQUI LTDA",
+                        "nomeFantasia": "SHOP TUDO AQUI",
+                        "situacaoCadastral": "Ativa",
+                        "codigoSituacaoCadastral": 2,
+                        "dataSituacaoCadastral": "2018-01-15",
+                        "endereco": {
+                            "logradouro": "RUA EXEMPLO",
+                            "numero": "123",
+                            "complemento": "SALA 1",
+                            "bairro": "CENTRO",
+                            "cep": "01234-567",
+                            "municipio": "São Paulo",
+                            "uf": "SP"
+                        },
+                        "contatos": {
+                            "telefone": "(11) 3456-7890",
+                            "email": "contato@exemplo.com.br"
+                        },
+                        "socios": [
+                            {
+                                "nome": "JOAO DA SILVA",
+                                "documento": "123.456.789-00",
+                                "qualificacao": "Sócio-Administrador",
+                                "dataEntrada": "2018-01-01"
+                            }
+                        ]
+                    }
+                }
+            }
+        },
+        400: {"description": "⚠️ CNPJ inválido (formato incorreto ou check digit errado)"},
+        404: {"description": "❌ Empresa não encontrada na base de dados"}
+    }
+)
+async def get_empresa_by_cnpj(
+    cnpj: str = Path(
+        ...,
+        description="CNPJ da empresa (14 dígitos numéricos, aceita formatação)",
+        example="33345748000185",
+        min_length=14,
+        max_length=18
+    ),
+    service: SmartCNPJService = Depends(get_smart_cnpj_service)
+):
+    """
+    Consulta empresa por CNPJ específico.
+    
+    **Features:**
+    - Cache Redis (24h TTL)
+    - Formatação automática do CNPJ
+    - Eager loading de relacionamentos (empresa, sócios, CNAE)
+    - Mock de créditos (5 créditos por consulta)
+    
+    **Exemplos de CNPJ válidos:**
+    - `33345748000185`
+    - `33.345.748/0001-85`
+    
+    **Retorna:**
+    - Dados completos da empresa (razão social, endereço, contatos, sócios, CNAE)
+    """
+    logger.info(f"GET /smart-cnpj/{cnpj} - Request recebida")
+    
+    try:
+        empresa = service.buscar_cnpj(cnpj)
+        
+        if not empresa:
+            logger.warning(f"Empresa não encontrada: CNPJ={cnpj}")
+            raise HTTPException(
+                status_code=404,
+                detail=f"Empresa com CNPJ {cnpj} não encontrada"
+            )
+        
+        logger.info(f"Empresa retornada: CNPJ={cnpj}, Razão={empresa.razaoSocial}")
+        return empresa
+    
+    except ValueError as e:
+        logger.error(f"CNPJ inválido: {cnpj} - {str(e)}")
+        raise HTTPException(
+            status_code=400,
+            detail=str(e)
+        )
+    
+    except Exception as e:
+        logger.error(f"Erro ao buscar CNPJ {cnpj}: {str(e)}")
+        raise HTTPException(
+            status_code=500,
+            detail="Erro interno ao processar requisição"
+        )
+

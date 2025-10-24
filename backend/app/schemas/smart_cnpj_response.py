@@ -133,7 +133,7 @@ class SmartCNPJCompanyResponse(BaseModel):
     contatos: ContatosResponse = Field(..., description="Contatos da empresa")
     
     # CNAE Primário (nested)
-    cnaesPrimario: CNAEResponse = Field(..., description="CNAE principal")
+    cnaePrincipal: CNAEResponse = Field(..., description="CNAE principal")
     
     # CNAEs Secundários (array)
     cnaesSecundarios: List[CNAEResponse] = Field(default_factory=list, description="CNAEs secundários")
@@ -173,7 +173,7 @@ class SmartCNPJCompanyResponse(BaseModel):
                     "telefone2": None,
                     "fax": None
                 },
-                "cnaesPrimario": {
+                "cnaePrincipal": {
                     "codigo": "5611-2/04",
                     "descricao": "Bares e outros estabelecimentos especializados"
                 },

@@ -332,7 +332,7 @@ def create_pesquisa_record(
     tipo_busca: str,
     valor_busca: str,
     filtros_aplicados: Dict[str, Any],
-    resultados_encontrados: int,
+    total_resultados: int,  # Corrigido: total_resultados
     creditos_usados: int,
     tempo_resposta_ms: int
 ) -> PesquisaCNPJ:
@@ -345,7 +345,7 @@ def create_pesquisa_record(
         tipo_busca: Tipo de busca realizada
         valor_busca: Valor pesquisado
         filtros_aplicados: Filtros aplicados (JSON)
-        resultados_encontrados: Quantidade de resultados
+        total_resultados: Quantidade de resultados (corrigido)
         creditos_usados: Créditos debitados
         tempo_resposta_ms: Tempo de resposta em milissegundos
     
@@ -357,7 +357,7 @@ def create_pesquisa_record(
         tipo_busca=tipo_busca,
         valor_busca=valor_busca,
         filtros_aplicados=filtros_aplicados,
-        resultados_encontrados=resultados_encontrados,
+        total_resultados=total_resultados,  # Corrigido: total_resultados
         creditos_usados=creditos_usados,
         tempo_resposta_ms=tempo_resposta_ms
     )

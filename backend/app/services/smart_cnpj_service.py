@@ -112,10 +112,10 @@ class SmartCNPJService:
             logger.info(f"Cache HIT: {cache_key}")
             # Ainda registra no histórico mesmo com cache
             self._registrar_pesquisa(
-                tipo_busca="CNPJ",
+                tipo_busca="cnpj",  # Corrigido: lowercase para match com CHECK constraint
                 valor_busca=cnpj_limpo,
                 filtros_aplicados={},
-                resultados_encontrados=1,
+                total_resultados=1,  # Corrigido: total_resultados
                 tempo_resposta_ms=int((datetime.now() - start_time).total_seconds() * 1000),
                 from_cache=True
             )
@@ -144,10 +144,10 @@ class SmartCNPJService:
         # 6. Registrar no histórico + mock de créditos
         tempo_resposta_ms = int((datetime.now() - start_time).total_seconds() * 1000)
         self._registrar_pesquisa(
-            tipo_busca="CNPJ",
+            tipo_busca="cnpj",  # Corrigido: lowercase para match com CHECK constraint
             valor_busca=cnpj_limpo,
             filtros_aplicados={},
-            resultados_encontrados=1,
+            total_resultados=1,  # Corrigido: total_resultados
             tempo_resposta_ms=tempo_resposta_ms,
             from_cache=False
         )
@@ -238,7 +238,7 @@ class SmartCNPJService:
             tipo_busca=request.tipo_busca.value,
             valor_busca=request.valor_busca,
             filtros_aplicados=filtros_dict,
-            resultados_encontrados=total,
+            total_resultados=total,  # Corrigido: total_resultados
             tempo_resposta_ms=tempo_resposta_ms,
             from_cache=False
         )
@@ -343,21 +343,38 @@ class SmartCNPJService:
             for socio in empresa.socios:
                 socios.append({
                     "nome": socio.nome_socio or "",
-                    "cpfCnpj": socio.cpf_cnpj_socio or "",
+                    "cpfCnpj": socio.cnpj_cpf_socio or "",  # Corrigido: cnpj_cpf_socio
                     "qualificacao": socio.qualificacao_socio or "",
                     "dataEntrada": str(socio.data_entrada_sociedade) if socio.data_entrada_sociedade else None
                 })
         
         # Montar response
         return SmartCNPJCompanyResponse(
+            # Identificação
             cnpj=cnpj_formatado,
             razaoSocial=empresa.razao_social if empresa else "",
             nomeFantasia=estabelecimento.nome_fantasia or "",
-            situacaoCadastral=estabelecimento.situacao_cadastral or "",
-            tipo="MATRIZ" if estabelecimento.identificador_matriz_filial == "1" else "FILIAL",
+            
+            # Natureza Jurídica
+            naturezaJuridica=empresa.natureza.descricao if empresa and empresa.natureza else "",
+            codigoNaturezaJuridica=empresa.natureza_juridica if empresa else "",
+            
+            # Porte e Capital
             porte=empresa.porte_empresa if empresa else "",
+            codigoPorte=empresa.porte_empresa if empresa else "",  # Código é o mesmo que descrição
             capitalSocial=float(empresa.capital_social) if empresa and empresa.capital_social else 0.0,
-            dataAbertura=str(estabelecimento.data_inicio_atividade) if estabelecimento.data_inicio_atividade else None,
+            
+            # Situação Cadastral
+            situacaoCadastral=estabelecimento.situacao_cadastral or "",
+            codigoSituacaoCadastral=estabelecimento.situacao_cadastral or "",
+            dataSituacaoCadastral=str(estabelecimento.data_situacao_cadastral) if estabelecimento.data_situacao_cadastral else "",
+            motivoSituacaoCadastral=estabelecimento.motivo_situacao.descricao if estabelecimento.motivo_situacao else None,
+            
+            # Datas
+            dataInicioAtividade=str(estabelecimento.data_inicio_atividade) if estabelecimento.data_inicio_atividade else "",
+            dataAbertura=str(estabelecimento.data_inicio_atividade) if estabelecimento.data_inicio_atividade else "",
+            
+            # Nested objects
             cnaePrincipal=cnae_principal,
             cnaesSecundarios=[],  # TODO: Implementar quando existir tabela
             endereco=endereco,
@@ -404,7 +421,7 @@ class SmartCNPJService:
         tipo_busca: str,
         valor_busca: str,
         filtros_aplicados: Dict[str, Any],
-        resultados_encontrados: int,
+        total_resultados: int,  # Corrigido: total_resultados
         tempo_resposta_ms: int,
         from_cache: bool = False
     ) -> None:
@@ -413,23 +430,29 @@ class SmartCNPJService:
         
         TODO: Integrar com sistema real de créditos na Sprint 2.5
         """
-        creditos_usados = 0 if from_cache else 5  # Mock: 5 créditos por pesquisa
-        
-        create_pesquisa_record(
-            db=self.db,
-            user_id=self.user_id,
-            tipo_busca=tipo_busca,
-            valor_busca=valor_busca,
-            filtros_aplicados=filtros_aplicados,
-            resultados_encontrados=resultados_encontrados,
-            creditos_usados=creditos_usados,
-            tempo_resposta_ms=tempo_resposta_ms
-        )
-        
-        logger.info(
-            f"Pesquisa registrada: user_id={self.user_id}, "
-            f"tipo={tipo_busca}, créditos={creditos_usados}"
-        )
+        try:
+            creditos_usados = 0 if from_cache else 5  # Mock: 5 créditos por pesquisa
+            
+            create_pesquisa_record(
+                db=self.db,
+                user_id=self.user_id,
+                tipo_busca=tipo_busca,
+                valor_busca=valor_busca,
+                filtros_aplicados=filtros_aplicados,
+                total_resultados=total_resultados,  # Corrigido: total_resultados
+                creditos_usados=creditos_usados,
+                tempo_resposta_ms=tempo_resposta_ms
+            )
+            
+            logger.info(
+                f"Pesquisa registrada: user_id={self.user_id}, "
+                f"tipo={tipo_busca}, créditos={creditos_usados}"
+            )
+        except Exception as e:
+            # TODO: Remover try/except quando tabelas de créditos existirem (Delivery 3)
+            logger.warning(f"Erro ao registrar pesquisa (ignorado): {str(e)}")
+            pass
+    
     
     # ================================================================
     # CACHE REDIS

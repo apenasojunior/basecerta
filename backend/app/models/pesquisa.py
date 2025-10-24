@@ -51,8 +51,9 @@ class PesquisaCNPJ(Base):
     # Primary Key
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid4, comment="UUID único da pesquisa")
     
-    # FK User (referencia public.users)
-    user_id = Column(Integer, ForeignKey('public.users.id', ondelete='CASCADE'), nullable=False, index=True, comment="ID do usuário que fez a busca")
+    # FK User (referencia public.users) - TODO: Descomentar no Delivery 3
+    # user_id = Column(Integer, ForeignKey('public.users.id', ondelete='CASCADE'), nullable=False, index=True, comment="ID do usuário que fez a busca")
+    user_id = Column(Integer, nullable=False, index=True, comment="ID do usuário que fez a busca (FK temporariamente removida)")
     
     # Busca Realizada
     tipo_busca = Column(
