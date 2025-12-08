@@ -198,11 +198,12 @@ fi
 
 print_header "6️⃣  Configurando Projeto BaseCerta"
 
-# Detectar diretório do projeto
+# Detectar diretório do projeto automaticamente (funciona em qualquer usuário/máquina)
 PROJECT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 cd "$PROJECT_DIR"
 
 print_info "Diretório do projeto: $PROJECT_DIR"
+print_info "Usuário atual: $USER"
 
 # 6.1. Arquivos .env
 print_info "Configurando arquivos de ambiente (.env)..."

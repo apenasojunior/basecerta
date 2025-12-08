@@ -5,9 +5,17 @@
 ### Opção 1: Setup Automático (Recomendado)
 
 ```bash
+# Navegue até a pasta onde está o projeto (adapte para seu usuário)
+cd /Users/code4us/Documents/ADACODE/basecerta
+
+# Ou se estiver em ~/Documents/ADACODE/basecerta
 cd ~/Documents/ADACODE/basecerta
+
+# Execute o script
 ./setup-new-machine.sh
 ```
+
+> 💡 O script detecta automaticamente o diretório, funciona em qualquer máquina!
 
 **O script irá automaticamente:**
 - ✅ Instalar Homebrew (se não tiver)
