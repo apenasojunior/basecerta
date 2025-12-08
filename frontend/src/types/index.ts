@@ -10,3 +10,6 @@ export * from './entities'
 
 // API Types
 export * from './api'
+
+// Insights Types
+export * from './insights'

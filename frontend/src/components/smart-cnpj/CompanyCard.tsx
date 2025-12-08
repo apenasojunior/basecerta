@@ -2,6 +2,7 @@
 
 import { Building2, MapPin, Calendar, TrendingUp, Heart, ExternalLink } from 'lucide-react'
 import Link from 'next/link'
+import { useSearchParams } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardFooter } from '@/components/ui/card'
@@ -24,8 +25,26 @@ export function CompanyCard({
   className,
   from = 'results', // Default para results
 }: CompanyCardProps) {
+  const searchParams = useSearchParams()
+  
   // Remove formatting from CNPJ for URL
   const cleanCnpj = company.cnpj.replace(/[.\-\/]/g, '')
+  
+  // Construir URL de detalhes preservando parâmetros de busca
+  const buildDetailsUrl = () => {
+    const params = new URLSearchParams()
+    params.set('from', from)
+    
+    // Preservar parâmetros de busca se vier de results
+    if (from === 'results') {
+      const type = searchParams.get('type')
+      const query = searchParams.get('q')
+      if (type) params.set('returnType', type)
+      if (query) params.set('returnQuery', query)
+    }
+    
+    return `/smart-cnpj/${cleanCnpj}?${params.toString()}`
+  }
   
   const situacaoColors: Record<SmartCNPJCompany['situacaoCadastral'], string> = {
     ATIVA: 'bg-green-100 text-green-700 border-green-200',
@@ -176,7 +195,7 @@ export function CompanyCard({
 
       {/* Footer com Botão */}
       <CardFooter className="p-4 bg-gray-50 border-t border-gray-200">
-        <Link href={`/smart-cnpj/${cleanCnpj}?from=${from}`} className="w-full">
+        <Link href={buildDetailsUrl()} className="w-full">
           <Button
             variant="outline"
             className="w-full group-hover:bg-primary-600 group-hover:text-white group-hover:border-primary-600 transition-all duration-200"

@@ -2,10 +2,11 @@
 
 import { lazy, Suspense } from 'react'
 import { useRouter } from 'next/navigation'
-import { useSmartCNPJ } from '@/hooks/useSmartCNPJ'
+import { useSmartCNPJ, useSmartCNPJEstatisticas } from '@/hooks/useSmartCNPJ'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import { Building2, Search, TrendingUp, Users, MapPin } from 'lucide-react'
+import { Building2, Search, TrendingUp, Users, MapPin, Loader2 } from 'lucide-react'
+import { ErrorBoundary } from '@/components/ErrorBoundary'
 
 // Lazy load components para reduzir TBT
 const SearchForm = lazy(() => import('@/components/smart-cnpj/SearchForm').then(mod => ({ default: mod.SearchForm })))
@@ -28,6 +29,9 @@ export default function SmartCNPJSearchPage() {
     isSearching,
   } = useSmartCNPJ()
 
+  // Buscar estatísticas do backend
+  const { data: stats, isLoading: statsLoading } = useSmartCNPJEstatisticas()
+
   // Redirecionar para página de resultados após busca
   const handleSearch = () => {
     performSearch()
@@ -38,77 +42,120 @@ export default function SmartCNPJSearchPage() {
   }
 
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div>
-        <div className="flex items-center gap-3 mb-2">
-          <div className="p-2 bg-primary-100 rounded-lg">
-            <Building2 className="h-6 w-6 text-primary-600" />
-          </div>
-          <div>
-            <h1 className="text-2xl md:text-3xl font-bold text-gray-900">
-              Smart CNPJ 360°
-            </h1>
-            <p className="text-sm md:text-base text-gray-600 mt-1">
-              Pesquise empresas por CNPJ, razão social, sócios, segmento e muito mais
-            </p>
+    <ErrorBoundary>
+      <div className="space-y-6">
+        {/* Header */}
+        <div>
+          <div className="flex items-center gap-3 mb-2">
+            <div className="p-2 bg-primary-100 rounded-lg">
+              <Building2 className="h-6 w-6 text-primary-600" />
+            </div>
+            <div>
+              <h1 className="text-2xl md:text-3xl font-bold text-gray-900">
+                Smart CNPJ 360°
+              </h1>
+              <p className="text-sm md:text-base text-gray-600 mt-1">
+                Pesquise empresas por CNPJ, razão social, sócios, segmento e muito mais
+              </p>
+            </div>
           </div>
         </div>
-      </div>
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        {/* Total de Buscas */}
         <Card>
           <CardContent className="p-4">
             <div className="flex items-center gap-3">
               <div className="p-2 bg-blue-100 rounded-lg">
-                <Building2 className="h-5 w-5 text-blue-600" />
+                <Search className="h-5 w-5 text-blue-600" />
               </div>
-              <div>
-                <p className="text-2xl font-bold text-gray-900">100</p>
-                <p className="text-xs text-gray-600">Empresas Disponíveis</p>
+              <div className="flex-1">
+                {statsLoading ? (
+                  <>
+                    <div className="h-6 bg-gray-200 rounded animate-pulse mb-1 w-16" />
+                    <div className="h-3 bg-gray-200 rounded animate-pulse w-24" />
+                  </>
+                ) : (
+                  <>
+                    <p className="text-2xl font-bold text-gray-900">{stats?.total_buscas || 0}</p>
+                    <p className="text-xs text-gray-600">Buscas Realizadas</p>
+                  </>
+                )}
               </div>
             </div>
           </CardContent>
         </Card>
 
+        {/* Empresas Únicas */}
         <Card>
           <CardContent className="p-4">
             <div className="flex items-center gap-3">
               <div className="p-2 bg-green-100 rounded-lg">
-                <TrendingUp className="h-5 w-5 text-green-600" />
+                <Building2 className="h-5 w-5 text-green-600" />
               </div>
-              <div>
-                <p className="text-2xl font-bold text-gray-900">78%</p>
-                <p className="text-xs text-gray-600">Empresas Ativas</p>
+              <div className="flex-1">
+                {statsLoading ? (
+                  <>
+                    <div className="h-6 bg-gray-200 rounded animate-pulse mb-1 w-16" />
+                    <div className="h-3 bg-gray-200 rounded animate-pulse w-24" />
+                  </>
+                ) : (
+                  <>
+                    <p className="text-2xl font-bold text-gray-900">{stats?.empresas_unicas || 0}</p>
+                    <p className="text-xs text-gray-600">Empresas Únicas</p>
+                  </>
+                )}
               </div>
             </div>
           </CardContent>
         </Card>
 
+        {/* Buscas Hoje */}
         <Card>
           <CardContent className="p-4">
             <div className="flex items-center gap-3">
               <div className="p-2 bg-purple-100 rounded-lg">
-                <Users className="h-5 w-5 text-purple-600" />
+                <TrendingUp className="h-5 w-5 text-purple-600" />
               </div>
-              <div>
-                <p className="text-2xl font-bold text-gray-900">250+</p>
-                <p className="text-xs text-gray-600">Sócios Cadastrados</p>
+              <div className="flex-1">
+                {statsLoading ? (
+                  <>
+                    <div className="h-6 bg-gray-200 rounded animate-pulse mb-1 w-16" />
+                    <div className="h-3 bg-gray-200 rounded animate-pulse w-24" />
+                  </>
+                ) : (
+                  <>
+                    <p className="text-2xl font-bold text-gray-900">{stats?.buscas_por_periodo?.hoje || 0}</p>
+                    <p className="text-xs text-gray-600">Buscas Hoje</p>
+                  </>
+                )}
               </div>
             </div>
           </CardContent>
         </Card>
 
+        {/* Tempo Médio */}
         <Card>
           <CardContent className="p-4">
             <div className="flex items-center gap-3">
               <div className="p-2 bg-orange-100 rounded-lg">
                 <MapPin className="h-5 w-5 text-orange-600" />
               </div>
-              <div>
-                <p className="text-2xl font-bold text-gray-900">20</p>
-                <p className="text-xs text-gray-600">Estados Cobertos</p>
+              <div className="flex-1">
+                {statsLoading ? (
+                  <>
+                    <div className="h-6 bg-gray-200 rounded animate-pulse mb-1 w-16" />
+                    <div className="h-3 bg-gray-200 rounded animate-pulse w-24" />
+                  </>
+                ) : (
+                  <>
+                    <p className="text-xl font-bold text-gray-900">
+                      {stats?.tempo_medio_resposta ? `${stats.tempo_medio_resposta.toFixed(0)}ms` : '-'}
+                    </p>
+                    <p className="text-xs text-gray-600">Tempo Médio</p>
+                  </>
+                )}
               </div>
             </div>
           </CardContent>
@@ -250,7 +297,7 @@ export default function SmartCNPJSearchPage() {
               variant="outline"
               className="cursor-pointer hover:bg-primary-50 hover:border-primary-300 transition-colors"
               onClick={() => {
-                setFilters({ ...filters, porte: ['MEI'] })
+                setFilters({ ...filters, porte: 'MEI' })
               }}
             >
               ⭐ MEI
@@ -258,6 +305,7 @@ export default function SmartCNPJSearchPage() {
           </div>
         </CardContent>
       </Card>
-    </div>
+      </div>
+    </ErrorBoundary>
   )
 }

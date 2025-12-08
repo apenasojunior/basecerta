@@ -90,14 +90,18 @@ export function Sidebar({ className }: SidebarProps) {
                   {/* Group Items */}
                   {(!collapsed && isExpanded) && (
                     <ul className="mt-1 space-y-1">
-                      {item.items.map((subItem, subIndex) => (
-                        <NavLink
-                          key={subIndex}
-                          item={subItem}
-                          isActive={isActive(subItem.href)}
-                          collapsed={collapsed}
-                        />
-                      ))}
+                      {item.items.map((subItem, subIndex) => {
+                        // Se o item tem subitens, nunca passa isActive=true para ele
+                        const hasSubitems = subItem.subitems && subItem.subitems.length > 0
+                        return (
+                          <NavLink
+                            key={subIndex}
+                            item={subItem}
+                            isActive={hasSubitems ? false : isActive(subItem.href)}
+                            collapsed={collapsed}
+                          />
+                        )
+                      })}
                     </ul>
                   )}
 
@@ -159,30 +163,97 @@ interface NavLinkProps {
 
 function NavLink({ item, isActive, collapsed }: NavLinkProps) {
   const Icon = item.icon
+  const pathname = usePathname()
+  
+  const hasSubitems = item.subitems && item.subitems.length > 0
+  // Para itens com submenu, não deixa o item pai ativo, apenas os subitens
+  const isSubitemActive = hasSubitems && item.subitems!.some(sub => pathname === sub.href || pathname?.startsWith(sub.href + '/'))
+  
+  // Auto-expandir quando tem subitem ativo
+  const [showSubitems, setShowSubitems] = useState(isSubitemActive)
 
   return (
     <li>
-      <Link
-        href={item.href}
-        className={cn(
-          'flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-all',
-          collapsed ? 'justify-center' : '',
-          isActive
-            ? 'bg-primary-50 text-primary-600 shadow-sm'
-            : 'text-gray-700 hover:bg-gray-50 hover:text-gray-900'
-        )}
-        title={collapsed ? item.title : undefined}
-      >
-        <Icon className={cn('h-5 w-5 flex-shrink-0', isActive && 'text-primary-500')} />
-        {!collapsed && (
-          <span className="flex-1 truncate">{item.title}</span>
-        )}
-        {!collapsed && item.badge && (
-          <span className="px-2 py-0.5 text-xs font-medium bg-primary-100 text-primary-700 rounded-full">
-            {item.badge}
-          </span>
-        )}
-      </Link>
+      {hasSubitems && !collapsed ? (
+        // Item com submenu (expandido)
+        <div>
+          <button
+            onClick={() => setShowSubitems(!showSubitems)}
+            className={cn(
+              'w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-all',
+              // Item pai NUNCA fica ativo, apenas indica que tem subitem ativo
+              'text-gray-700 hover:bg-gray-50 hover:text-gray-900'
+            )}
+          >
+            <Icon className={cn('h-5 w-5 flex-shrink-0')} />
+            <span className="flex-1 truncate text-left">{item.title}</span>
+            {showSubitems ? (
+              <ChevronDown className="h-4 w-4" />
+            ) : (
+              <ChevronRight className="h-4 w-4" />
+            )}
+          </button>
+          
+          {/* Subitens */}
+          {showSubitems && item.subitems && (
+            <ul className="mt-1 ml-4 space-y-1 border-l-2 border-gray-200 pl-4">
+              {item.subitems.map((subitem, idx) => {
+                const SubIcon = subitem.icon
+                // Comparação EXATA para evitar que "/smart-cnpj" ative quando está em "/smart-cnpj/search"
+                const isSubActive = pathname === subitem.href || 
+                  (subitem.href !== '/smart-cnpj' && pathname?.startsWith(subitem.href + '/'))
+                
+                return (
+                  <li key={idx}>
+                    <Link
+                      href={subitem.href}
+                      className={cn(
+                        'flex items-center gap-2 px-2 py-1.5 rounded-md text-xs font-medium transition-all',
+                        isSubActive
+                          ? 'bg-primary-100 text-primary-700'
+                          : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
+                      )}
+                    >
+                      <SubIcon className="h-4 w-4 flex-shrink-0" />
+                      <span className="flex-1 truncate">{subitem.title}</span>
+                      {subitem.badge && (
+                        <span className="px-1.5 py-0.5 text-[10px] font-medium bg-green-100 text-green-700 rounded-full">
+                          {subitem.badge}
+                        </span>
+                      )}
+                    </Link>
+                  </li>
+                )
+              })}
+            </ul>
+          )}
+        </div>
+      ) : (
+        // Item simples (sem submenu ou collapsed)
+        // Quando tem subitens, NUNCA fica ativo (mesmo collapsed)
+        <Link
+          href={item.href}
+          className={cn(
+            'flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-all',
+            collapsed ? 'justify-center' : '',
+            // Se tem subitens, nunca fica ativo (isActive sempre false)
+            (isActive && !hasSubitems)
+              ? 'bg-primary-50 text-primary-600 shadow-sm'
+              : 'text-gray-700 hover:bg-gray-50 hover:text-gray-900'
+          )}
+          title={collapsed ? item.title : undefined}
+        >
+          <Icon className={cn('h-5 w-5 flex-shrink-0', (isActive && !hasSubitems) && 'text-primary-500')} />
+          {!collapsed && (
+            <span className="flex-1 truncate">{item.title}</span>
+          )}
+          {!collapsed && item.badge && (
+            <span className="px-2 py-0.5 text-xs font-medium bg-primary-100 text-primary-700 rounded-full">
+              {item.badge}
+            </span>
+          )}
+        </Link>
+      )}
     </li>
   )
 }

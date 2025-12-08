@@ -34,6 +34,7 @@ export function useCreditsBalance() {
     refetchOnMount: false, // Evitar requests duplicadas (P.9.3)
     retry: 1, // Apenas 1 retry para evitar blocking (P.9.3)
     retryDelay: 500, // 500ms (rápido para first load)
+    enabled: false, // TEMPORÁRIO: Endpoint não implementado no backend
   })
 }
 

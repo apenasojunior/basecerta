@@ -15,6 +15,9 @@ import {
   Users,
   Building,
   LucideIcon,
+  Sparkles,
+  Filter,
+  Copy,
 } from 'lucide-react'
 
 export interface NavItem {
@@ -23,6 +26,7 @@ export interface NavItem {
   icon: LucideIcon
   badge?: string
   disabled?: boolean
+  subitems?: NavItem[] // Suporte para submenu
 }
 
 export interface NavGroup {
@@ -41,8 +45,26 @@ export const NAVIGATION: (NavItem | NavGroup)[] = [
     items: [
       {
         title: 'Smart CNPJ 360°',
-        href: '/smart-cnpj/search',
-        icon: Search,
+        href: '/smart-cnpj',
+        icon: Building2,
+        subitems: [
+          {
+            title: 'Insights Estratégicos',
+            href: '/smart-cnpj',
+            icon: Sparkles,
+          },
+          {
+            title: 'Busca Avançada',
+            href: '/smart-cnpj/search',
+            icon: Search,
+          },
+          {
+            title: 'Empresas Similares',
+            href: '/smart-cnpj/similares',
+            icon: Copy,
+            badge: 'Novo',
+          },
+        ],
       },
       {
         title: 'Dados 360° - Pessoa Física',

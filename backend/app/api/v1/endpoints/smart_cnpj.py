@@ -48,7 +48,7 @@ def get_redis_client() -> Any:
         return None
     
     try:
-        redis_client = redis.from_url(settings.REDIS_URL, decode_responses=False)
+        redis_client = redis.from_url(settings.redis_url, decode_responses=False)
         redis_client.ping()  # Test connection
         return redis_client
     except Exception as e:
@@ -197,8 +197,8 @@ async def search_empresas(
         response = service.buscar_empresas(request)
         
         logger.info(
-            f"Busca executada: {len(response.empresas)} resultados de {response.pagination.total}, "
-            f"tempo={response.tempoRespostaMs}ms"
+            f"Busca executada: {len(response.data)} resultados de {response.pagination.total}, "
+            f"tempo={response.tempoResposta}ms"
         )
         
         return response
@@ -211,7 +211,9 @@ async def search_empresas(
         )
     
     except Exception as e:
+        import traceback
         logger.error(f"Erro ao executar busca: {str(e)}")
+        logger.error(f"Traceback: {traceback.format_exc()}")
         raise HTTPException(
             status_code=500,
             detail="Erro interno ao processar requisição"

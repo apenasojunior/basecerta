@@ -36,13 +36,34 @@ class FiltrosRequest(BaseModel):
     # Filtros de porte
     porte: Optional[str] = Field(None, description="Código do porte (01, 03, 05)")
     
-    # Filtros de capital social
-    capitalMinimo: Optional[Decimal] = Field(None, description="Capital social mínimo", ge=0)
-    capitalMaximo: Optional[Decimal] = Field(None, description="Capital social máximo", ge=0)
+    # Filtros de natureza jurídica
+    natureza_juridica: Optional[str] = Field(None, description="Código da natureza jurídica")
     
-    # Filtros de data
-    dataAberturaInicio: Optional[date] = Field(None, description="Data abertura início (ISO 8601)")
-    dataAberturaFim: Optional[date] = Field(None, description="Data abertura fim (ISO 8601)")
+    # Filtros de capital social (aceita snake_case e camelCase)
+    capital_social_min: Optional[Decimal] = Field(
+        None, 
+        alias='capitalMinimo',
+        description="Capital social mínimo", 
+        ge=0
+    )
+    capital_social_max: Optional[Decimal] = Field(
+        None, 
+        alias='capitalMaximo',
+        description="Capital social máximo", 
+        ge=0
+    )
+    
+    # Filtros de data (aceita snake_case e camelCase)
+    data_abertura_inicio: Optional[date] = Field(
+        None, 
+        alias='dataAberturaInicio',
+        description="Data abertura início (ISO 8601)"
+    )
+    data_abertura_fim: Optional[date] = Field(
+        None, 
+        alias='dataAberturaFim',
+        description="Data abertura fim (ISO 8601)"
+    )
     
     @field_validator('uf')
     @classmethod
@@ -58,28 +79,30 @@ class FiltrosRequest(BaseModel):
     def validate_ranges(self) -> 'FiltrosRequest':
         """Valida ranges de capital e datas"""
         # Valida range de capital
-        if self.capitalMinimo is not None and self.capitalMaximo is not None:
-            if self.capitalMinimo > self.capitalMaximo:
-                raise ValueError('capitalMinimo não pode ser maior que capitalMaximo')
+        if self.capital_social_min is not None and self.capital_social_max is not None:
+            if self.capital_social_min > self.capital_social_max:
+                raise ValueError('capital_social_min não pode ser maior que capital_social_max')
         
         # Valida range de datas
-        if self.dataAberturaInicio is not None and self.dataAberturaFim is not None:
-            if self.dataAberturaInicio > self.dataAberturaFim:
-                raise ValueError('dataAberturaInicio não pode ser maior que dataAberturaFim')
+        if self.data_abertura_inicio is not None and self.data_abertura_fim is not None:
+            if self.data_abertura_inicio > self.data_abertura_fim:
+                raise ValueError('data_abertura_inicio não pode ser maior que data_abertura_fim')
         
         return self
     
     class Config:
+        populate_by_name = True  # Aceita tanto snake_case quanto camelCase
         json_schema_extra = {
             "example": {
                 "uf": "SP",
                 "municipio": "3550308",  # Código IBGE de São Paulo
                 "situacao": "02",  # Ativa
                 "porte": "01",  # Microempresa
-                "capitalMinimo": 5000.00,
-                "capitalMaximo": 50000.00,
-                "dataAberturaInicio": "2020-01-01",
-                "dataAberturaFim": "2023-12-31"
+                "natureza_juridica": "2062",  # Sociedade Empresária Limitada
+                "capital_social_min": 5000.00,
+                "capital_social_max": 50000.00,
+                "data_abertura_inicio": "2020-01-01",
+                "data_abertura_fim": "2023-12-31"
             }
         }
 

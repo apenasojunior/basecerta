@@ -1,10 +1,9 @@
 'use client'
 
 import { useState } from 'react'
-import { Filter, X, ChevronDown, ChevronUp } from 'lucide-react'
+import { Filter, X, ChevronDown } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Label } from '@/components/ui/label'
-import { Checkbox } from '@/components/ui/checkbox'
 import {
   Select,
   SelectContent,
@@ -22,10 +21,11 @@ import { Badge } from '@/components/ui/badge'
 import { Input } from '@/components/ui/input'
 import { cn } from '@/lib/utils'
 import {
-  situacaoCadastralOptions,
-  porteOptions,
-  formaTributacaoOptions,
-} from '@/mocks/smart-cnpj'
+  SITUACAO_CADASTRAL,
+  PORTE_EMPRESA,
+  UF_BRASIL,
+  NATUREZAS_JURIDICAS_PRINCIPAIS,
+} from '@/lib/constants/filtros'
 import type { SearchFilters } from '@/hooks/useSmartCNPJ'
 
 interface FilterPanelProps {
@@ -47,37 +47,41 @@ export function FilterPanel({
 }: FilterPanelProps) {
   const [isOpen, setIsOpen] = useState(true)
 
-  // Count active filters
+  // Count active filters (exclude empty strings)
   const activeFiltersCount = Object.values(filters).filter(value => {
     if (Array.isArray(value)) return value.length > 0
-    return value !== undefined && value !== null
+    return value !== undefined && value !== null && value !== ''
   }).length
 
-  // Handler para situação cadastral (multi-select)
-  const handleSituacaoChange = (value: string, checked: boolean) => {
-    const current = filters.situacaoCadastral || []
-    const updated = checked
-      ? [...current, value]
-      : current.filter(v => v !== value)
-    
-    onFiltersChange({ ...filters, situacaoCadastral: updated.length > 0 ? updated : undefined })
+  // Handler para situação cadastral (single select)
+  const handleSituacaoChange = (value: string) => {
+    onFiltersChange({ 
+      ...filters, 
+      situacao: value === 'TODOS' ? undefined : value 
+    })
   }
 
-  // Handler para porte (multi-select)
-  const handlePorteChange = (value: string, checked: boolean) => {
-    const current = filters.porte || []
-    const updated = checked
-      ? [...current, value]
-      : current.filter(v => v !== value)
-    
-    onFiltersChange({ ...filters, porte: updated.length > 0 ? updated : undefined })
+  // Handler para porte (single select)
+  const handlePorteChange = (value: string) => {
+    onFiltersChange({ 
+      ...filters, 
+      porte: value === 'TODOS' ? undefined : value 
+    })
   }
 
-  // Handler para tipo (radio)
-  const handleTipoChange = (value: string) => {
-    onFiltersChange({
-      ...filters,
-      tipo: value === 'TODOS' ? undefined : value as 'MATRIZ' | 'FILIAL',
+  // Handler para UF (single select)
+  const handleUFChange = (value: string) => {
+    onFiltersChange({ 
+      ...filters, 
+      uf: value === 'TODOS' ? undefined : value 
+    })
+  }
+
+  // Handler para natureza jurídica (single select)
+  const handleNaturezaChange = (value: string) => {
+    onFiltersChange({ 
+      ...filters, 
+      natureza_juridica: value === 'TODOS' ? undefined : value 
     })
   }
 
@@ -86,31 +90,18 @@ export function FilterPanel({
     const numValue = value ? parseFloat(value) : undefined
     
     if (type === 'min') {
-      onFiltersChange({ ...filters, capitalSocialMin: numValue })
+      onFiltersChange({ ...filters, capital_social_min: numValue })
     } else {
-      onFiltersChange({ ...filters, capitalSocialMax: numValue })
+      onFiltersChange({ ...filters, capital_social_max: numValue })
     }
   }
 
-  // Handler para checkboxes simples
-  const handleCheckboxChange = (key: 'isMEI' | 'isSimplesNacional', checked: boolean) => {
-    onFiltersChange({ ...filters, [key]: checked ? true : undefined })
-  }
-
-  // Handler para forma de tributação
-  const handleFormaTributacaoChange = (value: string) => {
-    onFiltersChange({
-      ...filters,
-      formaTributacao: value === 'TODOS' ? undefined : value,
-    })
-  }
-
-  // Handler para datas
-  const handleDateChange = (type: 'start' | 'end', value: string) => {
-    if (type === 'start') {
-      onFiltersChange({ ...filters, dataAberturaStart: value || undefined })
+  // Handler para data de abertura
+  const handleDataAberturaChange = (type: 'inicio' | 'fim', value: string) => {
+    if (type === 'inicio') {
+      onFiltersChange({ ...filters, data_abertura_inicio: value || undefined })
     } else {
-      onFiltersChange({ ...filters, dataAberturaEnd: value || undefined })
+      onFiltersChange({ ...filters, data_abertura_fim: value || undefined })
     }
   }
 
@@ -149,100 +140,104 @@ export function FilterPanel({
       </CardHeader>
 
       <CardContent className="space-y-4">
-        {/* 1. Situação Cadastral (Multi-select) */}
-        <Collapsible defaultOpen className="space-y-2">
-          <CollapsibleTrigger className="flex items-center justify-between w-full group">
-            <Label className="font-medium text-gray-700 cursor-pointer">
-              Situação Cadastral
-              {filters.situacaoCadastral && filters.situacaoCadastral.length > 0 && (
-                <Badge variant="secondary" className="ml-2">
-                  {filters.situacaoCadastral.length}
-                </Badge>
-              )}
-            </Label>
-            <ChevronDown className="h-4 w-4 text-gray-500 group-data-[state=open]:rotate-180 transition-transform" />
-          </CollapsibleTrigger>
-          <CollapsibleContent className="space-y-2 pt-2">
-            {situacaoCadastralOptions.map((option) => (
-              <div key={option.value} className="flex items-center space-x-2">
-                <Checkbox
-                  id={`situacao-${option.value}`}
-                  checked={filters.situacaoCadastral?.includes(option.value) ?? false}
-                  onCheckedChange={(checked) => handleSituacaoChange(option.value, checked as boolean)}
-                />
-                <label
-                  htmlFor={`situacao-${option.value}`}
-                  className="text-sm text-gray-700 cursor-pointer"
-                >
-                  {option.label}
-                </label>
-              </div>
-            ))}
-          </CollapsibleContent>
-        </Collapsible>
-
-        <div className="border-t border-gray-200" />
-
-        {/* 2. Tipo (Radio) */}
+        {/* 1. UF - Estado (Select) */}
         <div className="space-y-2">
-          <Label className="font-medium text-gray-700">Tipo</Label>
+          <Label className="font-medium text-gray-700">Estado (UF)</Label>
           <Select
-            value={filters.tipo || 'TODOS'}
-            onValueChange={handleTipoChange}
+            value={filters.uf || 'TODOS'}
+            onValueChange={handleUFChange}
           >
             <SelectTrigger>
-              <SelectValue placeholder="Selecione o tipo" />
+              <SelectValue placeholder="Selecione o estado" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="TODOS">Todos</SelectItem>
-              <SelectItem value="MATRIZ">Matriz</SelectItem>
-              <SelectItem value="FILIAL">Filial</SelectItem>
+              <SelectItem value="TODOS">Todos os estados</SelectItem>
+              {UF_BRASIL.map((uf) => (
+                <SelectItem key={uf} value={uf}>
+                  {uf}
+                </SelectItem>
+              ))}
             </SelectContent>
           </Select>
         </div>
 
         <div className="border-t border-gray-200" />
 
-        {/* 3. Porte (Multi-select) */}
-        <Collapsible defaultOpen className="space-y-2">
-          <CollapsibleTrigger className="flex items-center justify-between w-full group">
-            <Label className="font-medium text-gray-700 cursor-pointer">
-              Porte da Empresa
-              {filters.porte && filters.porte.length > 0 && (
-                <Badge variant="secondary" className="ml-2">
-                  {filters.porte.length}
-                </Badge>
-              )}
-            </Label>
-            <ChevronDown className="h-4 w-4 text-gray-500 group-data-[state=open]:rotate-180 transition-transform" />
-          </CollapsibleTrigger>
-          <CollapsibleContent className="space-y-2 pt-2">
-            {porteOptions.map((option) => (
-              <div key={option.value} className="flex items-center space-x-2">
-                <Checkbox
-                  id={`porte-${option.value}`}
-                  checked={filters.porte?.includes(option.value) ?? false}
-                  onCheckedChange={(checked) => handlePorteChange(option.value, checked as boolean)}
-                />
-                <label
-                  htmlFor={`porte-${option.value}`}
-                  className="text-sm text-gray-700 cursor-pointer"
-                >
-                  {option.label}
-                </label>
-              </div>
-            ))}
-          </CollapsibleContent>
-        </Collapsible>
+        {/* 2. Situação Cadastral (Select) */}
+        <div className="space-y-2">
+          <Label className="font-medium text-gray-700">Situação Cadastral</Label>
+          <Select
+            value={filters.situacao || 'TODOS'}
+            onValueChange={handleSituacaoChange}
+          >
+            <SelectTrigger>
+              <SelectValue placeholder="Selecione a situação" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="TODOS">Todas</SelectItem>
+              {Object.entries(SITUACAO_CADASTRAL).map(([codigo, descricao]) => (
+                <SelectItem key={codigo} value={codigo}>
+                  {descricao}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
 
         <div className="border-t border-gray-200" />
 
-        {/* 4. Capital Social (Range) */}
+        {/* 3. Porte da Empresa (Select) */}
+        <div className="space-y-2">
+          <Label className="font-medium text-gray-700">Porte da Empresa</Label>
+          <Select
+            value={filters.porte || 'TODOS'}
+            onValueChange={handlePorteChange}
+          >
+            <SelectTrigger>
+              <SelectValue placeholder="Selecione o porte" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="TODOS">Todos</SelectItem>
+              {Object.entries(PORTE_EMPRESA).map(([codigo, descricao]) => (
+                <SelectItem key={codigo} value={codigo}>
+                  {descricao}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+
+        <div className="border-t border-gray-200" />
+
+        {/* 4. Natureza Jurídica (Select) */}
+        <div className="space-y-2">
+          <Label className="font-medium text-gray-700">Natureza Jurídica</Label>
+          <Select
+            value={filters.natureza_juridica || 'TODOS'}
+            onValueChange={handleNaturezaChange}
+          >
+            <SelectTrigger>
+              <SelectValue placeholder="Selecione a natureza" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="TODOS">Todas</SelectItem>
+              {Object.entries(NATUREZAS_JURIDICAS_PRINCIPAIS).map(([codigo, descricao]) => (
+                <SelectItem key={codigo} value={codigo}>
+                  {descricao}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+
+        <div className="border-t border-gray-200" />
+
+        {/* 5. Capital Social (Range) */}
         <Collapsible className="space-y-2">
           <CollapsibleTrigger className="flex items-center justify-between w-full group">
             <Label className="font-medium text-gray-700 cursor-pointer">
               Capital Social (R$)
-              {(filters.capitalSocialMin || filters.capitalSocialMax) && (
+              {(filters.capital_social_min || filters.capital_social_max) && (
                 <Badge variant="secondary" className="ml-2">•</Badge>
               )}
             </Label>
@@ -257,7 +252,7 @@ export function FilterPanel({
                 id="capital-min"
                 type="number"
                 placeholder="Ex: 10000"
-                value={filters.capitalSocialMin ?? ''}
+                value={filters.capital_social_min ?? ''}
                 onChange={(e) => handleCapitalChange('min', e.target.value)}
                 className="h-9"
               />
@@ -270,7 +265,7 @@ export function FilterPanel({
                 id="capital-max"
                 type="number"
                 placeholder="Ex: 1000000"
-                value={filters.capitalSocialMax ?? ''}
+                value={filters.capital_social_max ?? ''}
                 onChange={(e) => handleCapitalChange('max', e.target.value)}
                 className="h-9"
               />
@@ -280,67 +275,12 @@ export function FilterPanel({
 
         <div className="border-t border-gray-200" />
 
-        {/* 5. MEI (Checkbox) */}
-        <div className="flex items-center space-x-2">
-          <Checkbox
-            id="filter-mei"
-            checked={filters.isMEI ?? false}
-            onCheckedChange={(checked) => handleCheckboxChange('isMEI', checked as boolean)}
-          />
-          <label
-            htmlFor="filter-mei"
-            className="text-sm font-medium text-gray-700 cursor-pointer"
-          >
-            Apenas MEI
-          </label>
-        </div>
-
-        {/* 6. Simples Nacional (Checkbox) */}
-        <div className="flex items-center space-x-2">
-          <Checkbox
-            id="filter-simples"
-            checked={filters.isSimplesNacional ?? false}
-            onCheckedChange={(checked) => handleCheckboxChange('isSimplesNacional', checked as boolean)}
-          />
-          <label
-            htmlFor="filter-simples"
-            className="text-sm font-medium text-gray-700 cursor-pointer"
-          >
-            Optante pelo Simples Nacional
-          </label>
-        </div>
-
-        <div className="border-t border-gray-200" />
-
-        {/* 7. Forma de Tributação (Select) */}
-        <div className="space-y-2">
-          <Label className="font-medium text-gray-700">Forma de Tributação</Label>
-          <Select
-            value={filters.formaTributacao || 'TODOS'}
-            onValueChange={handleFormaTributacaoChange}
-          >
-            <SelectTrigger>
-              <SelectValue placeholder="Selecione" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="TODOS">Todas</SelectItem>
-              {formaTributacaoOptions.map((option) => (
-                <SelectItem key={option.value} value={option.value}>
-                  {option.label}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-
-        <div className="border-t border-gray-200" />
-
-        {/* 8. Data de Abertura (Date Range) */}
+        {/* 6. Data de Abertura (Date Range) */}
         <Collapsible className="space-y-2">
           <CollapsibleTrigger className="flex items-center justify-between w-full group">
             <Label className="font-medium text-gray-700 cursor-pointer">
               Data de Abertura
-              {(filters.dataAberturaStart || filters.dataAberturaEnd) && (
+              {(filters.data_abertura_inicio || filters.data_abertura_fim) && (
                 <Badge variant="secondary" className="ml-2">•</Badge>
               )}
             </Label>
@@ -354,8 +294,8 @@ export function FilterPanel({
               <Input
                 id="date-start"
                 type="date"
-                value={filters.dataAberturaStart ?? ''}
-                onChange={(e) => handleDateChange('start', e.target.value)}
+                value={filters.data_abertura_inicio ?? ''}
+                onChange={(e) => handleDataAberturaChange('inicio', e.target.value)}
                 className="h-9"
               />
             </div>
@@ -366,8 +306,8 @@ export function FilterPanel({
               <Input
                 id="date-end"
                 type="date"
-                value={filters.dataAberturaEnd ?? ''}
-                onChange={(e) => handleDateChange('end', e.target.value)}
+                value={filters.data_abertura_fim ?? ''}
+                onChange={(e) => handleDataAberturaChange('fim', e.target.value)}
                 className="h-9"
               />
             </div>

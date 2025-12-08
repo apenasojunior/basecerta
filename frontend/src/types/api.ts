@@ -14,6 +14,9 @@ import {
   Company,
 } from './entities'
 
+// Import tipos específicos do Smart CNPJ 360°
+export * from './smart-cnpj'
+
 /**
  * Resposta padrão da API
  */

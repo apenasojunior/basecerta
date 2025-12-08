@@ -140,6 +140,25 @@ async def health_check():
 # Include API routers
 # DELIVERY 1: Nenhum router - Frontend usa mockdata
 # DELIVERY 2: Incluir routers reconstruídos aqui
+from app.api.v1.endpoints import smart_cnpj, insights, similares
+
+app.include_router(
+    insights.router,
+    prefix=f"/api/{settings.API_VERSION}/insights",
+    tags=["Insights"]
+)
+
+app.include_router(
+    smart_cnpj.router,
+    prefix=f"/api/{settings.API_VERSION}/smart-cnpj",
+    tags=["Smart CNPJ 360°"]
+)
+
+app.include_router(
+    similares.router,
+    prefix=f"/api/{settings.API_VERSION}/smart-cnpj",
+    tags=["Smart CNPJ - Empresas Similares"]
+)
 
 
 if __name__ == "__main__":

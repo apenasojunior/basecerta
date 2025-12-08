@@ -19,7 +19,8 @@ class TipoBusca(str, Enum):
     """
     CNPJ = "cnpj"
     RAZAO_SOCIAL = "razao_social"
-    SEGMENTO = "segmento"
+    CNAE = "cnae"           # Alias para SEGMENTO (busca por código CNAE)
+    SEGMENTO = "segmento"   # Busca por código CNAE (mantido para compatibilidade)
     EMAIL = "email"
     TELEFONE = "telefone"
     NOME_SOCIO = "nome_socio"

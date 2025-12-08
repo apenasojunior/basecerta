@@ -62,6 +62,56 @@
 
 ---
 
+## 📋 Issues Completas
+
+### Sprint 2.2 - Smart CNPJ Frontend Integration
+
+- **Issue 2.2.1** - [Setup e Configuração API](./ISSUE_2.2.1_SETUP_API_COMPLETE.md) ✅
+  - Configuração de variáveis de ambiente
+  - Health check utilities
+  - Script de teste de conexão
+  - Validação de conectividade (60% sucesso)
+  
+- **Issue 2.2.2** - [Alinhar Tipos TypeScript](./ISSUE_2.2.2_TIPOS_TYPESCRIPT_COMPLETE.md) ✅
+  - Interface SmartCNPJCompanyAPI (12 interfaces)
+  - Funções transformer API ↔ Mock
+  - Type guards e validações
+  - Documentação completa de mapeamento (747 linhas)
+
+- **Issue 2.2.3** - [Service Layer](./ISSUE_2.2.3_SERVICE_LAYER_COMPLETE.md) ✅
+  - Classe SmartCNPJService (590 linhas)
+  - 11 métodos públicos (getByCNPJ, bulkSearch, export, etc)
+  - Validação e formatação de CNPJ
+  - Script de testes (100% passando)
+
+- **Issue 2.2.4** - [Refatorar Hook useSmartCNPJ](./ISSUE_2.2.4_HOOKS_REFACTOR_COMPLETE.md) ✅
+  - Hook principal completamente refatorado
+  - 6 hooks especializados adicionais
+  - 100% integrado com API real (sem mock)
+  - React Query para cache e loading states
+
+- **Issue 2.2.5** - [Atualizar Páginas para API Real](./ISSUE_2.2.5_PAGES_API_INTEGRATION_COMPLETE.md) ✅
+  - 3 páginas refatoradas (details, search, results)
+  - Adapter criado para compatibilidade
+  - Loading/error states implementados
+  - 100% dos imports de mock removidos
+
+- **Issue 2.2.6** - [Implementar Export](./ISSUE_2.2.6_EXPORT_IMPLEMENTATION_COMPLETE.md) ✅
+  - ExportDialog com seleção de formato e campos
+  - ExportButton com dropdown rápido
+  - 3 formatos: CSV, XLSX, JSON
+  - 20 campos customizáveis em 7 grupos
+  - Integração em 2 páginas (results, details)
+
+- **Issue 2.2.7** - [Dashboard com Histórico e Estatísticas](./ISSUE_2.2.7_DASHBOARD_COMPLETE.md) ✅
+  - DashboardPage completa (~435 linhas)
+  - 7 métricas de estatísticas
+  - Histórico paginado de consultas
+  - Gráfico de distribuição por tipo
+  - Layout 100% responsivo
+
+---
+
 ## 🗂️ Organização da Documentação
 
 ```

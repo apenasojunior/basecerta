@@ -27,7 +27,7 @@ logger = logging.getLogger(__name__)
 
 
 # ================================================================
-# BUSCA POR CNPJ ESPECÍFICO
+# BUSCA AVANÇADA
 # ================================================================
 
 def get_empresa_by_cnpj(
@@ -71,9 +71,10 @@ def get_empresa_by_cnpj(
     cnpj_ordem = cnpj_limpo[8:12]
     cnpj_dv = cnpj_limpo[12:14]
     
-    # Base query com joins
+    # Base query com joins e eager loading
     query = db.query(Estabelecimento).options(
-        joinedload(Estabelecimento.empresa),
+        joinedload(Estabelecimento.empresa)
+            .joinedload(Empresa.socios),  # ✅ Eager load sócios (evita N+1)
         joinedload(Estabelecimento.municipio_obj),
         joinedload(Estabelecimento.cnae_principal)
     )
@@ -164,11 +165,13 @@ def search_empresas(
     # Query base com joins necessários
     query = db.query(Estabelecimento).join(Estabelecimento.empresa)
     
-    # Eager loading de relacionamentos
+    # Eager loading de relacionamentos para evitar N+1 queries
+    # IMPORTANTE: NÃO carregar sócios aqui (muito pesado para listagens)
+    # Sócios devem ser carregados apenas no endpoint de detalhes (/cnpj/{cnpj})
     query = query.options(
-        joinedload(Estabelecimento.empresa),
-        joinedload(Estabelecimento.municipio),
-        joinedload(Estabelecimento.cnae_fiscal)
+        joinedload(Estabelecimento.empresa),  # Apenas dados básicos da empresa
+        joinedload(Estabelecimento.municipio_obj),
+        joinedload(Estabelecimento.cnae_principal)
     )
     
     # Aplicar busca conforme tipo
@@ -178,15 +181,64 @@ def search_empresas(
     if filtros:
         query = _apply_filters(query, filtros)
     
-    # Count total ANTES da paginação
-    total = query.count()
+    # OTIMIZAÇÃO: Usar LIMIT+1 pattern para TODAS as buscas
+    # Evita COUNT(*) que é sempre lento em queries com ILIKE ou JOINs complexos
+    logger.info(f"Usando LIMIT+1 pattern para tipo_busca={tipo_busca.value} (sem COUNT)")
     
-    # Paginação
+    # Buscar limite + 1 para saber se tem mais páginas
     offset = (page - 1) * limit
-    query = query.limit(limit).offset(offset)
     
-    # Executar query
-    resultados = query.all()
+    # OTIMIZAÇÃO CAPITAL_SOCIAL: Se ordenar por capital, buscar mais resultados
+    # antes e ordenar em memória (mais rápido que scan backward no PostgreSQL)
+    apply_capital_order = filtros.get('_apply_capital_order_after') if filtros else False
+    if apply_capital_order:
+        # Buscar 10x mais resultados sem ordenação
+        # Depois ordenar em Python e pegar TOP N
+        fetch_limit = min(limit * 10, 1000)  # Máximo 1000
+        logger.info(f"OTIMIZAÇÃO: Buscando {fetch_limit} resultados para ordenar por capital em memória")
+        
+        resultados_sem_ordem = query.limit(fetch_limit).offset(offset).all()
+        
+        # Ordenar em memória por capital_social
+        order_direction = filtros.get('orderDirection', 'desc')
+        resultados_ordenados = sorted(
+            resultados_sem_ordem,
+            key=lambda x: x.empresa.capital_social or 0,
+            reverse=(order_direction.lower() == 'desc')
+        )
+        
+        # Pegar apenas LIMIT solicitado
+        resultados = resultados_ordenados[:limit]
+        has_more = len(resultados_sem_ordem) >= fetch_limit
+        
+        if has_more:
+            total = (page * limit) + 1
+        else:
+            total = offset + len(resultados)
+        
+        elapsed_ms = (datetime.now() - start_time).total_seconds() * 1000
+        logger.info(f"Busca OTIMIZADA (capital em memória): {elapsed_ms:.0f}ms - {len(resultados)} de {len(resultados_sem_ordem)} ordenados")
+        
+        return resultados, total
+    
+    # Fluxo normal (sem ordenação por capital)
+    query_with_pagination = query.limit(limit + 1).offset(offset)
+    resultados = query_with_pagination.all()
+    
+    # Se retornou limit + 1, significa que tem mais páginas
+    has_more = len(resultados) > limit
+    if has_more:
+        resultados = resultados[:limit]  # Remove o extra
+    
+    # Calcular total estimado
+    # Se tem mais páginas: (page * limit) + 1 (para mostrar "~" no frontend)
+    # Se não tem: offset + len(resultados) (exato na última página)
+    if has_more:
+        total = (page * limit) + 1  # Indica que há mais páginas
+    else:
+        total = offset + len(resultados)  # Exato na última página
+    
+    logger.info(f"Busca otimizada: {len(resultados)} resultados, página {page}, has_more={has_more}, total_estimado={total}")
     
     # Log de performance
     elapsed_ms = (datetime.now() - start_time).total_seconds() * 1000
@@ -227,9 +279,9 @@ def _apply_search_type(
             Empresa.razao_social.ilike(f"%{valor}%")
         )
     
-    elif tipo_busca == TipoBusca.SEGMENTO:
+    elif tipo_busca == TipoBusca.CNAE or tipo_busca == TipoBusca.SEGMENTO:
         # Busca por CNAE (código ou descrição)
-        # Primeiro tenta por código exato, depois por descrição
+        # Aceita tanto 'cnae' quanto 'segmento' (alias)
         cnae_codigo = valor.replace('.', '').replace('/', '').replace('-', '')
         query = query.filter(
             or_(
@@ -277,6 +329,7 @@ def _apply_filters(query, filtros: Dict[str, Any]):
     Aplica filtros opcionais à query.
     
     Query builder dinâmico - adiciona apenas filtros preenchidos.
+    Aceita tanto snake_case quanto camelCase para compatibilidade.
     """
     
     # Filtro de UF
@@ -297,27 +350,63 @@ def _apply_filters(query, filtros: Dict[str, Any]):
             Empresa.porte_empresa == filtros['porte']
         )
     
-    # Filtro de capital social (range)
-    if filtros.get('capitalMinimo') is not None:
+    # Filtro de natureza jurídica
+    if filtros.get('natureza_juridica'):
         query = query.join(Estabelecimento.empresa).filter(
-            Empresa.capital_social >= filtros['capitalMinimo']
+            Empresa.natureza_juridica == filtros['natureza_juridica']
         )
     
-    if filtros.get('capitalMaximo') is not None:
+    # Filtro de capital social (range) - aceita snake_case e camelCase
+    capital_min = filtros.get('capital_social_min') or filtros.get('capitalMinimo')
+    if capital_min is not None:
         query = query.join(Estabelecimento.empresa).filter(
-            Empresa.capital_social <= filtros['capitalMaximo']
+            Empresa.capital_social >= capital_min
         )
     
-    # Filtro de data de abertura (range)
-    if filtros.get('dataAberturaInicio'):
-        query = query.filter(
-            Estabelecimento.data_inicio_atividade >= filtros['dataAberturaInicio']
+    capital_max = filtros.get('capital_social_max') or filtros.get('capitalMaximo')
+    if capital_max is not None:
+        query = query.join(Estabelecimento.empresa).filter(
+            Empresa.capital_social <= capital_max
         )
     
-    if filtros.get('dataAberturaFim'):
+    # Filtro de data de abertura (range) - aceita snake_case e camelCase
+    data_inicio = filtros.get('data_abertura_inicio') or filtros.get('dataAberturaInicio')
+    if data_inicio:
         query = query.filter(
-            Estabelecimento.data_inicio_atividade <= filtros['dataAberturaFim']
+            Estabelecimento.data_inicio_atividade >= data_inicio
         )
+    
+    data_fim = filtros.get('data_abertura_fim') or filtros.get('dataAberturaFim')
+    if data_fim:
+        query = query.filter(
+            Estabelecimento.data_inicio_atividade <= data_fim
+        )
+    
+    # Ordenação - suporta orderBy e orderDirection
+    order_by = filtros.get('orderBy') or filtros.get('order_by')
+    order_direction = filtros.get('orderDirection') or filtros.get('order_direction') or 'desc'
+    
+    if order_by:
+        # OTIMIZAÇÃO CRÍTICA para capital_social:
+        # Quando ordenar por capital_social, não aplicar ORDER BY ainda.
+        # Vamos aplicar depois com subquery para evitar scan backward
+        if order_by != 'capital_social':
+            # Mapear outros campos
+            order_field_map = {
+                'razao_social': Empresa.razao_social,
+                'data_abertura': Estabelecimento.data_inicio_atividade,
+                'uf': Estabelecimento.uf,
+            }
+            
+            field = order_field_map.get(order_by)
+            if field is not None:
+                if order_direction.lower() == 'asc':
+                    query = query.order_by(field.asc())
+                else:
+                    query = query.order_by(field.desc())
+        # Se for capital_social, marcar no filtros para aplicar depois
+        else:
+            filtros['_apply_capital_order_after'] = True
     
     return query
 

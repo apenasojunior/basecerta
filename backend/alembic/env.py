@@ -15,9 +15,11 @@ from app.core.config import settings
 from app.core.database import Base
 
 # Import all models here to ensure they are registered with Base.metadata
-from app.models.user import User
-from app.models.credit import Plan, CreditPackage, UserCredits, CreditTransaction
+# from app.models.user import User
+# from app.models.credit import Plan, CreditPackage, UserCredits, CreditTransaction
 # from app.models.company import Company  # Sprint 3
+from app.models.cnpj import Empresa, Estabelecimento, Socio, CNAE, SimplesNacional
+from app.models.insights import InsightCache
 # etc...
 
 # this is the Alembic Config object, which provides

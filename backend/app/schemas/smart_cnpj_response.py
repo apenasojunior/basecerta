@@ -189,12 +189,16 @@ class SmartCNPJCompanyResponse(BaseModel):
 
 class PaginationMetadata(BaseModel):
     """Metadados de paginação"""
-    total: int = Field(..., description="Total de registros")
+    total: int = Field(..., description="Total de registros (pode ser estimado)")
     page: int = Field(..., description="Página atual (1-indexed)")
     limit: int = Field(..., description="Registros por página")
-    totalPages: int = Field(..., description="Total de páginas")
+    totalPages: int = Field(..., description="Total de páginas (pode ser estimado)")
     hasNext: bool = Field(..., description="Tem próxima página")
     hasPrev: bool = Field(..., description="Tem página anterior")
+    isEstimate: bool = Field(
+        default=True, 
+        description="Se total é estimado (true) ou exato (false). Com LIMIT+1 pattern, sempre estimado exceto última página"
+    )
     
     class Config:
         json_schema_extra = {
@@ -204,7 +208,8 @@ class PaginationMetadata(BaseModel):
                 "limit": 20,
                 "totalPages": 8,
                 "hasNext": True,
-                "hasPrev": False
+                "hasPrev": False,
+                "isEstimate": True
             }
         }
 
@@ -214,8 +219,8 @@ class SmartCNPJSearchResponse(BaseModel):
     data: List[SmartCNPJCompanyResponse] = Field(..., description="Lista de empresas")
     pagination: PaginationMetadata = Field(..., description="Metadados de paginação")
     filters: dict = Field(default_factory=dict, description="Filtros aplicados")
-    searchType: str = Field(..., description="Tipo de busca realizada")
-    searchValue: str = Field(..., description="Valor pesquisado")
+    searchType: Optional[str] = Field(None, description="Tipo de busca realizada")
+    searchValue: Optional[str] = Field(None, description="Valor pesquisado")
     tempoResposta: Optional[int] = Field(None, description="Tempo de resposta em ms")
     
     class Config:

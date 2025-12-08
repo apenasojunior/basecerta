@@ -18,7 +18,7 @@ from app.crud.smart_cnpj import (
     get_historico_pesquisas,
     get_search_stats
 )
-from app.models.cnpj import Estabelecimento
+from app.models.cnpj import Estabelecimento, CNAE
 from app.models.pesquisa import PesquisaCNPJ
 from app.schemas.enums import TipoBusca
 from app.schemas.smart_cnpj_request import SmartCNPJSearchRequest, FiltrosRequest
@@ -169,11 +169,13 @@ class SmartCNPJService:
         
         Flow:
         1. Validar parâmetros
-        2. Executar busca (CRUD)
-        3. Converter resultados para response
-        4. Registrar no histórico
-        5. Mock de créditos (-5)
-        6. Retornar resposta paginada
+        2. Verificar cache Redis
+        3. Executar busca (CRUD)
+        4. Converter resultados para response
+        5. Salvar no cache
+        6. Registrar no histórico
+        7. Mock de créditos (-5)
+        8. Retornar resposta paginada
         
         Args:
             request: SmartCNPJSearchRequest com tipo, valor, filtros, paginação
@@ -206,14 +208,39 @@ class SmartCNPJService:
                 if v is not None
             }
         
-        # 3. Executar busca (CRUD)
+        # 3. Verificar cache Redis
+        cache_key = self._build_search_cache_key(
+            tipo_busca=request.tipo_busca.value,
+            valor_busca=request.valor_busca,
+            filtros=filtros_dict,
+            page=request.page,
+            limit=request.limit
+        )
+        cached_data = self._get_from_cache(cache_key)
+        
+        if cached_data:
+            logger.info(f"🎯 Cache HIT: search - {cache_key[:50]}...")
+            # Ainda registra no histórico mesmo com cache
+            self._registrar_pesquisa(
+                tipo_busca=request.tipo_busca.value,
+                valor_busca=request.valor_busca,
+                filtros_aplicados=filtros_dict,
+                total_resultados=cached_data.get("total", 0),
+                tempo_resposta_ms=int((datetime.now() - start_time).total_seconds() * 1000),
+                from_cache=True
+            )
+            return SmartCNPJSearchResponse(**cached_data)
+        
+        logger.info(f"💨 Cache MISS: search - {cache_key[:50]}...")
+        
+        # 4. Executar busca (CRUD)
         resultados, total = search_empresas(
             db=self.db,
             tipo_busca=request.tipo_busca,
             valor_busca=request.valor_busca,
             filtros=filtros_dict,
             page=request.page,
-            limit=request.page_size
+            limit=request.limit
         )
         
         # 4. Converter para response schemas
@@ -224,16 +251,34 @@ class SmartCNPJService:
         
         # 5. Calcular metadata de paginação
         tempo_resposta_ms = int((datetime.now() - start_time).total_seconds() * 1000)
-        total_pages = (total + request.page_size - 1) // request.page_size
+        total_pages = (total + request.limit - 1) // request.limit if total > 0 else 0
+        
+        # Com LIMIT+1 pattern:
+        # - Se total = (page * limit) + 1, é estimado (tem mais páginas)
+        # - Se total = offset + resultados, é exato (última página)
+        has_next = request.page < total_pages
+        is_estimate = has_next  # Estimado se tem próxima página
         
         metadata = PaginationMetadata(
-            page=request.page,
-            pageSize=request.page_size,
             total=total,
-            totalPages=total_pages
+            page=request.page,
+            limit=request.limit,
+            totalPages=total_pages,
+            hasNext=has_next,
+            hasPrev=request.page > 1,
+            isEstimate=is_estimate  # ✅ Novo campo
         )
         
-        # 6. Registrar no histórico + mock de créditos
+        # 6. Criar response
+        response = SmartCNPJSearchResponse(
+            data=empresas,
+            pagination=metadata
+        )
+        
+        # 7. Salvar no cache (TTL menor para buscas - 1 hora)
+        self._set_in_cache(cache_key, response.model_dump(), ttl=3600)
+        
+        # 8. Registrar no histórico + mock de créditos
         self._registrar_pesquisa(
             tipo_busca=request.tipo_busca.value,
             valor_busca=request.valor_busca,
@@ -243,20 +288,21 @@ class SmartCNPJService:
             from_cache=False
         )
         
-        # 7. Montar resposta
-        response = SmartCNPJSearchResponse(
-            empresas=empresas,
-            pagination=metadata,
-            creditosUsados=5,  # Mock: custo fixo
-            tempoRespostaMs=tempo_resposta_ms
-        )
+        # 9. Adicionar metadados extras ao response
+        response_dict = response.model_dump()
+        response_dict.update({
+            "filters": filtros_dict,
+            "searchType": request.tipo_busca.value,
+            "searchValue": request.valor_busca,
+            "tempoResposta": tempo_resposta_ms
+        })
         
         logger.info(
             f"Busca executada: tipo={request.tipo_busca.value}, "
             f"valor={request.valor_busca}, total={total}, tempo={tempo_resposta_ms}ms"
         )
         
-        return response
+        return SmartCNPJSearchResponse(**response_dict)
     
     # ================================================================
     # HISTÓRICO E ESTATÍSTICAS
@@ -323,10 +369,28 @@ class SmartCNPJService:
         }
         
         # Montar contatos
+        # Formatar telefones: concatenar DDD + número e formatar se tiver conteúdo
+        telefone1_raw = f"{estabelecimento.ddd_1 or ''}{estabelecimento.telefone_1 or ''}".strip()
+        telefone2_raw = f"{estabelecimento.ddd_2 or ''}{estabelecimento.telefone_2 or ''}".strip()
+        fax_raw = f"{estabelecimento.ddd_fax or ''}{estabelecimento.fax or ''}".strip()
+        
+        # Formatar telefones (XX) XXXXX-XXXX ou (XX) XXXX-XXXX
+        def format_phone(phone: str) -> Optional[str]:
+            if not phone or len(phone) < 10:
+                return None
+            # Remove caracteres não numéricos
+            digits = ''.join(filter(str.isdigit, phone))
+            if len(digits) == 10:  # (XX) XXXX-XXXX
+                return f"({digits[:2]}) {digits[2:6]}-{digits[6:]}"
+            elif len(digits) == 11:  # (XX) XXXXX-XXXX
+                return f"({digits[:2]}) {digits[2:7]}-{digits[7:]}"
+            return phone  # Retorna sem formatação se não couber nos padrões
+        
         contatos = {
-            "email": estabelecimento.correio_eletronico or "",
-            "telefone1": f"{estabelecimento.ddd_1 or ''}{estabelecimento.telefone_1 or ''}",
-            "telefone2": f"{estabelecimento.ddd_2 or ''}{estabelecimento.telefone_2 or ''}"
+            "email": estabelecimento.correio_eletronico or None,
+            "telefone": format_phone(telefone1_raw),
+            "telefone2": format_phone(telefone2_raw),
+            "fax": format_phone(fax_raw)
         }
         
         # Montar CNAE principal
@@ -336,6 +400,28 @@ class SmartCNPJService:
                 "codigo": estabelecimento.cnae_fiscal_principal,
                 "descricao": estabelecimento.cnae_principal.descricao
             }
+        
+        # Montar CNAEs secundários
+        cnaes_secundarios = []
+        if estabelecimento.cnae_fiscal_secundaria:
+            # Campo é Text com códigos separados por vírgula: "1234567,7654321,9876543"
+            codigos = estabelecimento.cnae_fiscal_secundaria.split(',')
+            for codigo in codigos:
+                codigo = codigo.strip()
+                if codigo:
+                    # Buscar descrição do CNAE no banco
+                    cnae_obj = self.db.query(CNAE).filter(CNAE.codigo == codigo).first()
+                    if cnae_obj:
+                        cnaes_secundarios.append({
+                            "codigo": codigo,
+                            "descricao": cnae_obj.descricao
+                        })
+                    else:
+                        # Se não encontrar descrição, incluir só o código
+                        cnaes_secundarios.append({
+                            "codigo": codigo,
+                            "descricao": ""
+                        })
         
         # Montar sócios
         socios = []
@@ -376,7 +462,7 @@ class SmartCNPJService:
             
             # Nested objects
             cnaePrincipal=cnae_principal,
-            cnaesSecundarios=[],  # TODO: Implementar quando existir tabela
+            cnaesSecundarios=cnaes_secundarios,
             endereco=endereco,
             contatos=contatos,
             socios=socios
@@ -457,6 +543,40 @@ class SmartCNPJService:
     # ================================================================
     # CACHE REDIS
     # ================================================================
+    
+    def _build_search_cache_key(
+        self,
+        tipo_busca: str,
+        valor_busca: str,
+        filtros: Dict[str, Any],
+        page: int,
+        limit: int
+    ) -> str:
+        """
+        Gera chave única para cache de busca.
+        
+        Formato: search:{tipo}:{valor}:{filtros_hash}:p{page}:l{limit}
+        
+        Args:
+            tipo_busca: Tipo de busca (cnpj, razao_social, etc)
+            valor_busca: Valor buscado
+            filtros: Dicionário de filtros aplicados
+            page: Número da página
+            limit: Limite de resultados
+            
+        Returns:
+            String da chave de cache
+        """
+        import hashlib
+        
+        # Ordenar filtros para garantir consistência
+        filtros_sorted = json.dumps(filtros, sort_keys=True)
+        filtros_hash = hashlib.md5(filtros_sorted.encode()).hexdigest()[:8]
+        
+        # Limitar tamanho do valor_busca na chave
+        valor_truncado = valor_busca[:30]
+        
+        return f"search:{tipo_busca}:{valor_truncado}:{filtros_hash}:p{page}:l{limit}"
     
     def _get_from_cache(self, key: str) -> Optional[Dict[str, Any]]:
         """
