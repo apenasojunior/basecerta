@@ -275,38 +275,25 @@ def _apply_search_type(
     
     elif tipo_busca == TipoBusca.RAZAO_SOCIAL:
         # Busca parcial ILIKE (case-insensitive)
-        # OTIMIZAÇÃO: Filtrar apenas matrizes ativas para usar índice parcial
-        # idx_estab_matriz_ativa => WHERE identificador_matriz_filial='1' AND situacao_cadastral='02'
         query = query.filter(
-            and_(
-                Empresa.razao_social.ilike(f"%{valor}%"),
-                Estabelecimento.identificador_matriz_filial == '1',
-                Estabelecimento.situacao_cadastral == '02'  # Apenas ativas
-            )
+            Empresa.razao_social.ilike(f"%{valor}%")
         )
     
     elif tipo_busca == TipoBusca.CNAE or tipo_busca == TipoBusca.SEGMENTO:
         # Busca por CNAE (código ou descrição)
         # Aceita tanto 'cnae' quanto 'segmento' (alias)
-        # OTIMIZAÇÃO: Filtrar apenas matrizes ativas para usar índice parcial
         cnae_codigo = valor.replace('.', '').replace('/', '').replace('-', '')
         query = query.filter(
-            and_(
+            or_(
                 Estabelecimento.cnae_fiscal_principal.like(f"{cnae_codigo}%"),
-                Estabelecimento.identificador_matriz_filial == '1',
-                Estabelecimento.situacao_cadastral == '02'  # Apenas ativas
+                # TODO: Join com tabela CNAE para busca por descrição
             )
         )
     
     elif tipo_busca == TipoBusca.EMAIL:
         # Busca parcial em email
-        # OTIMIZAÇÃO: Filtrar apenas matrizes ativas
         query = query.filter(
-            and_(
-                Estabelecimento.correio_eletronico.ilike(f"%{valor}%"),
-                Estabelecimento.identificador_matriz_filial == '1',
-                Estabelecimento.situacao_cadastral == '02'
-            )
+            Estabelecimento.correio_eletronico.ilike(f"%{valor}%")
         )
     
     elif tipo_busca == TipoBusca.TELEFONE:

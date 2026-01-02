@@ -18,10 +18,6 @@ from app.crud.smart_cnpj import (
     get_historico_pesquisas,
     get_search_stats
 )
-from app.crud.smart_cnpj_raw import (
-    get_empresa_by_cnpj_optimized,
-    search_empresas_optimized
-)
 from app.models.cnpj import Estabelecimento, CNAE
 from app.models.pesquisa import PesquisaCNPJ
 from app.schemas.enums import TipoBusca
@@ -128,7 +124,7 @@ class SmartCNPJService:
         logger.info(f"Cache MISS: {cache_key}")
         
         # 3. Buscar no banco (CRUD)
-        estabelecimento = get_empresa_by_cnpj_optimized(
+        estabelecimento = get_empresa_by_cnpj(
             self.db,
             cnpj_limpo,
             include_socios=include_socios,
@@ -223,19 +219,14 @@ class SmartCNPJService:
         cached_data = self._get_from_cache(cache_key)
         
         if cached_data:
-            tempo_cache_hit = int((datetime.now() - start_time).total_seconds() * 1000)
-            logger.info(f"🎯 Cache HIT: search - {cache_key[:50]}... ({tempo_cache_hit}ms)")
-            
-            # Atualizar tempo de resposta do cache
-            cached_data["tempoResposta"] = tempo_cache_hit
-            
+            logger.info(f"🎯 Cache HIT: search - {cache_key[:50]}...")
             # Ainda registra no histórico mesmo com cache
             self._registrar_pesquisa(
                 tipo_busca=request.tipo_busca.value,
                 valor_busca=request.valor_busca,
                 filtros_aplicados=filtros_dict,
                 total_resultados=cached_data.get("total", 0),
-                tempo_resposta_ms=tempo_cache_hit,
+                tempo_resposta_ms=int((datetime.now() - start_time).total_seconds() * 1000),
                 from_cache=True
             )
             return SmartCNPJSearchResponse(**cached_data)
@@ -243,7 +234,7 @@ class SmartCNPJService:
         logger.info(f"💨 Cache MISS: search - {cache_key[:50]}...")
         
         # 4. Executar busca (CRUD)
-        resultados, total = search_empresas_optimized(
+        resultados, total = search_empresas(
             db=self.db,
             tipo_busca=request.tipo_busca,
             valor_busca=request.valor_busca,
