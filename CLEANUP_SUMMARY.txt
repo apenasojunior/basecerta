@@ -1,0 +1,34 @@
+🧹 LIMPEZA DO PROJETO BASECERTA - BRANCH GENESIS
+================================================
+
+✅ CONCLUÍDO - 02/01/2026
+
+📊 RESULTADOS:
+- 65 arquivos removidos
+- 519.694 linhas deletadas
+- ~15MB liberados
+
+🗑️ REMOVIDOS:
+✓ 42 arquivos duplicados (" 2.tsx", " 2.py", etc)
+✓ 24 arquivos de backup (.bak, .backup, -08dec2025)
+✓ 40 relatórios lighthouse antigos (15MB)
+✓ 1 script duplicado (backup.sh)
+✓ Todos __pycache__ e .DS_Store
+
+🛡️ PRESERVADOS:
+✓ smart_cnpj_raw.py (crítico para performance)
+✓ Scripts úteis (logs.sh, stop.sh, start.sh)
+✓ backup-database.sh (versão completa)
+
+🔧 MELHORIAS:
+✓ .gitignore atualizado para prevenir duplicatas
+✓ Estrutura mais limpa e auditável
+✓ Projeto organizado e profissional
+
+📦 COMMITS:
+4b9bdcf - Genesis inicial (PostgreSQL + Redis)
+8996ac3 - Limpeza profunda
+
+🔗 GitHub: https://github.com/apenasojunior/basecerta/tree/Genesis
+
+⚠️ PRÓXIMO: Corrigir 22 vulnerabilidades detectadas
