@@ -162,8 +162,9 @@ def search_empresas(
     """
     start_time = datetime.now()
     
-    # Query base com joins necessários
-    query = db.query(Estabelecimento).join(Estabelecimento.empresa)
+    # OTIMIZAÇÃO CRÍTICA: Começar por estabelecimentos e filtrar ANTES de fazer JOIN
+    # Isso permite uso de índices parciais idx_estab_matriz_ativa_*
+    query = db.query(Estabelecimento)
     
     # Eager loading de relacionamentos para evitar N+1 queries
     # IMPORTANTE: NÃO carregar sócios aqui (muito pesado para listagens)
@@ -259,67 +260,121 @@ def _apply_search_type(
     """Aplica filtro conforme tipo de busca"""
     
     if tipo_busca == TipoBusca.CNPJ:
-        # Busca por CNPJ específico
+        # Busca por CNPJ específico - OTIMIZADO
         cnpj_limpo = ''.join(filter(str.isdigit, valor))
         if len(cnpj_limpo) == 14:
             cnpj_basico = cnpj_limpo[:8]
             cnpj_ordem = cnpj_limpo[8:12]
             cnpj_dv = cnpj_limpo[12:14]
+            # Filtrar no estabelecimento específico (índice PK é super rápido)
             query = query.filter(
                 and_(
                     Estabelecimento.cnpj_basico == cnpj_basico,
                     Estabelecimento.cnpj_ordem == cnpj_ordem,
-                    Estabelecimento.cnpj_dv == cnpj_dv
+                    Estabelecimento.cnpj_dv == cnpj_dv,
+                    Estabelecimento.identificador_matriz_filial == '1',
+                    Estabelecimento.situacao_cadastral == '02'
                 )
             )
     
     elif tipo_busca == TipoBusca.RAZAO_SOCIAL:
-        # Busca parcial ILIKE (case-insensitive)
+        # Busca parcial ILIKE (case-insensitive) - OTIMIZADO
+        # Filtrar matrizes ativas ANTES de buscar razão social
         query = query.filter(
+            and_(
+                Estabelecimento.identificador_matriz_filial == '1',
+                Estabelecimento.situacao_cadastral == '02'
+            )
+        ).join(Estabelecimento.empresa).filter(
             Empresa.razao_social.ilike(f"%{valor}%")
         )
     
     elif tipo_busca == TipoBusca.CNAE or tipo_busca == TipoBusca.SEGMENTO:
-        # Busca por CNAE (código ou descrição)
-        # Aceita tanto 'cnae' quanto 'segmento' (alias)
+        # Busca por CNAE - SUPER OTIMIZADO com subquery
         cnae_codigo = valor.replace('.', '').replace('/', '').replace('-', '')
-        query = query.filter(
-            or_(
-                Estabelecimento.cnae_fiscal_principal.like(f"{cnae_codigo}%"),
-                # TODO: Join com tabela CNAE para busca por descrição
+        
+        subq = db.query(Estabelecimento.cnpj_basico).filter(
+            and_(
+                Estabelecimento.identificador_matriz_filial == '1',
+                Estabelecimento.situacao_cadastral == '02',
+                Estabelecimento.cnae_fiscal_principal.like(f"{cnae_codigo}%")
             )
-        )
+        ).subquery()
+        
+        query = query.filter(Estabelecimento.cnpj_basico.in_(
+            db.query(subq.c.cnpj_basico)
+        ))
     
     elif tipo_busca == TipoBusca.EMAIL:
-        # Busca parcial em email
-        query = query.filter(
-            Estabelecimento.correio_eletronico.ilike(f"%{valor}%")
-        )
+        # Busca parcial em email - SUPER OTIMIZADO com subquery
+        subq = db.query(Estabelecimento.cnpj_basico).filter(
+            and_(
+                Estabelecimento.identificador_matriz_filial == '1',
+                Estabelecimento.situacao_cadastral == '02',
+                Estabelecimento.correio_eletronico.ilike(f"%{valor}%")
+            )
+        ).subquery()
+        
+        query = query.filter(Estabelecimento.cnpj_basico.in_(
+            db.query(subq.c.cnpj_basico)
+        ))
     
     elif tipo_busca == TipoBusca.TELEFONE:
-        # Busca parcial em telefones (ddd + telefone1 ou ddd + telefone2)
+        # Busca parcial em telefones - SUPER OTIMIZADO com subquery
         telefone_limpo = ''.join(filter(str.isdigit, valor))
-        query = query.filter(
-            or_(
-                func.concat(Estabelecimento.ddd_telefone_1, Estabelecimento.telefone_1).like(f"%{telefone_limpo}%"),
-                func.concat(Estabelecimento.ddd_telefone_2, Estabelecimento.telefone_2).like(f"%{telefone_limpo}%")
+        
+        subq = db.query(Estabelecimento.cnpj_basico).filter(
+            and_(
+                Estabelecimento.identificador_matriz_filial == '1',
+                Estabelecimento.situacao_cadastral == '02',
+                or_(
+                    func.concat(Estabelecimento.ddd_telefone_1, Estabelecimento.telefone_1).like(f"%{telefone_limpo}%"),
+                    func.concat(Estabelecimento.ddd_telefone_2, Estabelecimento.telefone_2).like(f"%{telefone_limpo}%")
+                )
             )
-        )
+        ).subquery()
+        
+        query = query.filter(Estabelecimento.cnpj_basico.in_(
+            db.query(subq.c.cnpj_basico)
+        ))
     
     elif tipo_busca == TipoBusca.NOME_SOCIO:
-        # JOIN com tabela de sócios
-        query = query.join(Empresa.socios).filter(
+        # JOIN com tabela de sócios - OTIMIZADO
+        # Filtrar matrizes ativas ANTES de fazer JOINs
+        query = query.filter(
+            and_(
+                Estabelecimento.identificador_matriz_filial == '1',
+                Estabelecimento.situacao_cadastral == '02'
+            )
+        ).join(Estabelecimento.empresa).join(Empresa.socios).filter(
             Socio.nome_socio.ilike(f"%{valor}%")
         )
         # Distinct para evitar duplicatas
         query = query.distinct()
     
     elif tipo_busca == TipoBusca.CEP:
-        # Busca por CEP (parcial)
+        # Busca por CEP - SUPER OTIMIZADO
+        # Usar subquery para forçar filtro ANTES do JOIN
         cep_limpo = ''.join(filter(str.isdigit, valor))
-        query = query.filter(
-            Estabelecimento.cep.like(f"{cep_limpo}%")
-        )
+        
+        # Subquery: filtra estabelecimentos PRIMEIRO (usa índice parcial)
+        subq = db.query(Estabelecimento.cnpj_basico).filter(
+            and_(
+                Estabelecimento.identificador_matriz_filial == '1',
+                Estabelecimento.situacao_cadastral == '02',
+                Estabelecimento.cep.like(f"{cep_limpo}%")
+            )
+        ).subquery()
+        
+        # Query principal: JOIN apenas com CNPJs filtrados
+        query = query.filter(Estabelecimento.cnpj_basico.in_(
+            db.query(subq.c.cnpj_basico)
+        ))
+    
+    # CRÍTICO: Adicionar JOIN com empresa APENAS se não for busca por RAZAO_SOCIAL
+    # (que já fez o JOIN acima) e se não for NOME_SOCIO (que faz JOIN com socios)
+    if tipo_busca not in [TipoBusca.RAZAO_SOCIAL, TipoBusca.NOME_SOCIO]:
+        query = query.join(Estabelecimento.empresa)
     
     return query
 

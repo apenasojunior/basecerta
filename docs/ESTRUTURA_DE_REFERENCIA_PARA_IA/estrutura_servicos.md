@@ -139,9 +139,26 @@
 ### Backend
 
 **Framework Principal:**
+- **Python 3.11+** - Linguagem base (REQUERIDO)
+  - ⚠️ **Atenção:** Projeto NÃO é compatível com Python 3.9
+  - Motivo: Pydantic v2 requer Python 3.11+
+  - Verificar versão: `python3 --version`
+  - Instalar Python 3.11: `brew install python@3.11` (macOS)
+  - Setar default: `brew link python@3.11 --force`
+  
 - **FastAPI 0.104+** - Framework web assíncrono
-- **Uvicorn** - ASGI server
-- **Pydantic v2** - Validação de dados
+  - ASGI-based (rápido e moderno)
+  - Auto-documentação OpenAPI/Swagger
+  - Type hints nativos
+  
+- **Uvicorn 0.24+** - ASGI server de produção
+  - Suporta hot-reload em desenvolvimento
+  - Workers múltiplos em produção
+  
+- **Pydantic v2.11+** - Validação de dados
+  - Até 20x mais rápido que v1
+  - Melhor suporte TypeScript
+  - Requer Python 3.11+
 
 **ORM e Banco:**
 - **SQLAlchemy 2.0** - ORM
@@ -154,9 +171,19 @@
 - **python-multipart** - Upload de arquivos
 
 **Cache e Jobs:**
-- **Redis** - Cache distribuído
-- **Celery** - Background jobs
-- **Flower** (futuro) - Monitoramento Celery
+- **Redis 5.0.1** - Cache distribuído (24h TTL para buscas Smart CNPJ)
+  - Container: `basecerta_redis`
+  - Port: 6379
+  - Image: redis:7-alpine
+  - Volume: redis_data
+  - Healthcheck: redis-cli ping
+  - Uso: Cache de queries (25-40ms hit), Session storage (futuro)
+- **Celery 5.3.4** - Background jobs assíncronos
+  - Workers: 2 (configurável)
+  - Broker: Redis
+  - Backend: Redis
+  - Tasks: População de cache, relatórios, exports
+- **Flower** (futuro) - Monitoramento Celery UI
 
 **APIs Externas:**
 - **httpx** - Cliente HTTP assíncrono
@@ -197,17 +224,33 @@
 ### Infraestrutura
 
 **Containerização:**
-- **Docker** - Containers
-- **Docker Compose** - Orquestração
+- **Docker 24+** - Engine de containers
+  - Desktop (macOS/Windows) ou Server (Linux)
+  - BuildKit habilitado (builds otimizadas)
+  - Compose V2 (plugin nativo, não standalone)
+  
+- **Docker Compose** - Orquestração multi-container
+  - Versão: Compose V2 (docker compose, não docker-compose)
+  - Arquivo: `docker-compose.yml` (raiz do projeto)
+  - 3 serviços gerenciados: frontend, backend, redis
+  - PostgreSQL: EXTERNO (não containerizado, performance)
 
 **Redes:**
-- **basecerta_network** - Bridge network
+- **basecerta_network** - Bridge network (comunicação entre containers)
+  - Driver: bridge
+  - Subnet: Auto-gerenciado pelo Docker
+  - DNS interno: Resolução de nomes entre serviços
 
 **Volumes:**
-- `redis_data` - Persistência Redis
+- **redis_data** - Persistência de dados Redis
+  - Driver: local
+  - Montado em: `/data` (dentro do container Redis)
+  - Backup: Preserva cache entre restarts
 
 **Host Networking:**
-- `host.docker.internal` - Acesso ao PostgreSQL do host
+- **host.docker.internal** - Alias para acesso do container ao host
+  - Usado por: Backend para conectar PostgreSQL no host
+  - Porta: 5432 (PostgreSQL padrão)
 
 ---
 
@@ -252,6 +295,27 @@ redis:
 - RDB snapshots automáticos
 
 **TTL de Cache:**
+- **Smart CNPJ Search:** 24 horas (86400s)
+  - Chave: `search:{tipo}:{valor}:{filtros_hash}`
+  - Performance: 25-40ms cache hit vs 3-70s database miss
+  - Invalidação: Automática após 24h
+- **Insights Cache:** Sem expiração (dados semi-estáticos)
+- **APIs Externas:** 1 hora (3600s)
+
+**Monitoramento:**
+```bash
+# Conectar ao Redis
+docker exec -it basecerta_redis redis-cli
+
+# Ver todas as chaves
+KEYS *
+
+# Ver info
+INFO stats
+
+# Monitor comandos em tempo real
+MONITOR
+```
 - Predictus PJ: 7 dias
 - Predictus Processos: 30 dias
 - DirectData PF: 7 dias

@@ -3,14 +3,34 @@ node_modules/
 .pnp
 .pnp.js
 
-# Backups
+# Backups e Arquivos Duplicados
 backups/
 *.sql
 *.sql.gz
+*.bak
+*.backup
+*~
+*.bak-*
+* 2.*
+*2.bak
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+dist/
+build/
+celerybeat-schedule
+celerybeat-schedule.db
 
 # OS
 .DS_Store
 Thumbs.db
+*.swp
+*.swo
 
 # IDEs
 .vscode/
@@ -36,3 +56,9 @@ dist/
 build/
 .next/
 out/
+
+# Test e Coverage
+.pytest_cache/
+.coverage
+htmlcov/
+*.cover

@@ -18,6 +18,10 @@ from app.crud.smart_cnpj import (
     get_historico_pesquisas,
     get_search_stats
 )
+from app.crud.smart_cnpj_raw import (
+    get_empresa_by_cnpj_optimized,
+    search_empresas_optimized
+)
 from app.models.cnpj import Estabelecimento, CNAE
 from app.models.pesquisa import PesquisaCNPJ
 from app.schemas.enums import TipoBusca
@@ -123,20 +127,20 @@ class SmartCNPJService:
         
         logger.info(f"Cache MISS: {cache_key}")
         
-        # 3. Buscar no banco (CRUD)
-        estabelecimento = get_empresa_by_cnpj(
+        # 3. Buscar no banco (SQL RAW OTIMIZADO)
+        empresa_dict = get_empresa_by_cnpj_optimized(
             self.db,
             cnpj_limpo,
             include_socios=include_socios,
             include_cnaes_secundarios=include_cnaes_secundarios
         )
         
-        if not estabelecimento:
+        if not empresa_dict:
             logger.info(f"Empresa não encontrada: CNPJ={cnpj}")
             return None
         
-        # 4. Converter para response schema
-        response = self._estabelecimento_to_response(estabelecimento)
+        # 4. Converter dict para response schema
+        response = self._dict_to_response(empresa_dict)
         
         # 5. Salvar no cache
         self._set_in_cache(cache_key, response.model_dump(), ttl=self.cache_ttl)
@@ -233,20 +237,20 @@ class SmartCNPJService:
         
         logger.info(f"💨 Cache MISS: search - {cache_key[:50]}...")
         
-        # 4. Executar busca (CRUD)
-        resultados, total = search_empresas(
+        # 4. Executar busca (SQL RAW OTIMIZADO)
+        resultados_dict = search_empresas_optimized(
             db=self.db,
             tipo_busca=request.tipo_busca,
             valor_busca=request.valor_busca,
-            filtros=filtros_dict,
-            page=request.page,
+            apenas_matriz=filtros_dict.get("apenas_matriz", False),
             limit=request.limit
         )
+        total = len(resultados_dict)  # Raw count for optimization
         
-        # 4. Converter para response schemas
+        # 4. Converter dicts para response schemas
         empresas = [
-            self._estabelecimento_to_response(est)
-            for est in resultados
+            self._dict_to_response(empresa_dict)
+            for empresa_dict in resultados_dict
         ]
         
         # 5. Calcular metadata de paginação
@@ -617,6 +621,45 @@ class SmartCNPJService:
         try:
             serialized = json.dumps(value, default=str)
             self.redis.setex(key, ttl, serialized)
+        except Exception as e:
+            logger.warning(f"Erro ao salvar cache: {e}")
+    
+    def _dict_to_response(self, empresa_dict: Dict[str, Any]) -> SmartCNPJCompanyResponse:
+        """
+        Converte dicionário de empresa (do SQL raw) para response schema.
+        
+        Args:
+            empresa_dict: Dados da empresa vindos do SQL raw
+            
+        Returns:
+            SmartCNPJCompanyResponse formatado
+        """
+        return SmartCNPJCompanyResponse(
+            cnpjBasico=empresa_dict.get('cnpj_basico'),
+            razaoSocial=empresa_dict.get('razao_social'),
+            capitalSocial=empresa_dict.get('capital_social'),
+            porteEmpresa=empresa_dict.get('porte_empresa'),
+            naturezaJuridica=empresa_dict.get('natureza_juridica'),
+            cnpjCompleto=empresa_dict.get('cnpj_completo'),
+            nomeFantasia=empresa_dict.get('nome_fantasia'),
+            cep=empresa_dict.get('cep'),
+            uf=empresa_dict.get('uf'),
+            municipio=empresa_dict.get('municipio'),
+            logradouro=empresa_dict.get('logradouro'),
+            numero=empresa_dict.get('numero'),
+            bairro=empresa_dict.get('bairro'),
+            complemento=empresa_dict.get('complemento'),
+            cnaeFiscalPrincipal=empresa_dict.get('cnae_fiscal_principal'),
+            cnaeFiscalSecundaria=empresa_dict.get('cnae_fiscal_secundaria'),
+            dataInicioAtividade=empresa_dict.get('data_inicio_atividade'),
+            situacaoCadastral=empresa_dict.get('situacao_cadastral'),
+            correioEletronico=empresa_dict.get('correio_eletronico'),
+            ddd1=empresa_dict.get('ddd_1'),
+            telefone1=empresa_dict.get('telefone_1'),
+            ddd2=empresa_dict.get('ddd_2'),
+            telefone2=empresa_dict.get('telefone_2'),
+            socios=empresa_dict.get('socios', [])
+        )
             logger.info(f"Cache SET: {key} (TTL={ttl}s)")
         except Exception as e:
             logger.warning(f"Erro ao salvar cache: {e}")

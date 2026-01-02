@@ -1,0 +1,26 @@
+{
+    "python.defaultInterpreterPath": "/usr/bin/python3",
+    "python.terminal.activateEnvironment": true,
+    "terminal.integrated.defaultProfile.linux": "zsh",
+    "terminal.integrated.profiles.linux": {
+        "zsh": {
+            "path": "/usr/bin/zsh",
+            "args": []
+        },
+        "bash": {
+            "path": "/bin/bash",
+            "args": []
+        }
+    },
+    "terminal.integrated.env.linux": {
+        "PATH": "/usr/bin:/bin:/usr/local/bin:${env:PATH}"
+    },
+    "python.analysis.extraPaths": [
+        "./backend",
+        "./backend/app"
+    ],
+    "files.exclude": {
+        "**/__pycache__": true,
+        "**/*.pyc": true
+    }
+}
