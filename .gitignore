@@ -27,6 +27,9 @@ logs/
 .env.local
 .env.*.local
 
+# Credenciais sensíveis
+docs/estrutura/db/CREDENCIAIS.md
+
 # Temporary
 tmp/
 temp/

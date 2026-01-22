@@ -6,7 +6,8 @@ services:
     ports:
       - "6379:6379"
     volumes:
-      - redis_data:/data
+      # Volume no SSD externo para persistência
+      - /Volumes/ExtMB/docker/volumes/redis:/data
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       interval: 10s
@@ -26,6 +27,9 @@ services:
       - "8000:8000"
     volumes:
       - ./backend:/app
+      # Cache de arquivos temporários no SSD externo
+      - /Volumes/ExtMB/docker/cache/backend:/tmp
+      - ./docs:/docs
     env_file:
       - ./backend/.env
     environment:
@@ -100,7 +104,8 @@ services:
     volumes:
       - ./frontend:/app
       - /app/node_modules
-      - /app/.next
+      # Build cache do Next.js no SSD externo (pode ficar grande)
+      - /Volumes/ExtMB/docker/cache/nextjs:/app/.next
     env_file:
       - ./frontend/.env.local
     environment:
@@ -110,9 +115,10 @@ services:
     networks:
       - basecerta_network
 
-volumes:
-  redis_data:
-    driver: local
+# Volumes não são mais necessários (usando bind mounts no SSD externo)
+# volumes:
+#   redis_data:
+#     driver: local
 
 networks:
   basecerta_network:

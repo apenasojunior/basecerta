@@ -1,0 +1,2674 @@
+================================================================================
+ANÁLISE DE ARQUIVOS DA RECEITA FEDERAL
+================================================================================
+
+📁 LISTANDO ARQUIVOS ZIP EM docs/baseCNPJ/
+
+Arquivo                               Tamanho Compactado
+--------------------------------------------------------------------------------
+Cnaes.zip                                         0.02 MB
+Empresas0.zip                                   460.24 MB
+Empresas1.zip                                    74.25 MB
+Empresas2.zip                                    75.43 MB
+Empresas3.zip                                    81.18 MB
+Empresas4.zip                                    86.13 MB
+Empresas5.zip                                    92.94 MB
+Empresas6.zip                                    90.02 MB
+Empresas7.zip                                    94.37 MB
+Empresas8.zip                                    94.51 MB
+Empresas9.zip                                    90.26 MB
+Estabelecimentos0.zip                          1834.77 MB
+Estabelecimentos1.zip                           324.92 MB
+Estabelecimentos2.zip                           319.79 MB
+Estabelecimentos3.zip                           342.85 MB
+Estabelecimentos4.zip                           333.00 MB
+Estabelecimentos5.zip                           319.54 MB
+Estabelecimentos6.zip                           332.30 MB
+Estabelecimentos7.zip                           342.65 MB
+Estabelecimentos8.zip                           320.29 MB
+Estabelecimentos9.zip                           323.03 MB
+Motivos.zip                                       0.00 MB
+Municipios.zip                                    0.04 MB
+Naturezas.zip                                     0.00 MB
+Paises.zip                                        0.00 MB
+Qualificacoes.zip                                 0.00 MB
+Simples.zip                                     264.70 MB
+Socios0.zip                                     200.76 MB
+Socios1.zip                                      47.32 MB
+Socios2.zip                                      46.90 MB
+Socios3.zip                                      46.95 MB
+Socios4.zip                                      46.94 MB
+Socios5.zip                                      47.32 MB
+Socios6.zip                                      46.88 MB
+Socios7.zip                                      46.96 MB
+Socios8.zip                                      46.89 MB
+Socios9.zip                                      47.31 MB
+--------------------------------------------------------------------------------
+TOTAL                                          6921.46 MB
+
+Total de arquivos ZIP encontrados: 37
+
+================================================================================
+ANÁLISE DETALHADA DE CADA ARQUIVO
+================================================================================
+
+
+▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼
+ARQUIVO: Cnaes.zip
+▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼
+
+📄 CSV interno: F.K03200$Z.D51213.CNAECSV
+   Tamanho descompactado: 0.08 MB
+   Encoding: latin1
+   Delimitador: ';'
+
+   ✅ TOTAL DE REGISTROS: 1,359
+
+   📊 ESTRUTURA DE COLUNAS:
+   Total de colunas: 2
+
+   🔍 PRIMEIRAS LINHAS:
+
+   Linha 0:
+      [0] = '0111301'
+      [1] = 'Cultivo de arroz'
+
+   Linha 1:
+      [0] = '0111302'
+      [1] = 'Cultivo de milho'
+
+   Linha 2:
+      [0] = '0111303'
+      [1] = 'Cultivo de trigo'
+
+--------------------------------------------------------------------------------
+
+
+▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼
+ARQUIVO: Empresas0.zip
+▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼
+
+📄 CSV interno: K3241.K03200Y0.D51213.EMPRECSV
+   Tamanho descompactado: 1877.72 MB
+   Encoding: latin1
+   Delimitador: ';'
+   Contando... 1,000,000 linhas processadas
+   Contando... 2,000,000 linhas processadas
+   Contando... 3,000,000 linhas processadas
+   Contando... 4,000,000 linhas processadas
+   Contando... 5,000,000 linhas processadas
+   Contando... 6,000,000 linhas processadas
+   Contando... 7,000,000 linhas processadas
+   Contando... 8,000,000 linhas processadas
+   Contando... 9,000,000 linhas processadas
+   Contando... 10,000,000 linhas processadas
+   Contando... 11,000,000 linhas processadas
+   Contando... 12,000,000 linhas processadas
+   Contando... 13,000,000 linhas processadas
+   Contando... 14,000,000 linhas processadas
+   Contando... 15,000,000 linhas processadas
+   Contando... 16,000,000 linhas processadas
+   Contando... 17,000,000 linhas processadas
+   Contando... 18,000,000 linhas processadas
+   Contando... 19,000,000 linhas processadas
+   Contando... 20,000,000 linhas processadas
+   Contando... 21,000,000 linhas processadas
+   Contando... 22,000,000 linhas processadas
+   Contando... 23,000,000 linhas processadas
+   Contando... 24,000,000 linhas processadas
+   Contando... 25,000,000 linhas processadas
+
+   ✅ TOTAL DE REGISTROS: 25,243,134
+
+   📊 ESTRUTURA DE COLUNAS:
+   Total de colunas: 7
+
+   🔍 PRIMEIRAS LINHAS:
+
+   Linha 0:
+      [0] = '41273590'
+      [1] = 'MARIA DAS MERCES SOARES LEMOS'
+      [2] = '4014'
+      [3] = '34'
+      [4] = '0,00'
+      [5] = '05'
+      [6] = ''
+
+   Linha 1:
+      [0] = '41273591'
+      [1] = 'CASSIO APARECIDO LOPES 06457523803'
+      [2] = '2135'
+      [3] = '50'
+      [4] = '1000,00'
+      [5] = '01'
+      [6] = ''
+
+   Linha 2:
+      [0] = '41273592'
+      [1] = '41.273.592 HELIO DE JESUS PEREIRA'
+      [2] = '2135'
+      [3] = '50'
+      [4] = '30000,00'
+      [5] = '01'
+      [6] = ''
+
+--------------------------------------------------------------------------------
+
+
+▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼
+ARQUIVO: Empresas1.zip
+▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼
+
+📄 CSV interno: K3241.K03200Y1.D51213.EMPRECSV
+   Tamanho descompactado: 310.73 MB
+   Encoding: latin1
+   Delimitador: ';'
+   Contando... 1,000,000 linhas processadas
+   Contando... 2,000,000 linhas processadas
+   Contando... 3,000,000 linhas processadas
+   Contando... 4,000,000 linhas processadas
+
+   ✅ TOTAL DE REGISTROS: 4,494,860
+
+   📊 ESTRUTURA DE COLUNAS:
+   Total de colunas: 7
+
+   🔍 PRIMEIRAS LINHAS:
+
+   Linha 0:
+      [0] = '00000000'
+      [1] = 'BANCO DO BRASIL SA'
+      [2] = '2038'
+      [3] = '10'
+      [4] = '120000000000,00'
+      [5] = '05'
+      [6] = ''
+
+   Linha 1:
+      [0] = '00000001'
+      [1] = 'ASSOCIACAO DE AMIGOS DE BAIRRO DO CONJ PAULISTANO'
+      [2] = '3999'
+      [3] = '16'
+      [4] = '0,00'
+      [5] = '05'
+      [6] = ''
+
+   Linha 2:
+      [0] = '00000002'
+      [1] = 'WM&R EMPREITEIRA DE CONSTRUCAO CIVIL LIMITADA'
+      [2] = '2240'
+      [3] = '49'
+      [4] = '0,00'
+      [5] = '05'
+      [6] = ''
+
+--------------------------------------------------------------------------------
+
+
+▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼
+ARQUIVO: Empresas2.zip
+▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼
+
+📄 CSV interno: K3241.K03200Y2.D51213.EMPRECSV
+   Tamanho descompactado: 328.22 MB
+   Encoding: latin1
+   Delimitador: ';'
+   Contando... 1,000,000 linhas processadas
+   Contando... 2,000,000 linhas processadas
+   Contando... 3,000,000 linhas processadas
+   Contando... 4,000,000 linhas processadas
+
+   ✅ TOTAL DE REGISTROS: 4,494,860
+
+   📊 ESTRUTURA DE COLUNAS:
+   Total de colunas: 7
+
+   🔍 PRIMEIRAS LINHAS:
+
+   Linha 0:
+      [0] = '04631961'
+      [1] = 'ITACAMP INDUSTRIAL LTDA'
+      [2] = '2062'
+      [3] = '49'
+      [4] = '0,00'
+      [5] = '01'
+      [6] = ''
+
+   Linha 1:
+      [0] = '04631962'
+      [1] = 'CLINICA OFTALMOLOGICA DR VANIA XIMENES LTDA'
+      [2] = '2062'
+      [3] = '49'
+      [4] = '0,00'
+      [5] = '05'
+      [6] = ''
+
+   Linha 2:
+      [0] = '04631963'
+      [1] = 'EXPRESSO COSTA LTDA'
+      [2] = '2062'
+      [3] = '49'
+      [4] = '0,00'
+      [5] = '01'
+      [6] = ''
+
+--------------------------------------------------------------------------------
+
+
+▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼
+ARQUIVO: Empresas3.zip
+▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼
+
+📄 CSV interno: K3241.K03200Y3.D51213.EMPRECSV
+   Tamanho descompactado: 332.98 MB
+   Encoding: latin1
+   Delimitador: ';'
+   Contando... 1,000,000 linhas processadas
+   Contando... 2,000,000 linhas processadas
+   Contando... 3,000,000 linhas processadas
+   Contando... 4,000,000 linhas processadas
+
+   ✅ TOTAL DE REGISTROS: 4,494,860
+
+   📊 ESTRUTURA DE COLUNAS:
+   Total de colunas: 7
+
+   🔍 PRIMEIRAS LINHAS:
+
+   Linha 0:
+      [0] = '09253555'
+      [1] = 'FRANCISCO ENIVALDO RODRIGUES DE OLIVEIRA'
+      [2] = '2135'
+      [3] = '50'
+      [4] = '30000,00'
+      [5] = '01'
+      [6] = ''
+
+   Linha 1:
+      [0] = '09253556'
+      [1] = 'BORGES E PIRETT LTDA'
+      [2] = '2062'
+      [3] = '49'
+      [4] = '20000,00'
+      [5] = '01'
+      [6] = ''
+
+   Linha 2:
+      [0] = '09253557'
+      [1] = 'FARMACIA E DROGARIA PLUS LTDA'
+      [2] = '2062'
+      [3] = '49'
+      [4] = '100000,00'
+      [5] = '03'
+      [6] = ''
+
+--------------------------------------------------------------------------------
+
+
+▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼
+ARQUIVO: Empresas4.zip
+▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼
+
+📄 CSV interno: K3241.K03200Y4.D51213.EMPRECSV
+   Tamanho descompactado: 337.45 MB
+   Encoding: latin1
+   Delimitador: ';'
+   Contando... 1,000,000 linhas processadas
+   Contando... 2,000,000 linhas processadas
+   Contando... 3,000,000 linhas processadas
+   Contando... 4,000,000 linhas processadas
+
+   ✅ TOTAL DE REGISTROS: 4,494,860
+
+   📊 ESTRUTURA DE COLUNAS:
+   Total de colunas: 7
+
+   🔍 PRIMEIRAS LINHAS:
+
+   Linha 0:
+      [0] = '13846069'
+      [1] = 'BORGMANN PRODUTOS ALIMENTICIOS LTDA'
+      [2] = '2062'
+      [3] = '49'
+      [4] = '70000,00'
+      [5] = '01'
+      [6] = ''
+
+   Linha 1:
+      [0] = '13846070'
+      [1] = 'MARCOS ANTONIO PEREIRA AMADOR 60257981330'
+      [2] = '2135'
+      [3] = '50'
+      [4] = '1,00'
+      [5] = '01'
+      [6] = ''
+
+   Linha 2:
+      [0] = '13846071'
+      [1] = 'CESAR APARECIDO NICOLETI'
+      [2] = '2135'
+      [3] = '50'
+      [4] = '18000,00'
+      [5] = '01'
+      [6] = ''
+
+--------------------------------------------------------------------------------
+
+
+▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼
+ARQUIVO: Empresas5.zip
+▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼
+
+📄 CSV interno: K3241.K03200Y5.D51213.EMPRECSV
+   Tamanho descompactado: 336.06 MB
+   Encoding: latin1
+   Delimitador: ';'
+   Contando... 1,000,000 linhas processadas
+   Contando... 2,000,000 linhas processadas
+   Contando... 3,000,000 linhas processadas
+   Contando... 4,000,000 linhas processadas
+
+   ✅ TOTAL DE REGISTROS: 4,494,860
+
+   📊 ESTRUTURA DE COLUNAS:
+   Total de colunas: 7
+
+   🔍 PRIMEIRAS LINHAS:
+
+   Linha 0:
+      [0] = '18421568'
+      [1] = 'RICARDO A.T.QUIRINO CONSULTORIA E REPRESENTACOES L...'
+      [2] = '2062'
+      [3] = '49'
+      [4] = '20000,00'
+      [5] = '05'
+      [6] = ''
+
+   Linha 1:
+      [0] = '18421569'
+      [1] = 'CLEIDE MARLI CAVAGNOLI 36963526915'
+      [2] = '2135'
+      [3] = '50'
+      [4] = '1,00'
+      [5] = '01'
+      [6] = ''
+
+   Linha 2:
+      [0] = '18421570'
+      [1] = 'JOSE CHARNOSKI NETO 82638284904'
+      [2] = '2135'
+      [3] = '50'
+      [4] = '1000,00'
+      [5] = '01'
+      [6] = ''
+
+--------------------------------------------------------------------------------
+
+
+▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼
+ARQUIVO: Empresas6.zip
+▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼
+
+📄 CSV interno: K3241.K03200Y6.D51213.EMPRECSV
+   Tamanho descompactado: 341.41 MB
+   Encoding: latin1
+   Delimitador: ';'
+   Contando... 1,000,000 linhas processadas
+   Contando... 2,000,000 linhas processadas
+   Contando... 3,000,000 linhas processadas
+   Contando... 4,000,000 linhas processadas
+
+   ✅ TOTAL DE REGISTROS: 4,494,860
+
+   📊 ESTRUTURA DE COLUNAS:
+   Total de colunas: 7
+
+   🔍 PRIMEIRAS LINHAS:
+
+   Linha 0:
+      [0] = '22967212'
+      [1] = 'SANDRO ANDERSON DE ANDRADE 28194458889'
+      [2] = '2135'
+      [3] = '50'
+      [4] = '2000,00'
+      [5] = '01'
+      [6] = ''
+
+   Linha 1:
+      [0] = '22967213'
+      [1] = 'HEALTH SUPPORT CONSULTORIA MEDICA LTDA.'
+      [2] = '2062'
+      [3] = '49'
+      [4] = '5000,00'
+      [5] = '05'
+      [6] = ''
+
+   Linha 2:
+      [0] = '22967214'
+      [1] = 'NILSON DA SILVA SANTOS'
+      [2] = '2135'
+      [3] = '50'
+      [4] = '24000,00'
+      [5] = '01'
+      [6] = ''
+
+--------------------------------------------------------------------------------
+
+
+▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼
+ARQUIVO: Empresas7.zip
+▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼
+
+📄 CSV interno: K3241.K03200Y7.D51213.EMPRECSV
+   Tamanho descompactado: 339.65 MB
+   Encoding: latin1
+   Delimitador: ';'
+   Contando... 1,000,000 linhas processadas
+   Contando... 2,000,000 linhas processadas
+   Contando... 3,000,000 linhas processadas
+   Contando... 4,000,000 linhas processadas
+
+   ✅ TOTAL DE REGISTROS: 4,494,860
+
+   📊 ESTRUTURA DE COLUNAS:
+   Total de colunas: 7
+
+   🔍 PRIMEIRAS LINHAS:
+
+   Linha 0:
+      [0] = '27499602'
+      [1] = 'JULIANA GUIMARAES PEREIRA 64430154104'
+      [2] = '2135'
+      [3] = '50'
+      [4] = '1,00'
+      [5] = '01'
+      [6] = ''
+
+   Linha 1:
+      [0] = '27499603'
+      [1] = '27.499.603 RAIONE XAVIER DE PAIVA'
+      [2] = '2135'
+      [3] = '50'
+      [4] = '25000,00'
+      [5] = '01'
+      [6] = ''
+
+   Linha 2:
+      [0] = '27499604'
+      [1] = 'ALEXANDRE KARIM BUENO DE OLIVEIRA RODRIGUES SAO GE...'
+      [2] = '2135'
+      [3] = '50'
+      [4] = '1,00'
+      [5] = '01'
+      [6] = ''
+
+--------------------------------------------------------------------------------
+
+
+▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼
+ARQUIVO: Empresas8.zip
+▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼
+
+📄 CSV interno: K3241.K03200Y8.D51213.EMPRECSV
+   Tamanho descompactado: 340.16 MB
+   Encoding: latin1
+   Delimitador: ';'
+   Contando... 1,000,000 linhas processadas
+   Contando... 2,000,000 linhas processadas
+   Contando... 3,000,000 linhas processadas
+   Contando... 4,000,000 linhas processadas
+
+   ✅ TOTAL DE REGISTROS: 4,494,860
+
+   📊 ESTRUTURA DE COLUNAS:
+   Total de colunas: 7
+
+   🔍 PRIMEIRAS LINHAS:
+
+   Linha 0:
+      [0] = '32066825'
+      [1] = 'V. A. CABRAL DOS SANTOS LTDA'
+      [2] = '2062'
+      [3] = '49'
+      [4] = '97000,00'
+      [5] = '01'
+      [6] = ''
+
+   Linha 1:
+      [0] = '32066826'
+      [1] = 'ITA ESTRUTURAS E REFORMAS LTDA'
+      [2] = '2062'
+      [3] = '49'
+      [4] = '30000,00'
+      [5] = '01'
+      [6] = ''
+
+   Linha 2:
+      [0] = '32066827'
+      [1] = 'D. F. DE LIMA SANTORO - ARQUITETURA'
+      [2] = '2135'
+      [3] = '50'
+      [4] = '10000,00'
+      [5] = '01'
+      [6] = ''
+
+--------------------------------------------------------------------------------
+
+
+▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼
+ARQUIVO: Empresas9.zip
+▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼
+
+📄 CSV interno: K3241.K03200Y9.D51213.EMPRECSV
+   Tamanho descompactado: 345.51 MB
+   Encoding: latin1
+   Delimitador: ';'
+   Contando... 1,000,000 linhas processadas
+   Contando... 2,000,000 linhas processadas
+   Contando... 3,000,000 linhas processadas
+   Contando... 4,000,000 linhas processadas
+
+   ✅ TOTAL DE REGISTROS: 4,494,860
+
+   📊 ESTRUTURA DE COLUNAS:
+   Total de colunas: 7
+
+   🔍 PRIMEIRAS LINHAS:
+
+   Linha 0:
+      [0] = '36627970'
+      [1] = 'GILVANDERSON SANTOS DA SILVA 45301862880'
+      [2] = '2135'
+      [3] = '50'
+      [4] = '100,00'
+      [5] = '01'
+      [6] = ''
+
+   Linha 1:
+      [0] = '36627971'
+      [1] = '36.627.971 JONATHAS AUGUSTO DOS SANTOS CAMILO'
+      [2] = '2135'
+      [3] = '50'
+      [4] = '3000,00'
+      [5] = '01'
+      [6] = ''
+
+   Linha 2:
+      [0] = '36627972'
+      [1] = 'ANGELINA ANTUNES DA LUZ BORGES 87429187900'
+      [2] = '2135'
+      [3] = '50'
+      [4] = '1000,00'
+      [5] = '01'
+      [6] = ''
+
+--------------------------------------------------------------------------------
+
+
+▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼
+ARQUIVO: Estabelecimentos0.zip
+▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼
+
+📄 CSV interno: K3241.K03200Y0.D51213.ESTABELE
+   Tamanho descompactado: 5826.46 MB
+   Encoding: latin1
+   Delimitador: ';'
+   Contando... 1,000,000 linhas processadas
+   Contando... 2,000,000 linhas processadas
+   Contando... 3,000,000 linhas processadas
+   Contando... 4,000,000 linhas processadas
+   Contando... 5,000,000 linhas processadas
+   Contando... 6,000,000 linhas processadas
+   Contando... 7,000,000 linhas processadas
+   Contando... 8,000,000 linhas processadas
+   Contando... 9,000,000 linhas processadas
+   Contando... 10,000,000 linhas processadas
+   Contando... 11,000,000 linhas processadas
+   Contando... 12,000,000 linhas processadas
+   Contando... 13,000,000 linhas processadas
+   Contando... 14,000,000 linhas processadas
+   Contando... 15,000,000 linhas processadas
+   Contando... 16,000,000 linhas processadas
+   Contando... 17,000,000 linhas processadas
+   Contando... 18,000,000 linhas processadas
+   Contando... 19,000,000 linhas processadas
+   Contando... 20,000,000 linhas processadas
+   Contando... 21,000,000 linhas processadas
+   Contando... 22,000,000 linhas processadas
+   Contando... 23,000,000 linhas processadas
+   Contando... 24,000,000 linhas processadas
+   Contando... 25,000,000 linhas processadas
+   Contando... 26,000,000 linhas processadas
+
+   ✅ TOTAL DE REGISTROS: 26,098,579
+
+   📊 ESTRUTURA DE COLUNAS:
+   Total de colunas: 30
+
+   🔍 PRIMEIRAS LINHAS:
+
+   Linha 0:
+      [0] = '30398713'
+      [1] = '0001'
+      [2] = '16'
+      [3] = '1'
+      [4] = ''
+      [5] = '08'
+      [6] = '20001228'
+      [7] = '01'
+      [8] = ''
+      [9] = ''
+      [10] = '19820929'
+      [11] = '4930201'
+      [12] = ''
+      [13] = 'TRAVESSA'
+      [14] = 'TREIS DE MAIO'
+      [15] = '2'
+      [16] = ''
+      [17] = 'CENTRO'
+      [18] = '28360000'
+      [19] = 'RJ'
+      [20] = '5811'
+      [21] = ''
+      [22] = ''
+      [23] = ''
+      [24] = ''
+      [25] = ''
+      [26] = ''
+      [27] = ''
+      [28] = ''
+      [29] = ''
+
+   Linha 1:
+      [0] = '67344770'
+      [1] = '0001'
+      [2] = '22'
+      [3] = '1'
+      [4] = ''
+      [5] = '08'
+      [6] = '20200619'
+      [7] = '01'
+      [8] = ''
+      [9] = ''
+      [10] = '19911210'
+      [11] = '4729699'
+      [12] = ''
+      [13] = 'RUA'
+      [14] = 'AVELINO DE PAIVA P.FILH'
+      [15] = '86'
+      [16] = ''
+      [17] = 'VILA AYROSA'
+      [18] = '06283090'
+      [19] = 'SP'
+      [20] = '6789'
+      [21] = ''
+      [22] = ''
+      [23] = ''
+      [24] = ''
+      [25] = ''
+      [26] = ''
+      [27] = ''
+      [28] = ''
+      [29] = ''
+
+   Linha 2:
+      [0] = '12292199'
+      [1] = '0001'
+      [2] = '58'
+      [3] = '1'
+      [4] = 'AGROELETRICA IRRIGACOES'
+      [5] = '08'
+      [6] = '20070308'
+      [7] = '01'
+      [8] = ''
+      [9] = ''
+      [10] = '19871103'
+      [11] = '4649401'
+      [12] = ''
+      [13] = 'RUA'
+      [14] = 'ANT PIERRE DE AGUIAR'
+      [15] = 'S N'
+      [16] = ''
+      [17] = 'SAO VICENTE'
+      [18] = '63700001'
+      [19] = 'CE'
+      [20] = '1383'
+      [21] = ''
+      [22] = ''
+      [23] = ''
+      [24] = ''
+      [25] = ''
+      [26] = ''
+      [27] = ''
+      [28] = ''
+      [29] = ''
+
+--------------------------------------------------------------------------------
+
+
+▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼
+ARQUIVO: Estabelecimentos1.zip
+▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼
+
+📄 CSV interno: K3241.K03200Y1.D51213.ESTABELE
+   Tamanho descompactado: 1026.89 MB
+   Encoding: latin1
+   Delimitador: ';'
+   Contando... 1,000,000 linhas processadas
+   Contando... 2,000,000 linhas processadas
+   Contando... 3,000,000 linhas processadas
+   Contando... 4,000,000 linhas processadas
+
+   ✅ TOTAL DE REGISTROS: 4,753,435
+
+   📊 ESTRUTURA DE COLUNAS:
+   Total de colunas: 30
+
+   🔍 PRIMEIRAS LINHAS:
+
+   Linha 0:
+      [0] = '07396865'
+      [1] = '0001'
+      [2] = '68'
+      [3] = '1'
+      [4] = ''
+      [5] = '08'
+      [6] = '20170210'
+      [7] = '01'
+      [8] = ''
+      [9] = ''
+      [10] = '20050518'
+      [11] = '1412602'
+      [12] = '1411801'
+      [13] = 'RUA'
+      [14] = 'TUCANEIRA'
+      [15] = '30'
+      [16] = ''
+      [17] = 'DOS LAGOS'
+      [18] = '89136000'
+      [19] = 'SC'
+      [20] = '8297'
+      [21] = '47'
+      [22] = '33851125'
+      [23] = '47'
+      [24] = '33851125'
+      [25] = '47'
+      [26] = '33851125'
+      [27] = ''
+      [28] = ''
+      [29] = ''
+
+   Linha 1:
+      [0] = '64904295'
+      [1] = '0018'
+      [2] = '51'
+      [3] = '2'
+      [4] = ''
+      [5] = '08'
+      [6] = '20161110'
+      [7] = '01'
+      [8] = ''
+      [9] = ''
+      [10] = '20050429'
+      [11] = '4639701'
+      [12] = '4637199'
+      [13] = 'AVENIDA'
+      [14] = 'MENINO MARCELO'
+      [15] = '8551B'
+      [16] = 'LOTE  2                   QUADRAF'
+      [17] = 'SERRARIA'
+      [18] = '57046000'
+      [19] = 'AL'
+      [20] = '2785'
+      [21] = '11'
+      [22] = '36491000'
+      [23] = '31'
+      [24] = '33880436'
+      [25] = '82'
+      [26] = '33118379'
+      [27] = 'CLAUDIO.GIGLIO@CAMIL.COM.BR'
+      [28] = ''
+      [29] = ''
+
+   Linha 2:
+      [0] = '76016369'
+      [1] = '0003'
+      [2] = '16'
+      [3] = '2'
+      [4] = ''
+      [5] = '04'
+      [6] = '20231113'
+      [7] = '63'
+      [8] = ''
+      [9] = ''
+      [10] = '19851212'
+      [11] = '4632001'
+      [12] = ''
+      [13] = 'RUA'
+      [14] = 'DO COMERCIO'
+      [15] = '55'
+      [16] = 'SALA 7 GALERIA'
+      [17] = 'CENTRO'
+      [18] = '11010141'
+      [19] = 'SP'
+      [20] = '7071'
+      [21] = ''
+      [22] = ''
+      [23] = ''
+      [24] = ''
+      [25] = ''
+      [26] = ''
+      [27] = ''
+      [28] = ''
+      [29] = ''
+
+--------------------------------------------------------------------------------
+
+
+▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼
+ARQUIVO: Estabelecimentos2.zip
+▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼
+
+📄 CSV interno: K3241.K03200Y2.D51213.ESTABELE
+   Tamanho descompactado: 1035.32 MB
+   Encoding: latin1
+   Delimitador: ';'
+   Contando... 1,000,000 linhas processadas
+   Contando... 2,000,000 linhas processadas
+   Contando... 3,000,000 linhas processadas
+   Contando... 4,000,000 linhas processadas
+
+   ✅ TOTAL DE REGISTROS: 4,753,435
+
+   📊 ESTRUTURA DE COLUNAS:
+   Total de colunas: 30
+
+   🔍 PRIMEIRAS LINHAS:
+
+   Linha 0:
+      [0] = '30829417'
+      [1] = '0001'
+      [2] = '22'
+      [3] = '1'
+      [4] = ''
+      [5] = '02'
+      [6] = '20180702'
+      [7] = '00'
+      [8] = ''
+      [9] = ''
+      [10] = '20180702'
+      [11] = '9602502'
+      [12] = '9602501,4781400,4772500'
+      [13] = 'RUA'
+      [14] = 'OTHELO ROSA'
+      [15] = '511'
+      [16] = 'SALA 01'
+      [17] = 'CENTRO'
+      [18] = '95860000'
+      [19] = 'RS'
+      [20] = '8929'
+      [21] = '51'
+      [22] = '93646520'
+      [23] = ''
+      [24] = ''
+      [25] = ''
+      [26] = ''
+      [27] = 'thamiris.bs@hotmail.com'
+      [28] = ''
+      [29] = ''
+
+   Linha 1:
+      [0] = '41363633'
+      [1] = '0001'
+      [2] = '41'
+      [3] = '1'
+      [4] = 'AMALAR IMOVEIS'
+      [5] = '02'
+      [6] = '20210326'
+      [7] = '00'
+      [8] = ''
+      [9] = ''
+      [10] = '20210326'
+      [11] = '6821802'
+      [12] = '6821801,7319002'
+      [13] = 'RUA'
+      [14] = 'DOUTOR JOSE SILVA MARTINS'
+      [15] = '494'
+      [16] = 'LETRA B'
+      [17] = 'CIDADE NOVA'
+      [18] = '31170300'
+      [19] = 'MG'
+      [20] = '4123'
+      [21] = '31'
+      [22] = '84723842'
+      [23] = ''
+      [24] = ''
+      [25] = ''
+      [26] = ''
+      [27] = 'AMALARBH@GMAIL.COM'
+      [28] = ''
+      [29] = ''
+
+   Linha 2:
+      [0] = '41363894'
+      [1] = '0001'
+      [2] = '61'
+      [3] = '1'
+      [4] = 'PLUMER'
+      [5] = '02'
+      [6] = '20210326'
+      [7] = '00'
+      [8] = ''
+      [9] = ''
+      [10] = '20210326'
+      [11] = '6920601'
+      [12] = '6201501,6204000,6209100,6621502,6920602,7020400,82...'
+      [13] = 'RUA'
+      [14] = 'JANUARIA'
+      [15] = '579'
+      [16] = 'SALA 01'
+      [17] = 'JARDIM RONDONIA'
+      [18] = '78730514'
+      [19] = 'MT'
+      [20] = '9151'
+      [21] = '66'
+      [22] = '99023802'
+      [23] = ''
+      [24] = ''
+      [25] = ''
+      [26] = ''
+      [27] = 'ERNANIPLUMER@GMAIL.COM'
+      [28] = ''
+      [29] = ''
+
+--------------------------------------------------------------------------------
+
+
+▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼
+ARQUIVO: Estabelecimentos3.zip
+▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼
+
+📄 CSV interno: K3241.K03200Y3.D51213.ESTABELE
+   Tamanho descompactado: 1085.23 MB
+   Encoding: latin1
+   Delimitador: ';'
+   Contando... 1,000,000 linhas processadas
+   Contando... 2,000,000 linhas processadas
+   Contando... 3,000,000 linhas processadas
+   Contando... 4,000,000 linhas processadas
+
+   ✅ TOTAL DE REGISTROS: 4,753,435
+
+   📊 ESTRUTURA DE COLUNAS:
+   Total de colunas: 30
+
+   🔍 PRIMEIRAS LINHAS:
+
+   Linha 0:
+      [0] = '18997620'
+      [1] = '0001'
+      [2] = '02'
+      [3] = '1'
+      [4] = ''
+      [5] = '04'
+      [6] = '20210415'
+      [7] = '63'
+      [8] = ''
+      [9] = ''
+      [10] = '20131002'
+      [11] = '4651602'
+      [12] = '4751202,6209100,9511800,6190601,6311900,7420001,52...'
+      [13] = 'AVENIDA'
+      [14] = 'PROFESSOR JOAQUIM SILVA'
+      [15] = '200'
+      [16] = ''
+      [17] = 'JD. SAIRA'
+      [18] = '18085000'
+      [19] = 'SP'
+      [20] = '7145'
+      [21] = '15'
+      [22] = '32295564'
+      [23] = ''
+      [24] = ''
+      [25] = ''
+      [26] = ''
+      [27] = 'sonia@orteca.com.br'
+      [28] = ''
+      [29] = ''
+
+   Linha 1:
+      [0] = '18997629'
+      [1] = '0001'
+      [2] = '13'
+      [3] = '1'
+      [4] = ''
+      [5] = '08'
+      [6] = '20180201'
+      [7] = '67'
+      [8] = ''
+      [9] = ''
+      [10] = '20131002'
+      [11] = '8230001'
+      [12] = '9602502,9609202'
+      [13] = 'RUA'
+      [14] = 'JOSE MARIA DO NASCIMENTO'
+      [15] = '124'
+      [16] = ''
+      [17] = 'ERNESTO DO NASCIMENTO(BARREIRO)'
+      [18] = '30668560'
+      [19] = 'MG'
+      [20] = '4123'
+      [21] = '31'
+      [22] = '86137997'
+      [23] = ''
+      [24] = ''
+      [25] = ''
+      [26] = ''
+      [27] = 'maxilene.cerimonial@gmail.com'
+      [28] = ''
+      [29] = ''
+
+   Linha 2:
+      [0] = '18997642'
+      [1] = '0001'
+      [2] = '72'
+      [3] = '1'
+      [4] = ''
+      [5] = '04'
+      [6] = '20240808'
+      [7] = '63'
+      [8] = ''
+      [9] = ''
+      [10] = '20131002'
+      [11] = '5229099'
+      [12] = '7912100'
+      [13] = 'RUA'
+      [14] = 'FERNAO DE MAGALHAES'
+      [15] = '538'
+      [16] = ''
+      [17] = 'VILA MARLI'
+      [18] = '79117011'
+      [19] = 'MS'
+      [20] = '9051'
+      [21] = '67'
+      [22] = '84688838'
+      [23] = ''
+      [24] = ''
+      [25] = ''
+      [26] = ''
+      [27] = 'FARINGUER@GMAIL.COM'
+      [28] = ''
+      [29] = ''
+
+--------------------------------------------------------------------------------
+
+
+▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼
+ARQUIVO: Estabelecimentos4.zip
+▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼
+
+📄 CSV interno: K3241.K03200Y4.D51213.ESTABELE
+   Tamanho descompactado: 1047.48 MB
+   Encoding: latin1
+   Delimitador: ';'
+   Contando... 1,000,000 linhas processadas
+   Contando... 2,000,000 linhas processadas
+   Contando... 3,000,000 linhas processadas
+   Contando... 4,000,000 linhas processadas
+
+   ✅ TOTAL DE REGISTROS: 4,753,435
+
+   📊 ESTRUTURA DE COLUNAS:
+   Total de colunas: 30
+
+   🔍 PRIMEIRAS LINHAS:
+
+   Linha 0:
+      [0] = '36536084'
+      [1] = '0001'
+      [2] = '20'
+      [3] = '1'
+      [4] = 'MAGIA DA PAZ'
+      [5] = '08'
+      [6] = '19960430'
+      [7] = '01'
+      [8] = ''
+      [9] = ''
+      [10] = '19920206'
+      [11] = '4781400'
+      [12] = ''
+      [13] = 'RUA'
+      [14] = 'TERESA'
+      [15] = '502'
+      [16] = 'SL 2'
+      [17] = 'ALTO DA SERRA'
+      [18] = '25625011'
+      [19] = 'RJ'
+      [20] = '5877'
+      [21] = ''
+      [22] = ''
+      [23] = ''
+      [24] = ''
+      [25] = ''
+      [26] = ''
+      [27] = ''
+      [28] = ''
+      [29] = ''
+
+   Linha 1:
+      [0] = '01215470'
+      [1] = '0001'
+      [2] = '35'
+      [3] = '1'
+      [4] = ''
+      [5] = '08'
+      [6] = '19981231'
+      [7] = '01'
+      [8] = ''
+      [9] = ''
+      [10] = '19960524'
+      [11] = '7319099'
+      [12] = '7319001,7319002,7319003,7319004'
+      [13] = 'RUA'
+      [14] = 'ANTONIO FELICIO'
+      [15] = '112'
+      [16] = 'CONJ 102'
+      [17] = 'JD PAULISTA'
+      [18] = '04530060'
+      [19] = 'SP'
+      [20] = '7107'
+      [21] = ''
+      [22] = ''
+      [23] = ''
+      [24] = ''
+      [25] = ''
+      [26] = ''
+      [27] = ''
+      [28] = ''
+      [29] = ''
+
+   Linha 2:
+      [0] = '74268418'
+      [1] = '0001'
+      [2] = '10'
+      [3] = '1'
+      [4] = ''
+      [5] = '02'
+      [6] = '20051022'
+      [7] = '00'
+      [8] = ''
+      [9] = ''
+      [10] = '19940113'
+      [11] = '0210199'
+      [12] = '0210107'
+      [13] = 'ESTRADA'
+      [14] = 'RIBEIRA/APIAI - SP 250'
+      [15] = 'SN'
+      [16] = 'KM    14'
+      [17] = 'CAPIVARAS'
+      [18] = '18384899'
+      [19] = 'SP'
+      [20] = '6957'
+      [21] = '15'
+      [22] = '35522692'
+      [23] = ''
+      [24] = ''
+      [25] = ''
+      [26] = ''
+      [27] = 'LAVRAS@TERRA.COM.BR'
+      [28] = ''
+      [29] = ''
+
+--------------------------------------------------------------------------------
+
+
+▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼
+ARQUIVO: Estabelecimentos5.zip
+▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼
+
+📄 CSV interno: K3241.K03200Y5.D51213.ESTABELE
+   Tamanho descompactado: 1030.72 MB
+   Encoding: latin1
+   Delimitador: ';'
+   Contando... 1,000,000 linhas processadas
+   Contando... 2,000,000 linhas processadas
+   Contando... 3,000,000 linhas processadas
+   Contando... 4,000,000 linhas processadas
+
+   ✅ TOTAL DE REGISTROS: 4,753,435
+
+   📊 ESTRUTURA DE COLUNAS:
+   Total de colunas: 30
+
+   🔍 PRIMEIRAS LINHAS:
+
+   Linha 0:
+      [0] = '46334738'
+      [1] = '0001'
+      [2] = '96'
+      [3] = '1'
+      [4] = 'FLAINER ALVES SANTANA'
+      [5] = '08'
+      [6] = '20230528'
+      [7] = '01'
+      [8] = ''
+      [9] = ''
+      [10] = '20220510'
+      [11] = '4520005'
+      [12] = ''
+      [13] = 'RUA'
+      [14] = 'SAO MATEUS'
+      [15] = '2'
+      [16] = ''
+      [17] = 'ARLINDO VILLASCHI'
+      [18] = '29136186'
+      [19] = 'ES'
+      [20] = '5701'
+      [21] = '27'
+      [22] = '97802348'
+      [23] = ''
+      [24] = ''
+      [25] = ''
+      [26] = ''
+      [27] = 'FLAINER68@GMAIL.COM'
+      [28] = ''
+      [29] = ''
+
+   Linha 1:
+      [0] = '46334747'
+      [1] = '0001'
+      [2] = '87'
+      [3] = '1'
+      [4] = ''
+      [5] = '08'
+      [6] = '20250616'
+      [7] = '01'
+      [8] = ''
+      [9] = ''
+      [10] = '20220502'
+      [11] = '6470101'
+      [12] = ''
+      [13] = 'AVENIDA'
+      [14] = 'PRES JUSCELINO KUBITSCHEK'
+      [15] = '360'
+      [16] = 'CONJ  81                  EDIF  360 JK'
+      [17] = 'VILA NOVA CONCEICAO'
+      [18] = '04543000'
+      [19] = 'SP'
+      [20] = '7107'
+      [21] = '21'
+      [22] = '25064323'
+      [23] = ''
+      [24] = ''
+      [25] = ''
+      [26] = ''
+      [27] = 'SOCIETARIO.SUGOC@SULAMERICA.COM.BR'
+      [28] = ''
+      [29] = ''
+
+   Linha 2:
+      [0] = '46334763'
+      [1] = '0001'
+      [2] = '70'
+      [3] = '1'
+      [4] = ''
+      [5] = '02'
+      [6] = '20220510'
+      [7] = '00'
+      [8] = ''
+      [9] = ''
+      [10] = '20220510'
+      [11] = '7319002'
+      [12] = ''
+      [13] = 'AVENIDA'
+      [14] = '55 A'
+      [15] = '155'
+      [16] = 'CASA'
+      [17] = 'RESIDENCIAL MURAISHI 1'
+      [18] = '14790000'
+      [19] = 'SP'
+      [20] = '6449'
+      [21] = '16'
+      [22] = '38354728'
+      [23] = ''
+      [24] = ''
+      [25] = ''
+      [26] = ''
+      [27] = 'VANESSAMEZAVILLA@YAHOO.COM.BR'
+      [28] = ''
+      [29] = ''
+
+--------------------------------------------------------------------------------
+
+
+▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼
+ARQUIVO: Estabelecimentos6.zip
+▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼
+
+📄 CSV interno: K3241.K03200Y6.D51213.ESTABELE
+   Tamanho descompactado: 1065.52 MB
+   Encoding: latin1
+   Delimitador: ';'
+   Contando... 1,000,000 linhas processadas
+   Contando... 2,000,000 linhas processadas
+   Contando... 3,000,000 linhas processadas
+   Contando... 4,000,000 linhas processadas
+
+   ✅ TOTAL DE REGISTROS: 4,753,435
+
+   📊 ESTRUTURA DE COLUNAS:
+   Total de colunas: 30
+
+   🔍 PRIMEIRAS LINHAS:
+
+   Linha 0:
+      [0] = '25166680'
+      [1] = '0001'
+      [2] = '49'
+      [3] = '1'
+      [4] = ''
+      [5] = '08'
+      [6] = '20241205'
+      [7] = '01'
+      [8] = ''
+      [9] = ''
+      [10] = '20160708'
+      [11] = '5611203'
+      [12] = '5620104,4723700'
+      [13] = 'AVENIDA'
+      [14] = 'URUGUAI'
+      [15] = '1389'
+      [16] = ''
+      [17] = 'AMERICA'
+      [18] = '96212194'
+      [19] = 'RS'
+      [20] = '8815'
+      [21] = '53'
+      [22] = '32329267'
+      [23] = ''
+      [24] = ''
+      [25] = ''
+      [26] = ''
+      [27] = 'divamaria.soares@gmail.com'
+      [28] = ''
+      [29] = ''
+
+   Linha 1:
+      [0] = '25166692'
+      [1] = '0001'
+      [2] = '73'
+      [3] = '1'
+      [4] = ''
+      [5] = '02'
+      [6] = '20160708'
+      [7] = '00'
+      [8] = ''
+      [9] = ''
+      [10] = '20160708'
+      [11] = '4724500'
+      [12] = '4930201'
+      [13] = 'AVENIDA'
+      [14] = 'JOAO BARBOSA DOS SANTOS'
+      [15] = '1461'
+      [16] = ''
+      [17] = 'CENTRO'
+      [18] = '35335000'
+      [19] = 'MG'
+      [20] = '0710'
+      [21] = '33'
+      [22] = '88857327'
+      [23] = ''
+      [24] = ''
+      [25] = ''
+      [26] = ''
+      [27] = 'LEONARDOQUINTANILHA68@GMAIL.COM'
+      [28] = ''
+      [29] = ''
+
+   Linha 2:
+      [0] = '25166704'
+      [1] = '0001'
+      [2] = '60'
+      [3] = '1'
+      [4] = ''
+      [5] = '04'
+      [6] = '20210304'
+      [7] = '63'
+      [8] = ''
+      [9] = ''
+      [10] = '20160708'
+      [11] = '4781400'
+      [12] = '9602501'
+      [13] = 'RUA'
+      [14] = 'VIRISIO RODRIGUES DE RAMOS'
+      [15] = '1033'
+      [16] = 'APT 01'
+      [17] = 'SAO CRISTOVAO'
+      [18] = '95058315'
+      [19] = 'RS'
+      [20] = '8599'
+      [21] = '54'
+      [22] = '91490884'
+      [23] = ''
+      [24] = ''
+      [25] = ''
+      [26] = ''
+      [27] = ''
+      [28] = ''
+      [29] = ''
+
+--------------------------------------------------------------------------------
+
+
+▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼
+ARQUIVO: Estabelecimentos7.zip
+▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼
+
+📄 CSV interno: K3241.K03200Y7.D51213.ESTABELE
+   Tamanho descompactado: 1070.82 MB
+   Encoding: latin1
+   Delimitador: ';'
+   Contando... 1,000,000 linhas processadas
+   Contando... 2,000,000 linhas processadas
+   Contando... 3,000,000 linhas processadas
+   Contando... 4,000,000 linhas processadas
+
+   ✅ TOTAL DE REGISTROS: 4,753,435
+
+   📊 ESTRUTURA DE COLUNAS:
+   Total de colunas: 30
+
+   🔍 PRIMEIRAS LINHAS:
+
+   Linha 0:
+      [0] = '86404456'
+      [1] = '0001'
+      [2] = '32'
+      [3] = '1'
+      [4] = 'MIL COISAS'
+      [5] = '08'
+      [6] = '20081231'
+      [7] = '71'
+      [8] = ''
+      [9] = ''
+      [10] = '19940329'
+      [11] = '4755501'
+      [12] = ''
+      [13] = 'RUA'
+      [14] = 'JOAO BATISTA BARBOSA'
+      [15] = '149'
+      [16] = ''
+      [17] = 'CENTRO'
+      [18] = '39200000'
+      [19] = 'MG'
+      [20] = '4381'
+      [21] = ''
+      [22] = ''
+      [23] = ''
+      [24] = ''
+      [25] = ''
+      [26] = ''
+      [27] = ''
+      [28] = ''
+      [29] = ''
+
+   Linha 1:
+      [0] = '66525718'
+      [1] = '0001'
+      [2] = '00'
+      [3] = '1'
+      [4] = ''
+      [5] = '08'
+      [6] = '20081231'
+      [7] = '71'
+      [8] = ''
+      [9] = ''
+      [10] = '19910716'
+      [11] = '4722901'
+      [12] = ''
+      [13] = 'RUA'
+      [14] = 'DAS ORQUIDEAS'
+      [15] = '1216'
+      [16] = ''
+      [17] = 'JD PARAISO'
+      [18] = '15600001'
+      [19] = 'SP'
+      [20] = '6411'
+      [21] = ''
+      [22] = ''
+      [23] = ''
+      [24] = ''
+      [25] = ''
+      [26] = ''
+      [27] = ''
+      [28] = ''
+      [29] = ''
+
+   Linha 2:
+      [0] = '66525742'
+      [1] = '0001'
+      [2] = '49'
+      [3] = '1'
+      [4] = ''
+      [5] = '08'
+      [6] = '20081231'
+      [7] = '71'
+      [8] = ''
+      [9] = ''
+      [10] = '19910715'
+      [11] = '4530701'
+      [12] = ''
+      [13] = 'RODOVIA'
+      [14] = 'MAL CASTELO BRANCO'
+      [15] = 'SN'
+      [16] = 'KM 82'
+      [17] = 'ITU'
+      [18] = '13301331'
+      [19] = 'SP'
+      [20] = '6579'
+      [21] = ''
+      [22] = ''
+      [23] = ''
+      [24] = ''
+      [25] = ''
+      [26] = ''
+      [27] = ''
+      [28] = ''
+      [29] = ''
+
+--------------------------------------------------------------------------------
+
+
+▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼
+ARQUIVO: Estabelecimentos8.zip
+▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼
+
+📄 CSV interno: K3241.K03200Y8.D51213.ESTABELE
+   Tamanho descompactado: 1028.15 MB
+   Encoding: latin1
+   Delimitador: ';'
+   Contando... 1,000,000 linhas processadas
+   Contando... 2,000,000 linhas processadas
+   Contando... 3,000,000 linhas processadas
+   Contando... 4,000,000 linhas processadas
+
+   ✅ TOTAL DE REGISTROS: 4,753,435
+
+   📊 ESTRUTURA DE COLUNAS:
+   Total de colunas: 30
+
+   🔍 PRIMEIRAS LINHAS:
+
+   Linha 0:
+      [0] = '51691039'
+      [1] = '0001'
+      [2] = '33'
+      [3] = '1'
+      [4] = ''
+      [5] = '02'
+      [6] = '20230804'
+      [7] = '00'
+      [8] = ''
+      [9] = ''
+      [10] = '20230804'
+      [11] = '4669999'
+      [12] = ''
+      [13] = 'RUA'
+      [14] = 'ANTONIETA DE MORAIS'
+      [15] = '454'
+      [16] = 'SALA  01'
+      [17] = 'VILA MATILDE'
+      [18] = '03517000'
+      [19] = 'SP'
+      [20] = '7107'
+      [21] = '11'
+      [22] = '45899569'
+      [23] = ''
+      [24] = ''
+      [25] = ''
+      [26] = ''
+      [27] = 'CLAUDIA@FAOW.COM.BR'
+      [28] = ''
+      [29] = ''
+
+   Linha 1:
+      [0] = '51691048'
+      [1] = '0001'
+      [2] = '24'
+      [3] = '1'
+      [4] = ''
+      [5] = '02'
+      [6] = '20230804'
+      [7] = '00'
+      [8] = ''
+      [9] = ''
+      [10] = '20230804'
+      [11] = '9001902'
+      [12] = '7729202,5912099,7739003,8592999,8230001'
+      [13] = '10A RUA'
+      [14] = 'HONORIO PEREIRA'
+      [15] = '585'
+      [16] = ''
+      [17] = 'CAMPINAS'
+      [18] = '62700000'
+      [19] = 'CE'
+      [20] = '1355'
+      [21] = '85'
+      [22] = '91813526'
+      [23] = ''
+      [24] = ''
+      [25] = ''
+      [26] = ''
+      [27] = 'CLEMILSON.GENESIS@GMAIL.COM'
+      [28] = ''
+      [29] = ''
+
+   Linha 2:
+      [0] = '51691060'
+      [1] = '0001'
+      [2] = '39'
+      [3] = '1'
+      [4] = ''
+      [5] = '02'
+      [6] = '20230627'
+      [7] = '00'
+      [8] = ''
+      [9] = ''
+      [10] = '20230627'
+      [11] = '0139306'
+      [12] = ''
+      [13] = 'FAZENDA'
+      [14] = 'GAIBU'
+      [15] = 'S/N'
+      [16] = ''
+      [17] = 'ZONA RURAL'
+      [18] = '15460000'
+      [19] = 'SP'
+      [20] = '6497'
+      [21] = '17'
+      [22] = '21364100'
+      [23] = ''
+      [24] = ''
+      [25] = ''
+      [26] = ''
+      [27] = 'RICARDOMICHEL1@HOTMAIL.COM'
+      [28] = ''
+      [29] = ''
+
+--------------------------------------------------------------------------------
+
+
+▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼
+ARQUIVO: Estabelecimentos9.zip
+▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼
+
+📄 CSV interno: K3241.K03200Y9.D51213.ESTABELE
+   Tamanho descompactado: 1046.79 MB
+   Encoding: latin1
+   Delimitador: ';'
+   Contando... 1,000,000 linhas processadas
+   Contando... 2,000,000 linhas processadas
+   Contando... 3,000,000 linhas processadas
+   Contando... 4,000,000 linhas processadas
+
+   ✅ TOTAL DE REGISTROS: 4,753,435
+
+   📊 ESTRUTURA DE COLUNAS:
+   Total de colunas: 30
+
+   🔍 PRIMEIRAS LINHAS:
+
+   Linha 0:
+      [0] = '28730824'
+      [1] = '0001'
+      [2] = '36'
+      [3] = '1'
+      [4] = ''
+      [5] = '02'
+      [6] = '20170926'
+      [7] = '00'
+      [8] = ''
+      [9] = ''
+      [10] = '20170926'
+      [11] = '4744099'
+      [12] = '4322301,9602502'
+      [13] = 'RUA'
+      [14] = 'QUATRO (RET MANGUEIRAS)'
+      [15] = '9'
+      [16] = 'LOJA'
+      [17] = 'SENADOR CAMARA'
+      [18] = '21844120'
+      [19] = 'RJ'
+      [20] = '6001'
+      [21] = '21'
+      [22] = '33333333'
+      [23] = ''
+      [24] = ''
+      [25] = ''
+      [26] = ''
+      [27] = ''
+      [28] = ''
+      [29] = ''
+
+   Linha 1:
+      [0] = '28730835'
+      [1] = '0001'
+      [2] = '16'
+      [3] = '1'
+      [4] = ''
+      [5] = '08'
+      [6] = '20171020'
+      [7] = '01'
+      [8] = ''
+      [9] = ''
+      [10] = '20170926'
+      [11] = '5611203'
+      [12] = ''
+      [13] = 'RUA'
+      [14] = 'CICANTA'
+      [15] = '61'
+      [16] = ''
+      [17] = 'JARDIM UMARIZAL'
+      [18] = '05756300'
+      [19] = 'SP'
+      [20] = '7107'
+      [21] = '11'
+      [22] = '47861871'
+      [23] = ''
+      [24] = ''
+      [25] = ''
+      [26] = ''
+      [27] = 'marcoluca65@gmail.com'
+      [28] = ''
+      [29] = ''
+
+   Linha 2:
+      [0] = '27437529'
+      [1] = '0001'
+      [2] = '23'
+      [3] = '1'
+      [4] = ''
+      [5] = '02'
+      [6] = '20170330'
+      [7] = '00'
+      [8] = ''
+      [9] = ''
+      [10] = '20170330'
+      [11] = '4744099'
+      [12] = ''
+      [13] = 'ESTRADA'
+      [14] = 'DE PONTA NEGRA'
+      [15] = '3268'
+      [16] = ''
+      [17] = 'PONTA NEGRA (PONTA NEGRA)'
+      [18] = '24922470'
+      [19] = 'RJ'
+      [20] = '5853'
+      [21] = '21'
+      [22] = '27023618'
+      [23] = ''
+      [24] = ''
+      [25] = ''
+      [26] = ''
+      [27] = ''
+      [28] = ''
+      [29] = ''
+
+--------------------------------------------------------------------------------
+
+
+▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼
+ARQUIVO: Motivos.zip
+▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼
+
+📄 CSV interno: F.K03200$Z.D51213.MOTICSV
+   Tamanho descompactado: 0.00 MB
+   Encoding: latin1
+   Delimitador: ';'
+
+   ✅ TOTAL DE REGISTROS: 63
+
+   📊 ESTRUTURA DE COLUNAS:
+   Total de colunas: 2
+
+   🔍 PRIMEIRAS LINHAS:
+
+   Linha 0:
+      [0] = '00'
+      [1] = 'SEM MOTIVO'
+
+   Linha 1:
+      [0] = '01'
+      [1] = 'EXTINCAO POR ENCERRAMENTO LIQUIDACAO VOLUNTARIA'
+
+   Linha 2:
+      [0] = '02'
+      [1] = 'INCORPORACAO'
+
+--------------------------------------------------------------------------------
+
+
+▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼
+ARQUIVO: Municipios.zip
+▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼
+
+📄 CSV interno: F.K03200$Z.D51213.MUNICCSV
+   Tamanho descompactado: 0.11 MB
+   Encoding: latin1
+   Delimitador: ';'
+
+   ✅ TOTAL DE REGISTROS: 5,572
+
+   📊 ESTRUTURA DE COLUNAS:
+   Total de colunas: 2
+
+   🔍 PRIMEIRAS LINHAS:
+
+   Linha 0:
+      [0] = '0001'
+      [1] = 'GUAJARA-MIRIM'
+
+   Linha 1:
+      [0] = '0002'
+      [1] = 'ALTO ALEGRE DOS PARECIS'
+
+   Linha 2:
+      [0] = '0003'
+      [1] = 'PORTO VELHO'
+
+--------------------------------------------------------------------------------
+
+
+▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼
+ARQUIVO: Naturezas.zip
+▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼
+
+📄 CSV interno: F.K03200$Z.D51213.NATJUCSV
+   Tamanho descompactado: 0.00 MB
+   Encoding: latin1
+   Delimitador: ';'
+
+   ✅ TOTAL DE REGISTROS: 91
+
+   📊 ESTRUTURA DE COLUNAS:
+   Total de colunas: 2
+
+   🔍 PRIMEIRAS LINHAS:
+
+   Linha 0:
+      [0] = '0000'
+      [1] = 'Natureza Jurídica não informada'
+
+   Linha 1:
+      [0] = '3271'
+      [1] = 'Órgão de Direção Local de Partido Político'
+
+   Linha 2:
+      [0] = '3280'
+      [1] = 'Comitê Financeiro de Partido Político'
+
+--------------------------------------------------------------------------------
+
+
+▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼
+ARQUIVO: Paises.zip
+▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼
+
+📄 CSV interno: F.K03200$Z.D51213.PAISCSV
+   Tamanho descompactado: 0.01 MB
+   Encoding: latin1
+   Delimitador: ';'
+
+   ✅ TOTAL DE REGISTROS: 255
+
+   📊 ESTRUTURA DE COLUNAS:
+   Total de colunas: 2
+
+   🔍 PRIMEIRAS LINHAS:
+
+   Linha 0:
+      [0] = '000'
+      [1] = 'COLIS POSTAUX'
+
+   Linha 1:
+      [0] = '013'
+      [1] = 'AFEGANISTAO'
+
+   Linha 2:
+      [0] = '017'
+      [1] = 'ALBANIA'
+
+--------------------------------------------------------------------------------
+
+
+▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼
+ARQUIVO: Qualificacoes.zip
+▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼
+
+📄 CSV interno: F.K03200$Z.D51213.QUALSCSV
+   Tamanho descompactado: 0.00 MB
+   Encoding: latin1
+   Delimitador: ';'
+
+   ✅ TOTAL DE REGISTROS: 68
+
+   📊 ESTRUTURA DE COLUNAS:
+   Total de colunas: 2
+
+   🔍 PRIMEIRAS LINHAS:
+
+   Linha 0:
+      [0] = '00'
+      [1] = 'Não informada'
+
+   Linha 1:
+      [0] = '05'
+      [1] = 'Administrador'
+
+   Linha 2:
+      [0] = '08'
+      [1] = 'Conselheiro de Administração'
+
+--------------------------------------------------------------------------------
+
+
+▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼
+ARQUIVO: Simples.zip
+▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼
+
+📄 CSV interno: F.K03200$W.SIMPLES.CSV.D51213
+   Tamanho descompactado: 2774.61 MB
+   Encoding: latin1
+   Delimitador: ';'
+   Contando... 1,000,000 linhas processadas
+   Contando... 2,000,000 linhas processadas
+   Contando... 3,000,000 linhas processadas
+   Contando... 4,000,000 linhas processadas
+   Contando... 5,000,000 linhas processadas
+   Contando... 6,000,000 linhas processadas
+   Contando... 7,000,000 linhas processadas
+   Contando... 8,000,000 linhas processadas
+   Contando... 9,000,000 linhas processadas
+   Contando... 10,000,000 linhas processadas
+   Contando... 11,000,000 linhas processadas
+   Contando... 12,000,000 linhas processadas
+   Contando... 13,000,000 linhas processadas
+   Contando... 14,000,000 linhas processadas
+   Contando... 15,000,000 linhas processadas
+   Contando... 16,000,000 linhas processadas
+   Contando... 17,000,000 linhas processadas
+   Contando... 18,000,000 linhas processadas
+   Contando... 19,000,000 linhas processadas
+   Contando... 20,000,000 linhas processadas
+   Contando... 21,000,000 linhas processadas
+   Contando... 22,000,000 linhas processadas
+   Contando... 23,000,000 linhas processadas
+   Contando... 24,000,000 linhas processadas
+   Contando... 25,000,000 linhas processadas
+   Contando... 26,000,000 linhas processadas
+   Contando... 27,000,000 linhas processadas
+   Contando... 28,000,000 linhas processadas
+   Contando... 29,000,000 linhas processadas
+   Contando... 30,000,000 linhas processadas
+   Contando... 31,000,000 linhas processadas
+   Contando... 32,000,000 linhas processadas
+   Contando... 33,000,000 linhas processadas
+   Contando... 34,000,000 linhas processadas
+   Contando... 35,000,000 linhas processadas
+   Contando... 36,000,000 linhas processadas
+   Contando... 37,000,000 linhas processadas
+   Contando... 38,000,000 linhas processadas
+   Contando... 39,000,000 linhas processadas
+   Contando... 40,000,000 linhas processadas
+   Contando... 41,000,000 linhas processadas
+   Contando... 42,000,000 linhas processadas
+   Contando... 43,000,000 linhas processadas
+   Contando... 44,000,000 linhas processadas
+   Contando... 45,000,000 linhas processadas
+   Contando... 46,000,000 linhas processadas
+
+   ✅ TOTAL DE REGISTROS: 46,180,709
+
+   📊 ESTRUTURA DE COLUNAS:
+   Total de colunas: 7
+
+   🔍 PRIMEIRAS LINHAS:
+
+   Linha 0:
+      [0] = '00000000'
+      [1] = 'N'
+      [2] = '20070701'
+      [3] = '20070701'
+      [4] = 'N'
+      [5] = '20090701'
+      [6] = '20090701'
+
+   Linha 1:
+      [0] = '00000006'
+      [1] = 'N'
+      [2] = '20180101'
+      [3] = '20191231'
+      [4] = 'N'
+      [5] = '00000000'
+      [6] = '00000000'
+
+   Linha 2:
+      [0] = '00000008'
+      [1] = 'N'
+      [2] = '20140101'
+      [3] = '20211231'
+      [4] = 'N'
+      [5] = '00000000'
+      [6] = '00000000'
+
+--------------------------------------------------------------------------------
+
+
+▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼
+ARQUIVO: Socios0.zip
+▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼
+
+📄 CSV interno: K3241.K03200Y0.D51213.SOCIOCSV
+   Tamanho descompactado: 843.65 MB
+   Encoding: latin1
+   Delimitador: ';'
+   Contando... 1,000,000 linhas processadas
+   Contando... 2,000,000 linhas processadas
+   Contando... 3,000,000 linhas processadas
+   Contando... 4,000,000 linhas processadas
+   Contando... 5,000,000 linhas processadas
+   Contando... 6,000,000 linhas processadas
+   Contando... 7,000,000 linhas processadas
+   Contando... 8,000,000 linhas processadas
+
+   ✅ TOTAL DE REGISTROS: 8,634,002
+
+   📊 ESTRUTURA DE COLUNAS:
+   Total de colunas: 11
+
+   🔍 PRIMEIRAS LINHAS:
+
+   Linha 0:
+      [0] = '43684460'
+      [1] = '2'
+      [2] = 'ROBINSON GAMBA DANTAS'
+      [3] = '***975848**'
+      [4] = '05'
+      [5] = '20210928'
+      [6] = ''
+      [7] = '***000000**'
+      [8] = ''
+      [9] = '00'
+      [10] = '5'
+
+   Linha 1:
+      [0] = '43684460'
+      [1] = '2'
+      [2] = 'FREDERICO ALVAREZ DE TOLEDO PADILHA'
+      [3] = '***455818**'
+      [4] = '05'
+      [5] = '20240306'
+      [6] = ''
+      [7] = '***000000**'
+      [8] = ''
+      [9] = '00'
+      [10] = '4'
+
+   Linha 2:
+      [0] = '34322064'
+      [1] = '2'
+      [2] = 'CAMILLA MENDONCA VAZ MONTEIRO OLIVEIRA'
+      [3] = '***223821**'
+      [4] = '49'
+      [5] = '20251105'
+      [6] = ''
+      [7] = '***000000**'
+      [8] = ''
+      [9] = '00'
+      [10] = '5'
+
+--------------------------------------------------------------------------------
+
+
+▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼
+ARQUIVO: Socios1.zip
+▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼
+
+📄 CSV interno: K3241.K03200Y1.D51213.SOCIOCSV
+   Tamanho descompactado: 196.82 MB
+   Encoding: latin1
+   Delimitador: ';'
+   Contando... 1,000,000 linhas processadas
+   Contando... 2,000,000 linhas processadas
+
+   ✅ TOTAL DE REGISTROS: 2,019,150
+
+   📊 ESTRUTURA DE COLUNAS:
+   Total de colunas: 11
+
+   🔍 PRIMEIRAS LINHAS:
+
+   Linha 0:
+      [0] = '07396865'
+      [1] = '2'
+      [2] = 'GERSON HOFFMANN'
+      [3] = '***240659**'
+      [4] = '49'
+      [5] = '20050518'
+      [6] = ''
+      [7] = '***000000**'
+      [8] = ''
+      [9] = '00'
+      [10] = '5'
+
+   Linha 1:
+      [0] = '07396865'
+      [1] = '2'
+      [2] = 'MITZI HARTMANN'
+      [3] = '***126339**'
+      [4] = '22'
+      [5] = '20080509'
+      [6] = ''
+      [7] = '***000000**'
+      [8] = ''
+      [9] = '00'
+      [10] = '5'
+
+   Linha 2:
+      [0] = '52302726'
+      [1] = '2'
+      [2] = 'BENEDITO BEZERRA DE CARVALHO'
+      [3] = '***061354**'
+      [4] = '49'
+      [5] = '20050921'
+      [6] = ''
+      [7] = '***000000**'
+      [8] = ''
+      [9] = '00'
+      [10] = '7'
+
+--------------------------------------------------------------------------------
+
+
+▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼
+ARQUIVO: Socios2.zip
+▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼
+
+📄 CSV interno: K3241.K03200Y2.D51213.SOCIOCSV
+   Tamanho descompactado: 196.94 MB
+   Encoding: latin1
+   Delimitador: ';'
+   Contando... 1,000,000 linhas processadas
+   Contando... 2,000,000 linhas processadas
+
+   ✅ TOTAL DE REGISTROS: 2,019,150
+
+   📊 ESTRUTURA DE COLUNAS:
+   Total de colunas: 11
+
+   🔍 PRIMEIRAS LINHAS:
+
+   Linha 0:
+      [0] = '27802405'
+      [1] = '2'
+      [2] = 'JANAINA MARTINS ANDREOLLI'
+      [3] = '***536198**'
+      [4] = '49'
+      [5] = '20250708'
+      [6] = ''
+      [7] = '***000000**'
+      [8] = ''
+      [9] = '00'
+      [10] = '4'
+
+   Linha 1:
+      [0] = '41427041'
+      [1] = '2'
+      [2] = 'JOBSON NEPOMUCENO FLOR'
+      [3] = '***128754**'
+      [4] = '49'
+      [5] = '20210401'
+      [6] = ''
+      [7] = '***000000**'
+      [8] = ''
+      [9] = '00'
+      [10] = '5'
+
+   Linha 2:
+      [0] = '40131726'
+      [1] = '2'
+      [2] = 'THALES FREITAS ALVES FILHO'
+      [3] = '***237324**'
+      [4] = '22'
+      [5] = '20201216'
+      [6] = ''
+      [7] = '***000000**'
+      [8] = ''
+      [9] = '00'
+      [10] = '4'
+
+--------------------------------------------------------------------------------
+
+
+▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼
+ARQUIVO: Socios3.zip
+▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼
+
+📄 CSV interno: K3241.K03200Y3.D51213.SOCIOCSV
+   Tamanho descompactado: 197.36 MB
+   Encoding: latin1
+   Delimitador: ';'
+   Contando... 1,000,000 linhas processadas
+   Contando... 2,000,000 linhas processadas
+
+   ✅ TOTAL DE REGISTROS: 2,019,150
+
+   📊 ESTRUTURA DE COLUNAS:
+   Total de colunas: 11
+
+   🔍 PRIMEIRAS LINHAS:
+
+   Linha 0:
+      [0] = '17624928'
+      [1] = '1'
+      [2] = 'MEDCAPITAL HOLDING PARTICIPACOES LTDA'
+      [3] = '58049273000100'
+      [4] = '22'
+      [5] = '20250214'
+      [6] = ''
+      [7] = '***899968**'
+      [8] = 'ALINE DE SOUSA HOLANDA'
+      [9] = '17'
+      [10] = '0'
+
+   Linha 1:
+      [0] = '17624928'
+      [1] = '2'
+      [2] = 'ALINE DE SOUSA HOLANDA'
+      [3] = '***899968**'
+      [4] = '05'
+      [5] = '20250214'
+      [6] = ''
+      [7] = '***000000**'
+      [8] = ''
+      [9] = '00'
+      [10] = '4'
+
+   Linha 2:
+      [0] = '17625046'
+      [1] = '2'
+      [2] = 'CARLA CAMARGO ROSAS CARNEIRO'
+      [3] = '***017241**'
+      [4] = '49'
+      [5] = '20130220'
+      [6] = ''
+      [7] = '***000000**'
+      [8] = ''
+      [9] = '00'
+      [10] = '6'
+
+--------------------------------------------------------------------------------
+
+
+▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼
+ARQUIVO: Socios4.zip
+▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼
+
+📄 CSV interno: K3241.K03200Y4.D51213.SOCIOCSV
+   Tamanho descompactado: 197.73 MB
+   Encoding: latin1
+   Delimitador: ';'
+   Contando... 1,000,000 linhas processadas
+   Contando... 2,000,000 linhas processadas
+
+   ✅ TOTAL DE REGISTROS: 2,019,150
+
+   📊 ESTRUTURA DE COLUNAS:
+   Total de colunas: 11
+
+   🔍 PRIMEIRAS LINHAS:
+
+   Linha 0:
+      [0] = '04727343'
+      [1] = '2'
+      [2] = 'SHYDNEY JORGE ROSA'
+      [3] = '***731847**'
+      [4] = '49'
+      [5] = '19980403'
+      [6] = ''
+      [7] = '***000000**'
+      [8] = ''
+      [9] = '00'
+      [10] = '7'
+
+   Linha 1:
+      [0] = '04727430'
+      [1] = '2'
+      [2] = 'HELIO TOLLINI'
+      [3] = '***442136**'
+      [4] = '49'
+      [5] = '20011008'
+      [6] = ''
+      [7] = '***000000**'
+      [8] = ''
+      [9] = '00'
+      [10] = '9'
+
+   Linha 2:
+      [0] = '04727430'
+      [1] = '2'
+      [2] = 'IGNEZ MARTINS TOLLINI'
+      [3] = '***113521**'
+      [4] = '22'
+      [5] = '20011008'
+      [6] = ''
+      [7] = '***000000**'
+      [8] = ''
+      [9] = '00'
+      [10] = '9'
+
+--------------------------------------------------------------------------------
+
+
+▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼
+ARQUIVO: Socios5.zip
+▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼
+
+📄 CSV interno: K3241.K03200Y5.D51213.SOCIOCSV
+   Tamanho descompactado: 196.87 MB
+   Encoding: latin1
+   Delimitador: ';'
+   Contando... 1,000,000 linhas processadas
+   Contando... 2,000,000 linhas processadas
+
+   ✅ TOTAL DE REGISTROS: 2,019,150
+
+   📊 ESTRUTURA DE COLUNAS:
+   Total de colunas: 11
+
+   🔍 PRIMEIRAS LINHAS:
+
+   Linha 0:
+      [0] = '03451220'
+      [1] = '2'
+      [2] = 'VARDELIRA FERREIRA MESSIAS'
+      [3] = '***380749**'
+      [4] = '22'
+      [5] = '19991011'
+      [6] = ''
+      [7] = '***000000**'
+      [8] = ''
+      [9] = '00'
+      [10] = '9'
+
+   Linha 1:
+      [0] = '94057767'
+      [1] = '2'
+      [2] = 'VINICIUS SILVEIRA DA SILVA'
+      [3] = '***818050**'
+      [4] = '22'
+      [5] = '20110628'
+      [6] = ''
+      [7] = '***000000**'
+      [8] = ''
+      [9] = '00'
+      [10] = '4'
+
+   Linha 2:
+      [0] = '94057767'
+      [1] = '2'
+      [2] = 'JOSETE CARVALHO DA SILVEIRA'
+      [3] = '***460340**'
+      [4] = '49'
+      [5] = '20110628'
+      [6] = ''
+      [7] = '***000000**'
+      [8] = ''
+      [9] = '00'
+      [10] = '7'
+
+--------------------------------------------------------------------------------
+
+
+▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼
+ARQUIVO: Socios6.zip
+▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼
+
+📄 CSV interno: K3241.K03200Y6.D51213.SOCIOCSV
+   Tamanho descompactado: 196.93 MB
+   Encoding: latin1
+   Delimitador: ';'
+   Contando... 1,000,000 linhas processadas
+   Contando... 2,000,000 linhas processadas
+
+   ✅ TOTAL DE REGISTROS: 2,019,150
+
+   📊 ESTRUTURA DE COLUNAS:
+   Total de colunas: 11
+
+   🔍 PRIMEIRAS LINHAS:
+
+   Linha 0:
+      [0] = '42678087'
+      [1] = '2'
+      [2] = 'VICTOR MELO DOS SANTOS'
+      [3] = '***060392**'
+      [4] = '49'
+      [5] = '20230531'
+      [6] = ''
+      [7] = '***000000**'
+      [8] = ''
+      [9] = '00'
+      [10] = '3'
+
+   Linha 1:
+      [0] = '42678087'
+      [1] = '2'
+      [2] = 'ALEX WAGNER PEDROSO VENANCIO'
+      [3] = '***624749**'
+      [4] = '49'
+      [5] = '20230531'
+      [6] = ''
+      [7] = '***000000**'
+      [8] = ''
+      [9] = '00'
+      [10] = '4'
+
+   Linha 2:
+      [0] = '41881770'
+      [1] = '2'
+      [2] = 'VALTER LUIZ DOS SANTOS JUNIOR'
+      [3] = '***119014**'
+      [4] = '49'
+      [5] = '20210510'
+      [6] = ''
+      [7] = '***000000**'
+      [8] = ''
+      [9] = '00'
+      [10] = '5'
+
+--------------------------------------------------------------------------------
+
+
+▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼
+ARQUIVO: Socios7.zip
+▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼
+
+📄 CSV interno: K3241.K03200Y7.D51213.SOCIOCSV
+   Tamanho descompactado: 197.34 MB
+   Encoding: latin1
+   Delimitador: ';'
+   Contando... 1,000,000 linhas processadas
+   Contando... 2,000,000 linhas processadas
+
+   ✅ TOTAL DE REGISTROS: 2,019,150
+
+   📊 ESTRUTURA DE COLUNAS:
+   Total de colunas: 11
+
+   🔍 PRIMEIRAS LINHAS:
+
+   Linha 0:
+      [0] = '12833766'
+      [1] = '2'
+      [2] = 'ALEXANDRE CESAR FRANCISCO DA SILVA'
+      [3] = '***477568**'
+      [4] = '49'
+      [5] = '20170906'
+      [6] = ''
+      [7] = '***000000**'
+      [8] = ''
+      [9] = '00'
+      [10] = '6'
+
+   Linha 1:
+      [0] = '12834285'
+      [1] = '2'
+      [2] = 'LUZIA ROCHA POLESSI'
+      [3] = '***542328**'
+      [4] = '49'
+      [5] = '20250213'
+      [6] = ''
+      [7] = '***000000**'
+      [8] = ''
+      [9] = '00'
+      [10] = '6'
+
+   Linha 2:
+      [0] = '12834922'
+      [1] = '2'
+      [2] = 'CEZAR AUGUSTO DE OLIVEIRA'
+      [3] = '***236346**'
+      [4] = '22'
+      [5] = '20101105'
+      [6] = ''
+      [7] = '***000000**'
+      [8] = ''
+      [9] = '00'
+      [10] = '5'
+
+--------------------------------------------------------------------------------
+
+
+▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼
+ARQUIVO: Socios8.zip
+▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼
+
+📄 CSV interno: K3241.K03200Y8.D51213.SOCIOCSV
+   Tamanho descompactado: 197.69 MB
+   Encoding: latin1
+   Delimitador: ';'
+   Contando... 1,000,000 linhas processadas
+   Contando... 2,000,000 linhas processadas
+
+   ✅ TOTAL DE REGISTROS: 2,019,150
+
+   📊 ESTRUTURA DE COLUNAS:
+   Total de colunas: 11
+
+   🔍 PRIMEIRAS LINHAS:
+
+   Linha 0:
+      [0] = '01656641'
+      [1] = '2'
+      [2] = 'MEM DE SA PEREIRA DE CARVALHO'
+      [3] = '***036421**'
+      [4] = '16'
+      [5] = '20050912'
+      [6] = ''
+      [7] = '***000000**'
+      [8] = ''
+      [9] = '00'
+      [10] = '6'
+
+   Linha 1:
+      [0] = '01656667'
+      [1] = '2'
+      [2] = 'MILSON GOMES DE CARVALHO'
+      [3] = '***736277**'
+      [4] = '22'
+      [5] = '19970205'
+      [6] = ''
+      [7] = '***000000**'
+      [8] = ''
+      [9] = '00'
+      [10] = '7'
+
+   Linha 2:
+      [0] = '01656667'
+      [1] = '2'
+      [2] = 'MARCUS WELBY GOMES DE CARVALHO'
+      [3] = '***141577**'
+      [4] = '49'
+      [5] = '19970205'
+      [6] = ''
+      [7] = '***000000**'
+      [8] = ''
+      [9] = '00'
+      [10] = '6'
+
+--------------------------------------------------------------------------------
+
+
+▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼
+ARQUIVO: Socios9.zip
+▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼
+
+📄 CSV interno: K3241.K03200Y9.D51213.SOCIOCSV
+   Tamanho descompactado: 196.91 MB
+   Encoding: latin1
+   Delimitador: ';'
+   Contando... 1,000,000 linhas processadas
+   Contando... 2,000,000 linhas processadas
+
+   ✅ TOTAL DE REGISTROS: 2,019,150
+
+   📊 ESTRUTURA DE COLUNAS:
+   Total de colunas: 11
+
+   🔍 PRIMEIRAS LINHAS:
+
+   Linha 0:
+      [0] = '01894747'
+      [1] = '2'
+      [2] = 'PAULO NUNES KANAWATI'
+      [3] = '***276812**'
+      [4] = '22'
+      [5] = '19970528'
+      [6] = ''
+      [7] = '***000000**'
+      [8] = ''
+      [9] = '00'
+      [10] = '8'
+
+   Linha 1:
+      [0] = '01894747'
+      [1] = '2'
+      [2] = 'CARLOS ALBERTO BENTO DA SILVA'
+      [3] = '***364362**'
+      [4] = '22'
+      [5] = '19970528'
+      [6] = ''
+      [7] = '***000000**'
+      [8] = ''
+      [9] = '00'
+      [10] = '7'
+
+   Linha 2:
+      [0] = '01894751'
+      [1] = '2'
+      [2] = 'BELARMINA CELESTINA DE OLIVEIRA'
+      [3] = '***682764**'
+      [4] = '16'
+      [5] = '20210611'
+      [6] = ''
+      [7] = '***000000**'
+      [8] = ''
+      [9] = '00'
+      [10] = '6'
+
+--------------------------------------------------------------------------------
+
+================================================================================
+ANÁLISE CONCLUÍDA
+================================================================================
