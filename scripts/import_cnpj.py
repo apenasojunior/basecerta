@@ -243,9 +243,9 @@ class ImportadorCNPJ:
         self.logger.info("Desconectado do PostgreSQL")
         
     def criar_tabela_temp(self, nome_tipo: str):
-        """Cria tabela temporária UNLOGGED"""
+        """Cria tabela temporária UNLOGGED no schema public"""
         estrutura = ESTRUTURAS[nome_tipo]
-        temp_table = f"temp_{nome_tipo.lower()}"
+        temp_table = f"public.temp_{nome_tipo.lower()}"
         
         # DROP se existir
         self.cursor.execute(f"DROP TABLE IF EXISTS {temp_table}")
@@ -541,7 +541,7 @@ class ImportadorCNPJ:
                 raise
         
         # 4. Limpar tabela temporária final
-        temp_table = f"cnpj_brasil.temp_{tipo.lower()}"
+        temp_table = f"public.temp_{tipo.lower()}"
         self.cursor.execute(f"DROP TABLE IF EXISTS {temp_table}")
         self.conn.commit()
         self.logger.info(f"\n🗑️  Tabela temporária removida: {temp_table}")
