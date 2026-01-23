@@ -6,12 +6,12 @@
 
 ## 🎯 Contexto e Objetivo
 
-Este documento orienta sobre a infraestrutura PostgreSQL configurada em um MacBook com **armazenamento externo**. O banco de dados `basecerta` está **zerado** (sem tabelas), pronto para ser populado por outro projeto que irá criar e importar dados CNPJ da Receita Federal do Brasil.
+Este documento orienta sobre a infraestrutura PostgreSQL configurada em um MacBook com **armazenamento externo**. O banco de dados `basecerta` está **zerado** (sem tabelas), pronto para receber a estrutura e dados CNPJ da Receita Federal do Brasil.
 
 **⚠️ IMPORTANTE**: 
-- O banco está **vazio** propositalmente
-- Não crie tabelas aqui - apenas use-as quando criadas por outro projeto
-- Todos os scripts de criação estão em backup para referência
+- O banco está **vazio**, pronto para receber tabelas e dados CNPJ
+- Scripts de referência (migrations Alembic) estão em `backup_importacao_old/`
+- Arquivos RFB originais preservados em `/Volumes/ExtMB/BaseCNPJ/dez2025/`
 
 ---
 
@@ -73,10 +73,10 @@ Versão:   PostgreSQL 17.7 (Homebrew) on aarch64-apple-darwin
 - **Autenticação**: Trust (sem senha para conexões locais)
 - **Uso**: Operações normais de aplicação
 
-#### 3. Usuário: `dev4us` (Para Docker)
+#### 3. Usuário: `dev4us` (Para Aplicação)
 - **Senha**: `P@lm315@s`
-- **Uso**: Conexão da aplicação em Docker
-- **Host especial**: `host.docker.internal` (para containers)
+- **Uso**: Conexão da aplicação com autenticação
+- **Privilégios**: ALL PRIVILEGES no database basecerta
 
 ---
 
@@ -95,9 +95,9 @@ conn = psycopg2.connect(
     user="code4us"
 )
 
-# Conexão do Docker (com senha)
+# Conexão com Autenticação (dev4us)
 conn = psycopg2.connect(
-    host="host.docker.internal",  # ou "localhost" se não for Docker
+    host="localhost",
     port=5432,
     database="basecerta",
     user="dev4us",
@@ -312,8 +312,8 @@ brew services restart postgresql@17
 - Configurado via `pg_hba.conf`
 - Ideal para desenvolvimento local
 
-### Conexões Remotas ou Docker
-- Use o usuário `dev4us` com senha `P@lm315@s`
+### Conexões com Autenticação
+- Use o usuário `dev4us` com senha `P@lm315@s` quando precisar de autenticação
 - Para produção, **sempre altere a senha**
 
 ### Criar Novo Usuário (se necessário)
@@ -400,20 +400,20 @@ O processo de importação CNPJ foi **movido para outro projeto** devido a:
 
 ### ✅ O que VOCÊ PODE fazer:
 
-1. **Consultar** metadados do banco (pg_catalog, information_schema)
-2. **Criar conexões** usando qualquer dos 3 usuários
-3. **Verificar** configurações e status do PostgreSQL
-4. **Usar** o banco quando outro projeto criar as tabelas
-5. **Executar queries** de leitura e análise
-6. **Gerenciar** o serviço (start/stop/restart)
+1. **Criar tabelas e schemas** usando migrations do backup como referência
+2. **Importar dados** CNPJ dos arquivos em `/Volumes/ExtMB/BaseCNPJ/dez2025/`
+3. **Consultar** metadados do banco (pg_catalog, information_schema)
+4. **Criar conexões** usando qualquer dos 3 usuários
+5. **Verificar** configurações e status do PostgreSQL
+6. **Executar queries** de leitura, escrita e análise
+7. **Gerenciar** o serviço (start/stop/restart)
 
 ### ❌ O que VOCÊ NÃO DEVE fazer:
 
-1. **NÃO** crie tabelas ou schemas aqui (será feito em outro projeto)
-2. **NÃO** modifique arquivos em `/Volumes/ExtMB/BaseCNPJ/` (arquivos RFB preservados)
-3. **NÃO** altere `postgresql.conf` sem backup (configurações otimizadas)
-4. **NÃO** delete `backup_importacao_old/` (referência importante)
-5. **NÃO** execute importações massivas (RAM insuficiente neste Mac)
+1. **NÃO** modifique arquivos em `/Volumes/ExtMB/BaseCNPJ/` (arquivos RFB preservados)
+2. **NÃO** altere `postgresql.conf` sem backup (configurações otimizadas)
+3. **NÃO** delete `backup_importacao_old/` (referência importante)
+4. **NÃO** execute importações massivas sem chunks (RAM limitada a 16GB)
 
 ### 🎯 Uso Recomendado:
 
@@ -564,7 +564,7 @@ psql -U code4us -d basecerta -c "
 7. ⚠️ **NÃO executar importações massivas** - RAM insuficiente (16GB)
 8. ⚠️ **Verificar sempre se SSD está montado** antes de operações
 
-**Seu papel**: Auxiliar com consultas, análises e manutenção do banco quando ele for populado por outro projeto. Não tente recriar a infraestrutura de importação aqui.
+**Seu papel**: Criar a estrutura do banco (schemas, tabelas, índices) e importar dados CNPJ da Receita Federal. Use as migrations em `backup_importacao_old/` como referência, mas implemente importação em chunks para evitar problemas de memória.
 
 ---
 
