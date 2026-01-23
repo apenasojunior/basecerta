@@ -2,7 +2,6 @@
 """
 Script de Importação CNPJ - Receita Federal
 Arquitetura: TEMP UNLOGGED tables + MERGE (sem duplicação)
-Com sistema de CHECKPOINTS por arquivo (retoma automaticamente)
 """
 
 import sys
@@ -17,16 +16,6 @@ from typing import Dict, List, Tuple
 import time
 import os
 import io
-import re
-
-# Importar sistema de checkpoints
-from manage_checkpoints import (
-    criar_tabela_checkpoint,
-    iniciar_checkpoint,
-    finalizar_checkpoint,
-    erro_checkpoint,
-    listar_arquivos_pendentes
-)
 
 # Configuração
 DATA_DIR = Path("/Volumes/ExtMB/BaseCNPJ/dez2025")
@@ -243,9 +232,9 @@ class ImportadorCNPJ:
         self.logger.info("Desconectado do PostgreSQL")
         
     def criar_tabela_temp(self, nome_tipo: str):
-        """Cria tabela temporária UNLOGGED no schema public"""
+        """Cria tabela temporária UNLOGGED"""
         estrutura = ESTRUTURAS[nome_tipo]
-        temp_table = f"public.temp_{nome_tipo.lower()}"
+        temp_table = f"temp_{nome_tipo.lower()}"
         
         # DROP se existir
         self.cursor.execute(f"DROP TABLE IF EXISTS {temp_table}")
@@ -277,10 +266,6 @@ class ImportadorCNPJ:
         """Extrai CSV do ZIP e faz COPY para tabela temporária"""
         total_linhas = 0
         
-        # Valores padrão para campos vazios/inválidos
-        DATA_PADRAO = '19000101'  # Data fictícia: 01/01/1900
-        NUMERIC_PADRAO = '0,00'   # Valor numérico padrão (formato brasileiro)
-        
         with zipfile.ZipFile(zip_path, 'r') as zf:
             csv_name = zf.namelist()[0]
             
@@ -288,50 +273,14 @@ class ImportadorCNPJ:
                 # Decodificar de latin1 para UTF-8
                 content = csv_file.read().decode('latin1')
                 
-                # PRIMEIRO: Substituir ""; por ; (aspas vazias por campo vazio)
-                # E também substituir "0" por 0 (sem aspas)
-                content = content.replace('"";', ';').replace('""', '').replace('"0"', '0')
-                
-                # Identificar índices das colunas DATE
-                date_columns = {i for i, tipo in enumerate(estrutura['tipos']) if tipo == 'DATE'}
-                
-                # Identificar coluna capital_social (se existir) - será convertida para NUMERIC
-                capital_social_idx = None
-                if 'capital_social' in estrutura['colunas']:
-                    capital_social_idx = estrutura['colunas'].index('capital_social')
-                
-                num_colunas = len(estrutura['colunas'])
-                
-                # Processar linha por linha
+                # Processar linha por linha para tratar datas vazias
                 lines = []
                 for line in content.split('\n'):
-                    if not line.strip():
-                        continue
-                    
-                    # Split simples por ;
-                    campos = line.split(';', num_colunas - 1)
-                    
-                    # Se não tem o número correto de campos, manter original
-                    if len(campos) != num_colunas:
+                    if line.strip():
+                        # Substituir campos vazios de data (padrão: ";;" ou ";;") por NULL
+                        # Mantém o delimitador mas remove aspas vazias
+                        line = line.replace(';""', ';').replace('""', '')
                         lines.append(line)
-                        continue
-                    
-                    # Substituir valores inválidos nas colunas DATE
-                    for idx in date_columns:
-                        if idx < len(campos):
-                            valor = campos[idx].strip()
-                            # Valores inválidos: vazio, "0", "00000000", etc.
-                            if not valor or valor == '0' or re.match(r'^0+$', valor):
-                                campos[idx] = DATA_PADRAO
-                    
-                    # Tratar capital_social vazio
-                    if capital_social_idx is not None and capital_social_idx < len(campos):
-                        valor = campos[capital_social_idx].strip()
-                        if not valor:
-                            campos[capital_social_idx] = NUMERIC_PADRAO
-                    
-                    # Reconstruir linha
-                    lines.append(';'.join(campos))
                 
                 processed_content = '\n'.join(lines)
                 text_file = io.StringIO(processed_content)
@@ -433,121 +382,39 @@ class ImportadorCNPJ:
             self.logger.info(f"  Batch {batch_num}: {affected:,} registros | Progresso: {pct:.1f}%")
             
         self.logger.info(f"✅ MERGE completo: {total_rows:,} registros processados")
-    
-    def merge_arquivo_to_production(self, temp_table: str, estrutura: Dict, total_rows: int):
-        """MERGE otimizado para um único arquivo (sem batching)"""
-        tabela_destino = estrutura['tabela_destino']
-        chave = estrutura['chave_primaria']
-        colunas = estrutura['colunas']
-        
-        # Preparar ON CONFLICT
-        if 'socios' in tabela_destino:
-            conflict_target = f"ON CONSTRAINT uk_socio"
-        elif '(' in chave:
-            conflict_target = f"({chave})"
-        else:
-            conflict_target = f"({chave})"
-            
-        # Preparar UPDATE SET
-        chave_cols = chave.replace('(', '').replace(')', '').replace(' ', '').split(',')
-        update_cols = [f"{col} = EXCLUDED.{col}" for col in colunas if col not in chave_cols]
-        
-        # Para Empresas, converter capital_social
-        if 'empresas' in tabela_destino:
-            select_cols = []
-            for col in colunas:
-                if col == 'capital_social':
-                    select_cols.append("CAST(REPLACE(REPLACE(capital_social, '.', ''), ',', '.') AS NUMERIC) AS capital_social")
-                else:
-                    select_cols.append(col)
-            select_clause = ', '.join(select_cols)
-        else:
-            select_clause = ', '.join(colunas)
-        
-        # UPSERT direto (arquivo geralmente < 100k linhas)
-        upsert_sql = f"""
-        INSERT INTO {tabela_destino} ({', '.join(colunas)})
-        SELECT {select_clause}
-        FROM {temp_table}
-        ON CONFLICT {conflict_target}
-        DO UPDATE SET
-            {', '.join(update_cols)},
-            updated_at = CURRENT_TIMESTAMP
-        """
-        
-        self.cursor.execute(upsert_sql)
-        affected = self.cursor.rowcount
-        self.logger.info(f"    ✓ {affected:,} registros inseridos/atualizados")
         
     def importar_tipo(self, tipo: str):
-        """Importa todos os arquivos de um tipo específico COM CHECKPOINTS"""
+        """Importa todos os arquivos de um tipo específico"""
         self.logger.info(f"\n{'='*80}")
         self.logger.info(f"IMPORTANDO: {tipo}")
         self.logger.info(f"{'='*80}\n")
         
         inicio = time.time()
+        
+        # 1. Criar tabela temporária
         estrutura = ESTRUTURAS[tipo]
-        tabela_destino = estrutura['tabela_destino']
+        temp_table = self.criar_tabela_temp(tipo)
         
-        # 1. Listar TODOS os arquivos deste tipo
-        todos_arquivos = self.listar_arquivos_tipo(tipo)
+        # 2. Listar e processar arquivos
+        arquivos = self.listar_arquivos_tipo(tipo)
+        total_linhas = 0
         
-        # 2. Verificar quais já foram processados (CHECKPOINT)
-        arquivos_pendentes = listar_arquivos_pendentes(self.versao, tipo, todos_arquivos)
-        
-        ja_processados = len(todos_arquivos) - len(arquivos_pendentes)
-        if ja_processados > 0:
-            self.logger.info(f"♻️  RETOMANDO: {ja_processados} arquivos já processados")
-            self.logger.info(f"📋 Faltam: {len(arquivos_pendentes)} arquivos\n")
-        
-        if not arquivos_pendentes:
-            self.logger.info(f"✅ {tipo} já completamente importado!")
-            return
-        
-        # 3. Processar apenas os arquivos pendentes
-        for idx, arquivo in enumerate(arquivos_pendentes, 1):
-            arquivo_nome = Path(arquivo).name
-            self.logger.info(f"\n📁 [{idx}/{len(arquivos_pendentes)}] {arquivo_nome}")
+        for arquivo in arquivos:
+            linhas = self.extrair_e_copiar(arquivo, temp_table, estrutura)
+            total_linhas += linhas
             
-            try:
-                # Marcar início do checkpoint
-                iniciar_checkpoint(self.versao, tipo, arquivo_nome)
-                
-                # Criar tabela temporária (se não existir)
-                temp_table = self.criar_tabela_temp(tipo)
-                
-                # Processar arquivo
-                linhas = self.extrair_e_copiar(arquivo, temp_table, estrutura)
-                
-                # MERGE direto para produção (por arquivo!)
-                self.logger.info(f"  🔄 Fazendo MERGE de {linhas:,} registros...")
-                self.merge_arquivo_to_production(temp_table, estrutura, linhas)
-                
-                # COMMIT após cada arquivo!
-                self.conn.commit()
-                
-                # Finalizar checkpoint (sucesso)
-                finalizar_checkpoint(self.versao, tipo, arquivo_nome, linhas)
-                
-                # Limpar temp table para próximo arquivo
-                self.cursor.execute(f"TRUNCATE TABLE {temp_table}")
-                
-                self.logger.info(f"  ✅ {arquivo_nome} concluído e commitado")
-                
-            except Exception as e:
-                # Registrar erro no checkpoint
-                erro_checkpoint(self.versao, tipo, arquivo_nome, str(e))
-                self.logger.error(f"  ❌ Erro em {arquivo_nome}: {e}")
-                raise
+        self.logger.info(f"\n📊 Total carregado em {temp_table}: {total_linhas:,} linhas")
         
-        # 4. Limpar tabela temporária final
-        temp_table = f"public.temp_{tipo.lower()}"
-        self.cursor.execute(f"DROP TABLE IF EXISTS {temp_table}")
+        # 3. MERGE para produção
+        self.merge_to_production(temp_table, estrutura)
+        
+        # 4. Limpar tabela temporária
+        self.cursor.execute(f"DROP TABLE {temp_table}")
         self.conn.commit()
-        self.logger.info(f"\n🗑️  Tabela temporária removida: {temp_table}")
+        self.logger.info(f"🗑️  Tabela temporária removida: {temp_table}")
         
         duracao = time.time() - inicio
-        self.logger.info(f"⏱️  Tempo para {tipo}: {duracao/60:.1f} minutos")
+        self.logger.info(f"⏱️  Tempo total para {tipo}: {duracao/60:.1f} minutos")
         
     def importar_auxiliar(self, nome: str):
         """Importa arquivo auxiliar (único arquivo)"""
@@ -591,20 +458,16 @@ class ImportadorCNPJ:
         self.conn.commit()
         
     def executar_importacao_completa(self):
-        """Executa importação completa de todos os dados COM CHECKPOINTS"""
+        """Executa importação completa de todos os dados"""
         inicio_geral = time.time()
         
         try:
             self.conectar()
             
-            # 0. Criar tabela de checkpoints
-            self.logger.info("\n🔧 Verificando sistema de checkpoints...")
-            criar_tabela_checkpoint()
-            
-            # 1. Remover Foreign Keys para performance
+            # 0. Remover Foreign Keys para performance
             self.drop_foreign_keys()
             
-            # 2. Importar tabelas auxiliares
+            # 1. Importar tabelas auxiliares
             self.logger.info("\n" + "="*80)
             self.logger.info("FASE 1: TABELAS AUXILIARES")
             self.logger.info("="*80)
@@ -612,21 +475,21 @@ class ImportadorCNPJ:
             for nome in AUXILIARES.keys():
                 self.importar_auxiliar(nome)
                 
-            # 3. Importar tabelas principais (COM CHECKPOINTS POR ARQUIVO)
+            # 2. Importar tabelas principais (uma por vez)
             self.logger.info("\n" + "="*80)
-            self.logger.info("FASE 2: TABELAS PRINCIPAIS (COM CHECKPOINTS)")
+            self.logger.info("FASE 2: TABELAS PRINCIPAIS")
             self.logger.info("="*80)
             
             for tipo in ['Empresas', 'Estabelecimentos', 'Simples', 'Socios']:
                 self.importar_tipo(tipo)
                 
-            # 4. Recriar Foreign Keys
+            # 3. Recriar Foreign Keys
             self.recreate_foreign_keys()
                 
-            # 5. Registrar importação
+            # 4. Registrar importação
             self.registrar_importacao()
             
-            # 6. Estatísticas finais
+            # 5. Estatísticas finais
             self.exibir_estatisticas()
             
             duracao_total = time.time() - inicio_geral
@@ -665,34 +528,21 @@ class ImportadorCNPJ:
 
 
 def main():
-    global DATA_DIR  # Declarar no início da função
-    
     if len(sys.argv) < 2:
-        print("Uso: python import_cnpj.py <versao> [--auto] [--data-dir <caminho>]")
+        print("Uso: python import_cnpj.py <versao> [--auto]")
         print("Exemplo: python import_cnpj.py 2025-12")
         print("         python import_cnpj.py 2025-12 --auto  (sem confirmação)")
-        print("         python import_cnpj.py 2025-12 --auto --data-dir /Volumes/ExtMB/BaseCNPJ/jan2026")
         sys.exit(1)
         
     versao = sys.argv[1]
-    auto_mode = '--auto' in sys.argv
-    
-    # Verificar se --data-dir foi passado
-    data_dir = DATA_DIR  # Padrão
-    if '--data-dir' in sys.argv:
-        idx = sys.argv.index('--data-dir')
-        if idx + 1 < len(sys.argv):
-            data_dir = Path(sys.argv[idx + 1])
-        else:
-            print("❌ Erro: --data-dir requer um caminho")
-            sys.exit(1)
+    auto_mode = '--auto' in sys.argv or len(sys.argv) > 2
     
     print(f"""
 ╔═══════════════════════════════════════════════════════════════════╗
 ║       IMPORTAÇÃO CNPJ - RECEITA FEDERAL - BRASIL                 ║
 ║                                                                   ║
 ║  Versão: {versao:53s}║
-║  Data Dir: {str(data_dir):53s}║
+║  Data Dir: /Volumes/ExtMB/BaseCNPJ/dez2025                       ║
 ║  Arquitetura: TEMP UNLOGGED + MERGE (sem duplicação)            ║
 ╚═══════════════════════════════════════════════════════════════════╝
 """)
@@ -704,9 +554,6 @@ def main():
             sys.exit(0)
     else:
         print("\n✅ Modo automático ativado - iniciando importação...\n")
-    
-    # Atualizar DATA_DIR globalmente
-    DATA_DIR = data_dir
         
     importador = ImportadorCNPJ(versao)
     importador.executar_importacao_completa()
