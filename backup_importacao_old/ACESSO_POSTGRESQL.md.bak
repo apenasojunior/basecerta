@@ -6,7 +6,7 @@
 
 ## 🎯 Contexto e Objetivo
 
-Este documento orienta sobre a infraestrutura PostgreSQL configurada em um MacBook com **armazenamento externo**. O banco de dados `basecerta` está **zerado** (sem tabelas), pronto para receber a estrutura e dados CNPJ da Receita Federal do Brasil.
+Este documento orienta sobre a infraestrutura PostgreSQL configurada em um MacBook com **armazenamento externo**. O banco de dados `basecerta` está **zerado** (sem tabelas), pronto para ser populado por outro projeto que irá criar e importar dados CNPJ da Receita Federal do Brasil.
 
 **⚠️ IMPORTANTE**: 
 - O banco está **vazio**, pronto para receber tabelas e dados CNPJ
@@ -196,7 +196,7 @@ $pdo = new PDO(
     Arquitetura do Sistema
 
 **Hardware**:
-- MacBook Air M4
+- MacBook Air M2/M3
 - RAM: 16GB total
 - SSD Interno: Sistema e aplicativos
 - SSD Externo (Samsung T7): PostgreSQL data + Arquivos RFB
