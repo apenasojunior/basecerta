@@ -1,4 +1,52 @@
-# Acesso ao PostgreSQL - BaseCerta
+# 🤖 Guia de Orientação - PostgreSQL BaseCerta
+
+> **Documento para IA**: Este é um guia completo sobre a estrutura e configuração do PostgreSQL usado no projeto BaseCerta. Leia atentamente antes de realizar qualquer operação no banco de dados.
+
+---
+
+## 🎯 Contexto e Objetivo
+
+Este documento orienta sobre a infraestrutura PostgreSQL configurada em um MacBook com **armazenamento externo**. O banco de dados `basecerta` está **zerado** (sem tabelas), pronto para ser populado por outro projeto que irá criar e importar dados CNPJ da Receita Federal do Brasil.
+
+**⚠️ IMPORTANTE**: 
+- O banco está **vazio** propositalmente
+- Não crie tabelas aqui - apenas use-as quando criadas por outro projeto
+- Todos os scripts de criação estão em backup para referência
+
+---
+
+## 🗄️ Estrutura de Armazenamento
+
+### ⚡ Armazenamento em SSD Externo Samsung T7 (1TB)
+
+**Ponto de montagem**: `/Volumes/ExtMB`
+
+```
+/Volumes/ExtMB/
+├── postgresql/
+│   ├── data/           # PostgreSQL data directory (62GB)
+│   │   ├── base/       # Databases storage
+│   │   ├── pg_wal/     # Write-Ahead Logs
+│   │   ├── postgresql.conf
+│   │   └── postgresql.auto.conf
+│   └── logs/           # Import/operation logs (vazio após limpeza)
+│
+└── BaseCNPJ/
+    └── dez2025/        # Arquivos RFB preservados (~7GB ZIPs)
+        ├── Empresas0.zip (460MB)
+        ├── Empresas1.zip (74MB)
+        ├── Estabelecimentos*.zip
+        ├── Socios*.zip
+        └── ... (todos os arquivos da Receita Federal)
+```
+
+**🔴 CRÍTICO**: 
+- O PostgreSQL roda do SSD externo, NÃO do HD interno do Mac
+- Se `/Volumes/ExtMB` não estiver montado, o PostgreSQL não funcionará
+- Data directory oficial: `/Volumes/ExtMB/postgresql/data/` (configurado via symlink)
+- Data directory padrão (Homebrew): `/opt/homebrew/var/postgresql@17` (aponta para ExtMB)
+
+---
 
 ## 📋 Informações de Conexão
 
@@ -8,6 +56,7 @@
 Host:     localhost (ou 127.0.0.1)
 Porta:    5432
 Database: basecerta
+Versão:   PostgreSQL 17.7 (Homebrew) on aarch64-apple-darwin
 ```
 
 ### Usuários Disponíveis
@@ -144,30 +193,65 @@ $pdo = new PDO(
 $pdo = new PDO(
     'pgsql:host=localhost;port=5432;dbname=basecerta',
     'dev4us',
-    'P@lm315@s'
-);
-?>
+    Arquitetura do Sistema
+
+**Hardware**:
+- MacBook Air M2/M3
+- RAM: 16GB total
+- SSD Interno: Sistema e aplicativos
+- SSD Externo (Samsung T7): PostgreSQL data + Arquivos RFB
+
+**Instalação**:
+- Método: Homebrew (`brew install postgresql@17`)
+- Versão: PostgreSQL 17.7
+- Arquitetura: aarch64 (Apple Silicon)
+
+### Diretórios Importantes
+
+| Diretório | Localização | Uso |
+|-----------|-------------|-----|
+| **Data Directory** | `/opt/homebrew/var/postgresql@17` → `/Volumes/ExtMB/postgresql/data/` | Dados do PostgreSQL (symlink) |
+| **Logs do Sistema** | `/opt/homebrew/var/log/postgresql@17.log` | Logs operacionais do PostgreSQL |
+| **Logs de Importação** | `/Volumes/ExtMB/postgresql/logs/` | Logs removidos (estava com 54 arquivos) |
+| **Arquivos RFB** | `/Volumes/ExtMB/BaseCNPJ/dez2025/` | ZIPs da Receita Federal (7GB) |
+| **Backup Scripts** | `~/Documents/ADACODE/basecerta/backup_importacao_old/` | Scripts e migrations (46MB) |
+
+### Configurações Aplicadas (postgresql.auto.conf)
+
+```ini
+# Otimizações aplicadas para importação
+shared_buffers = '1536MB'          # Cache compartilhado
+work_mem = '192MB'                  # Memória para operações
+maintenance_work_mem = '512MB'      # Memória para VACUUM, INDEX
+max_connections = 10                # Reduzido para economizar RAM
+effective_cache_size = '4GB'        # Cache do SO estimado
 ```
 
----
+**⚠️ Contexto**: Estas configurações foram otimizadas para importação massiva mas ainda assim esbarram no limite de 16GB de RAM do Mac. Para importações grandes, considere:
+- Aumentar RAM (32GB+)
+- Usar servidor cloud
+- Processar em chunks menores
 
-## 🐳 Configuração Docker
+### Gerenciamento do Serviço
 
-### docker-compose.yml
+```bash
+# Status do serviço
+brew services info postgresql@17
 
-```yaml
-services:
-  app:
-    environment:
-      DB_HOST: host.docker.internal  # Acessa PostgreSQL do Mac
-      DB_PORT: 5432
-      DB_NAME: basecerta
-      DB_USER: dev4us
-      DB_PASSWORD: P@lm315@s
-```
+# Iniciar PostgreSQL
+brew services start postgresql@17
 
-### Arquivo .env (Para sua aplicação)
+# Parar PostgreSQL
+brew services stop postgresql@17
 
+# Reiniciar PostgreSQL
+brew services restart postgresql@17
+
+# Verificar se está rodando
+ps aux | grep postgres | grep -v grep
+
+# Verificar se SSD está montado (CRÍTICO)
+ls -la /Volumes/ExtMB/postgresql/data/
 ```env
 # PostgreSQL Connection
 DB_HOST=localhost
@@ -267,15 +351,226 @@ psql -U code4us -d basecerta -c "SELECT COUNT(*) FROM pg_tables WHERE schemaname
 psql -U code4us -l
 ```
 
-### Script Python de Teste
+### �️ Estado Atual do Banco de Dados
+
+### Status: **VAZIO (0 tabelas)**
+
+```sql
+-- Verificar estado atual
+SELECT COUNT(*) FROM pg_tables 
+WHERE schemaname NOT IN ('pg_catalog', 'information_schema');
+-- Resultado: 0
+
+-- Schemas existentes
+\dn
+-- Resultado: apenas 'public' (cnpj_brasil foi removido)
+
+-- Usuários existentes
+\du
+-- code4us (superuser), aian_db (owner), dev4us (app)
+```
+
+### Histórico de Limpeza (23/01/2026)
+
+**Removido**:
+- ❌ Schema `cnpj_brasil` CASCADE (5 tabelas + 3 views + 1 function)
+- ❌ Tabelas principais: empresas, estabelecimentos, socios, simples_nacional, import_log
+- ❌ Tabelas auxiliares: cnaes, motivos_situacao_cadastral, municipios, naturezas_juridicas, paises, qualificacoes_socios
+- ❌ Tabelas temporárias: temp_empresas, temp_estabelecimentos
+- ❌ Sistema de checkpoints de importação
+- ❌ 54 arquivos de log de importação
+
+**Preservado**:
+- ✅ Estrutura do banco `basecerta`
+- ✅ Usuários: code4us, aian_db, dev4us
+- ✅ Configurações do PostgreSQL
+- ✅ Arquivos RFB em `/Volumes/ExtMB/BaseCNPJ/dez2025/` (~7GB)
+- ✅ Backup completo em `backup_importacao_old/` (46MB, 96 arquivos)
+
+### Motivo da Limpeza
+
+O processo de importação CNPJ foi **movido para outro projeto** devido a:
+- Limitação de RAM (Mac 16GB vs necessário 20GB+ para MERGE de 4.5M registros)
+- Importação repetidamente travando por OOM (Out of Memory)
+- Decisão de criar infraestrutura separada para importação massiva
+
+---
+
+## 📌 Orientações para IA
+
+### ✅ O que VOCÊ PODE fazer:
+
+1. **Consultar** metadados do banco (pg_catalog, information_schema)
+2. **Criar conexões** usando qualquer dos 3 usuários
+3. **Verificar** configurações e status do PostgreSQL
+4. **Usar** o banco quando outro projeto criar as tabelas
+5. **Executar queries** de leitura e análise
+6. **Gerenciar** o serviço (start/stop/restart)
+
+### ❌ O que VOCÊ NÃO DEVE fazer:
+
+1. **NÃO** crie tabelas ou schemas aqui (será feito em outro projeto)
+2. **NÃO** modifique arquivos em `/Volumes/ExtMB/BaseCNPJ/` (arquivos RFB preservados)
+3. **NÃO** altere `postgresql.conf` sem backup (configurações otimizadas)
+4. **NÃO** delete `backup_importacao_old/` (referência importante)
+5. **NÃO** execute importações massivas (RAM insuficiente neste Mac)
+
+### 🎯 Uso Recomendado:
 
 ```python
-#!/usr/bin/env python3
+# Conecte-se para verificar estrutura
 import psycopg2
+conn = psycopg2.connect("postgresql://code4us@localhost:5432/basecerta")
 
-try:
-    conn = psycopg2.connect(
-        host="localhost",
+# Verifique se tabelas foram criadas pelo outro projeto
+cur.execute("""
+    SELECT schemaname, tablename, pg_size_pretty(pg_total_relation_size(schemaname||'.'||tablename)) as size
+    FROM pg_tables 
+    WHERE schemaname NOT IN ('pg_catalog', 'information_schema')
+    ORDER BY schemaname, tablename;
+""")
+
+# Use as tabelas quando estiverem disponíveis
+# NÃO tente criar tabelas aqui
+```
+
+---
+
+## 📚 Recursos Disponíveis
+
+### Backup de Scripts e Migrations (`backup_importacao_old/`)
+
+```
+backup_importacao_old/
+├── migrations/
+│   ├── 001_create_insights_cache.py
+│   ├── 002_create_cnpj_structure.py       # Schema completo CNPJ
+│   └── 003_create_cnpj_brasil_schema.py   # Tabelas principais
+├── create_database_schema.sql              # SQL completo
+├── alembic.ini                             # Config Alembic
+├── import_cnpj.py                          # Script importação com checkpoints
+├── manage_checkpoints.py                   # Gestão de checkpoints
+├── monitor_importacao_visual.sh            # Monitor com barras de progresso
+└── postgresql_logs/                        # 52 logs de tentativas
+```
+
+**Para referência**: Se precisar entender como as tabelas devem ser criadas, consulte:
+- `002_create_cnpj_structure.py` - Estrutura completa com índices
+- `create_database_schema.sql` - SQL direto
+- `import_cnpj.py` - Lógica de importação (com problemas de RAM)
+
+### Arquivos da Receita Federal
+
+```bash
+# Localização dos ZIPs originais
+ls -lh /Volumes/ExtMB/BaseCNPJ/dez2025/
+
+# Total: ~7GB compactados
+# Empresas: 10 arquivos (460MB + 74-94MB cada)
+# Estabelecimentos: ~20 arquivos
+# Sócios: ~10 arquivos
+# Auxiliares: Cnaes, Municípios, etc.
+```
+
+---
+
+## 🚨 Troubleshooting para IA
+
+### Problema: "connection refused"
+
+```bash
+# 1. Verificar se PostgreSQL está rodando
+brew services list | grep postgresql
+
+# 2. Verificar se SSD externo está montado
+ls /Volumes/ExtMB || echo "❌ SSD não montado!"
+
+# 3. Iniciar serviço
+brew services start postgresql@17
+
+# 4. Aguardar 5 segundos e testar
+sleep 5
+psql -U code4us -d basecerta -c "SELECT 1;"
+```
+
+### Problema: "data directory not found"
+
+```bash
+# CRÍTICO: SSD externo não está montado
+# Verifique:
+diskutil list | grep "ExtMB"
+
+# Se não aparecer:
+# 1. Conecte o Samsung T7 na porta USB-C
+# 2. Aguarde montagem automática
+# 3. Reinicie PostgreSQL
+brew services restart postgresql@17
+```
+
+### Problema: "database does not exist"
+
+```bash
+# Criar banco se necessário
+psql -U code4us -d postgres -c "CREATE DATABASE basecerta;"
+
+# Dar permissões aos usuários
+psql -U code4us -d basecerta -c "
+    GRANT ALL PRIVILEGES ON DATABASE basecerta TO aian_db;
+    GRANT ALL PRIVILEGES ON DATABASE basecerta TO dev4us;
+"
+```
+
+### Problema: "out of memory" durante importação
+
+**Solução**: Não faça importações massivas neste Mac!
+- RAM disponível: 16GB total
+- PostgreSQL MERGE precisa: 2-3GB
+- Python processo precisa: 2.5GB
+- Sistema + apps: 13-15GB
+- **Total necessário**: ~20GB (excede capacidade)
+
+**Alternativas**:
+1. Use outro servidor com 32GB+ RAM
+2. Processe em chunks de 100k registros
+3. Use servidor cloud (AWS RDS, DigitalOcean)
+4. Desabilite aplicativos durante importação (não recomendado)
+
+---
+
+## 📞 Contato e Documentação
+
+**Branch Git**: `beta006`  
+**Commit**: `562e32e` - "feat(beta006): Limpeza completa de importação e criação de documentação"  
+**Data**: 23 de Janeiro de 2026  
+**Projeto**: BaseCerta - Consulta CNPJ Brasil  
+
+**Documentos Relacionados**:
+- `test_connection.py` - Script teste simples
+- `test_all_connections.py` - Teste completo de 3 usuários
+- `backup_importacao_old/README_MONITORES.md` - Documentação de monitores
+
+---
+
+## 🎓 Resumo Executivo para IA
+
+**O que você precisa saber**:
+
+1. ✅ PostgreSQL 17.7 rodando em SSD externo Samsung T7 (`/Volumes/ExtMB`)
+2. ✅ Banco `basecerta` **vazio**, pronto para outro projeto criar tabelas
+3. ✅ 3 usuários disponíveis: `code4us` (superuser), `aian_db` (owner), `dev4us` (app)
+4. ✅ Arquivos RFB preservados (7GB) em `/Volumes/ExtMB/BaseCNPJ/dez2025/`
+5. ✅ Backup completo de scripts (46MB) em `backup_importacao_old/`
+6. ⚠️ **NÃO criar tabelas aqui** - será feito em outro projeto
+7. ⚠️ **NÃO executar importações massivas** - RAM insuficiente (16GB)
+8. ⚠️ **Verificar sempre se SSD está montado** antes de operações
+
+**Seu papel**: Auxiliar com consultas, análises e manutenção do banco quando ele for populado por outro projeto. Não tente recriar a infraestrutura de importação aqui.
+
+---
+
+**Última atualização**: 23 de Janeiro de 2026  
+**Status**: ✅ Banco vazio, configurado e testado  
+**Próximo passo**: Aguardar criação de tabelas por projeto externo     host="localhost",
         port=5432,
         database="basecerta",
         user="code4us"
