@@ -6,34 +6,154 @@
 
 ## 📋 CONTEXTO DO PROJETO
 
+> **📖 LEIA PRIMEIRO**: Consulte o arquivo `ACESSO_POSTGRESQL.md` na raiz do projeto para detalhes completos sobre infraestrutura, configurações e orientações.
+
 ### Infraestrutura Disponível
 
 **PostgreSQL**:
-- Versão: 17.7 (Homebrew)
-- Localização: SSD Externo Samsung T7 (`/Volumes/ExtMB/postgresql/data/`)
-- Banco: `basecerta` (vazio, sem tabelas)
-- Usuários disponíveis:
-  - `code4us` (superuser, sem senha)
-  - `aian_db` (owner, sem senha)
-  - `dev4us` (app, senha: `P@lm315@s`)
+- **Versão**: 17.7 (Homebrew) on aarch64-apple-darwin (Apple Silicon)
+- **Instalação**: Homebrew (`brew install postgresql@17`)
+- **Localização Crítica**: ⚠️ SSD Externo Samsung T7 1TB (`/Volumes/ExtMB`)
+  - Data directory: `/Volumes/ExtMB/postgresql/data/` (62GB usado)
+  - Symlink padrão: `/opt/homebrew/var/postgresql@17` → `/Volumes/ExtMB/postgresql/data/`
+  - **SEMPRE verificar se SSD está montado**: `ls /Volumes/ExtMB`
+- **Banco**: `basecerta` (vazio, sem tabelas, pronto para receber estrutura)
+- **Status Atual**: 0 tabelas, apenas schemas system (pg_catalog, information_schema)
+
+**Usuários Disponíveis**:
+
+| Usuário | Tipo | Senha | Uso Recomendado | Privilégios |
+|---------|------|-------|-----------------|-------------|
+| `code4us` | Superuser | ❌ Sem senha (trust local) | Administração, DDL, importação | Create DB, Create Role, Replication, Bypass RLS |
+| `aian_db` | Owner | ❌ Sem senha (trust local) | Owner das tabelas criadas | Acesso normal ao banco |
+| `dev4us` | Aplicação | ✅ `P@lm315@s` | Aplicação com autenticação | ALL PRIVILEGES em basecerta |
+
+**Conexões Python (psycopg2)**:
+```python
+# Para scripts de importação (recomendado: code4us)
+conn = psycopg2.connect(
+    host="localhost",
+    port=5432,
+    database="basecerta",
+    user="code4us"  # Sem senha necessária
+)
+
+# Para aplicação com autenticação
+conn = psycopg2.connect(
+    host="localhost",
+    port=5432,
+    database="basecerta",
+    user="dev4us",
+    password="P@lm315@s"
+)
+
+# Via URL (para SQLAlchemy)
+DATABASE_URL = "postgresql://code4us@localhost:5432/basecerta"
+```
+
+**Configurações PostgreSQL Aplicadas** (`postgresql.auto.conf`):
+```ini
+shared_buffers = '1536MB'          # Cache compartilhado
+work_mem = '192MB'                  # Memória para operações (sorts, joins)
+maintenance_work_mem = '512MB'      # Para VACUUM, CREATE INDEX
+max_connections = 10                # Reduzido para economizar RAM
+effective_cache_size = '4GB'        # Estimativa de cache do SO
+```
+
+**⚠️ Contexto das Configurações**: Otimizadas para importação massiva, mas ainda esbarram no limite de 16GB RAM. Importação em chunks é OBRIGATÓRIA.
 
 **Hardware**:
-- MacBook Air M2/M3
-- RAM: **16GB total** (⚠️ LIMITAÇÃO CRÍTICA)
-- Sistema + apps: ~13-15GB em uso
-- **Disponível para importação: ~3-4GB máximo**
+- **MacBook Air**: M2 ou M3 (Apple Silicon, aarch64)
+- **RAM**: **16GB total** (⚠️ LIMITAÇÃO CRÍTICA)
+  - Sistema macOS + apps: ~13-15GB em uso constante
+  - **Disponível para importação**: ~3-4GB máximo
+  - **Memória requerida para MERGE de 4.5M linhas**: 2-3GB (causa OOM)
+  - **Solução**: Processar em chunks de 100k-500k linhas
+- **SSD Interno**: Sistema operacional e aplicativos
+- **SSD Externo**: Samsung T7 1TB (dados PostgreSQL + arquivos RFB)
+
+**Estrutura de Armazenamento** (`/Volumes/ExtMB`):
+```
+/Volumes/ExtMB/
+├── postgresql/
+│   ├── data/                    # PostgreSQL data directory (62GB usado)
+│   │   ├── base/                # Databases storage
+│   │   ├── pg_wal/              # Write-Ahead Logs
+│   │   ├── postgresql.conf      # Configurações principais
+│   │   └── postgresql.auto.conf # Configurações via ALTER SYSTEM
+│   └── logs/                    # Logs de importação (vazio após limpeza)
+│
+└── BaseCNPJ/
+    └── dez2025/                 # Arquivos RFB preservados (~7GB compactados)
+        ├── Cnaes.zip (22KB)
+        ├── Empresas0.zip (460MB) - ~4.5M registros
+        ├── Empresas1.zip (74MB)  - ~800k registros
+        ├── Empresas2.zip (75MB)
+        ├── Empresas3.zip (81MB)
+        ├── Empresas4.zip (86MB)
+        ├── Empresas5.zip (93MB)
+        ├── Empresas6.zip (90MB)
+        ├── Empresas7.zip (94MB)
+        ├── Empresas8.zip (95MB)
+        ├── Empresas9.zip (99MB)
+        ├── Estabelecimentos*.zip (~20 arquivos)
+        ├── Socios*.zip (~10 arquivos)
+        ├── Simples*.zip
+        ├── Municipios.zip
+        ├── Naturezas.zip
+        ├── Paises.zip
+        └── Qualificacoes.zip
+```
 
 **Arquivos Fonte**:
-- Localização: `/Volumes/ExtMB/BaseCNPJ/dez2025/`
-- Formato: Arquivos ZIP da Receita Federal
-- Tipos: Empresas (10 files), Estabelecimentos (~20 files), Sócios (~10 files), Auxiliares
-- Total: ~7GB compactados, ~300GB+ descompactados
-- Metadata: `backup_importacao_old/receitafederal/cnpj-metadados.pdf`
+- **Localização**: `/Volumes/ExtMB/BaseCNPJ/dez2025/`
+- **Formato**: Arquivos ZIP da Receita Federal do Brasil
+- **Encoding**: ISO-8859-1 (Latin1) ou UTF-8 (verificar com script de análise)
+- **Separador**: Ponto-e-vírgula `;`
+- **Tipos principais**:
+  - Empresas: 10 arquivos (460MB + 74-99MB cada)
+  - Estabelecimentos: ~20 arquivos
+  - Sócios: ~10 arquivos
+  - Auxiliares: Cnaes, Municípios, Naturezas Jurídicas, Países, Qualificações
+- **Total**: ~7GB compactados → **~300GB+ descompactados**
+- **Metadata oficial**: `backup_importacao_old/receitafederal/cnpj-metadados.pdf`
 
-**Referências Disponíveis**:
-- Schemas anteriores: `backup_importacao_old/migrations/002_create_cnpj_structure.py`
-- SQL direto: `backup_importacao_old/create_database_schema.sql`
-- Scripts de importação (com problemas de RAM): `backup_importacao_old/import_cnpj.py`
+**Referências Disponíveis no Backup**:
+- **Schemas anteriores**: `backup_importacao_old/migrations/002_create_cnpj_structure.py`
+- **SQL completo**: `backup_importacao_old/create_database_schema.sql`
+- **Scripts de importação** (⚠️ com problemas de RAM): `backup_importacao_old/import_cnpj.py`
+- **Monitores visuais**: `backup_importacao_old/monitor_importacao_visual.sh`
+- **Gestão de checkpoints**: `backup_importacao_old/manage_checkpoints.py`
+- **Alembic config**: `backup_importacao_old/alembic.ini`
+- **Documentação RFB**: `backup_importacao_old/receitafederal/`
+  - `ESTRUTURA_RECEITA_FEDERAL.md`
+  - `GUIA_COMPLETO_IMPORTACAO_CNPJ.md`
+  - `cnpj-metadados.pdf`
+
+**Gerenciamento do Serviço PostgreSQL**:
+```bash
+# Verificar status
+brew services info postgresql@17
+
+# Iniciar PostgreSQL
+brew services start postgresql@17
+
+# Parar PostgreSQL
+brew services stop postgresql@17
+
+# Reiniciar PostgreSQL
+brew services restart postgresql@17
+
+# Verificar se está rodando
+ps aux | grep postgres | grep -v grep
+
+# ⚠️ CRÍTICO: Verificar se SSD está montado ANTES de qualquer operação
+ls /Volumes/ExtMB/postgresql/data/ || echo "❌ SSD não montado!"
+```
+
+**Logs do Sistema**:
+- PostgreSQL: `/opt/homebrew/var/log/postgresql@17.log`
+- Importações (criar aqui): `/Volumes/ExtMB/postgresql/logs/import_YYYY_MM.jsonl`
 
 ---
 
@@ -1063,23 +1183,313 @@ def validar_importacao(conn, versao_mes: str):
 
 ## 🚨 RESTRIÇÕES E CUIDADOS
 
-1. **RAM Limitada**: NUNCA processar mais de 500k linhas por vez
-2. **SSD Externo**: SEMPRE verificar se `/Volumes/ExtMB` está montado
-3. **Não criar FK durante import**: Criar apenas após importação completa
-4. **Não criar índices durante import**: Apenas PRIMARY KEY
-5. **Usar COPY, não INSERT**: 10-100x mais rápido
-6. **Commitar após cada chunk**: Evitar transações gigantes
-7. **Logs estruturados**: JSON para análise posterior
-8. **Validar encoding**: RFB usa ISO-8859-1 ou UTF-8
+### ⚠️ Restrições Críticas de Infraestrutura
+
+1. **RAM Limitada (16GB total)**:
+   - ❌ **NUNCA** processar mais de 500k linhas em memória simultaneamente
+   - ❌ **NUNCA** fazer MERGE de tabela completa (4.5M+ linhas causa OOM)
+   - ✅ **SEMPRE** usar chunks de 100k-500k registros
+   - ✅ **SEMPRE** fazer COMMIT após cada chunk
+   - ⚠️ Monitorar memória: `top -l 1 | grep PhysMem`
+
+2. **SSD Externo Samsung T7**:
+   - 🔴 **CRÍTICO**: PostgreSQL roda do SSD externo `/Volumes/ExtMB`
+   - ✅ **SEMPRE** verificar montagem antes de QUALQUER operação:
+     ```bash
+     ls /Volumes/ExtMB || echo "❌ ERRO: SSD não montado!"
+     ```
+   - ❌ Se não montado, PostgreSQL NÃO funcionará ou corromperá dados
+   - ✅ Verificar espaço livre: `df -h /Volumes/ExtMB` (mínimo 100GB livres)
+   - ⚠️ Data directory: `/Volumes/ExtMB/postgresql/data/` (62GB já usado)
+
+3. **Banco de Dados**:
+   - ✅ Banco `basecerta` está vazio (0 tabelas, pronto para receber estrutura)
+   - ❌ **NÃO** criar Foreign Keys durante importação (extremamente lento)
+   - ❌ **NÃO** criar índices (exceto PRIMARY KEY) durante importação
+   - ✅ Criar FK e índices APÓS importação completa com `CREATE INDEX CONCURRENTLY`
+   - ✅ Usar schema `cnpj_brasil` (não usar `public` para tabelas CNPJ)
+
+4. **Usuários PostgreSQL**:
+   - ✅ Usar `code4us` (superuser) para scripts de importação/administração
+   - ✅ Usar `aian_db` como owner das tabelas criadas
+   - ✅ Usar `dev4us` (com senha) para aplicação
+   - ⚠️ `code4us` e `aian_db` não precisam senha (trust authentication local)
+
+### 🔒 Restrições de Performance
+
+5. **Durante Importação**:
+   - ❌ **NÃO** usar INSERT múltiplo (lento)
+   - ✅ **USAR** COPY ou COPY FROM STDIN (10-100x mais rápido)
+   - ❌ **NÃO** usar transações gigantes (> 1M registros)
+   - ✅ COMMIT após cada chunk (100k-500k linhas)
+   - ❌ **NÃO** criar constraints complexos (CHECK, UNIQUE compostos)
+   - ✅ Apenas PRIMARY KEY simples durante import
+
+6. **Configurações PostgreSQL**:
+   - ⚠️ Já configurado em `postgresql.auto.conf`:
+     - `shared_buffers = 1536MB`
+     - `work_mem = 192MB`
+     - `maintenance_work_mem = 512MB`
+     - `max_connections = 10`
+   - ❌ **NÃO** alterar sem backup da configuração atual
+   - ✅ Durante importação, usar configurações temporárias na sessão:
+     ```sql
+     SET synchronous_commit = OFF;  -- Mais rápido, menos seguro
+     SET work_mem = '256MB';        -- Para COPY grandes
+     ```
+
+### 📁 Restrições de Arquivos
+
+7. **Arquivos RFB**:
+   - 📍 Localização: `/Volumes/ExtMB/BaseCNPJ/dez2025/`
+   - ❌ **NÃO** modificar arquivos originais preservados
+   - ❌ **NÃO** descompactar todos de uma vez (300GB+ espaço necessário)
+   - ✅ Processar em stream (abrir ZIP, ler, processar, fechar)
+   - ✅ Encoding esperado: ISO-8859-1 (verificar com análise)
+   - ✅ Separador: `;` (ponto-e-vírgula)
+
+8. **Backup e Scripts Antigos**:
+   - 📍 Localização: `backup_importacao_old/` (46MB, 96 arquivos)
+   - ❌ **NÃO** deletar (contém referências importantes)
+   - ✅ Consultar para entender estrutura anterior
+   - ⚠️ Scripts antigos têm problemas de RAM (não usar diretamente)
+
+### 🔧 Restrições Técnicas
+
+9. **Encoding e Formatação**:
+   - ✅ Validar encoding: ISO-8859-1 ou UTF-8
+   - ✅ Separador: `;`
+   - ✅ Valores vazios/null: múltiplas representações (`0`, `""`, `;`, `00000000`)
+   - ✅ Datas: formato `YYYYMMDD` → converter para `YYYY-MM-DD`
+   - ✅ Códigos: `00`, `0000` representam NULL (normalizar)
+
+10. **Logs e Monitoramento**:
+    - ✅ Criar logs estruturados em JSON: `/Volumes/ExtMB/postgresql/logs/import_YYYY_MM.jsonl`
+    - ✅ Não imprimir credenciais em logs
+    - ✅ Usar Rich ou Textual para TUI (terminal user interface)
+    - ⚠️ Logs do PostgreSQL: `/opt/homebrew/var/log/postgresql@17.log`
+
+### 🛡️ Proteções Obrigatórias
+
+11. **Checkpoints e Recovery**:
+    - ✅ **OBRIGATÓRIO**: Criar tabela `cnpj_brasil.importacao_controle`
+    - ✅ Salvar checkpoint após cada chunk processado
+    - ✅ Permitir retomar de onde parou em caso de erro/crash
+    - ✅ Calcular hash SHA256 dos arquivos (detectar mudanças)
+    - ❌ **NÃO** reprocessar arquivos já importados (verificar hash)
+
+12. **Validações**:
+    - ✅ Validar dados ANTES de inserir (normalizar nulls, datas, códigos)
+    - ✅ Contar registros processados vs inseridos (detectar problemas)
+    - ✅ Comparar totais finais com dados oficiais RFB
+    - ✅ Logs de erros: salvar linhas problemáticas em arquivo separado
+
+13. **Sistema de Rollback**:
+    - ✅ Criar snapshots antes de importação incremental
+    - ✅ Permitir reverter versão em caso de erro
+    - ✅ Documentar estado do banco antes/depois
+
+### 🚫 O QUE EVITAR (Baseado em Tentativas Anteriores)
+
+14. **Problemas Conhecidos** (aprendidos do `backup_importacao_old/`):
+    - ❌ MERGE de 4.5M registros de uma vez → OOM (Out of Memory)
+    - ❌ Processar arquivo inteiro em memória → Swap thrashing
+    - ❌ Não fazer COMMIT entre chunks → Transação gigante trava
+    - ❌ Criar índices durante import → 10x mais lento
+    - ❌ Usar tabelas temporárias sem TRUNCATE → Crescimento descontrolado
+    - ❌ Queries órfãs (processo Python morre, query PostgreSQL continua)
+    - ❌ 54 logs de tentativas falhadas (todos por RAM insuficiente)
+
+15. **Troubleshooting Comum**:
+    - Se erro "connection refused" → Verificar se PostgreSQL está rodando
+    - Se erro "data directory not found" → Verificar se SSD está montado
+    - Se erro "out of memory" → Reduzir chunk_size (testar 50k, 25k)
+    - Se queries lentas → Verificar se índices foram criados
+    - Se processo morre sem erro → Verificar memória com `top`
+
+### 📚 Referências de Segurança
+
+16. **Autenticação**:
+    - ⚠️ Usuários `code4us` e `aian_db`: Trust authentication (sem senha local)
+    - ✅ Configurado em `pg_hba.conf` para desenvolvimento local
+    - ⚠️ **NUNCA** expor `dev4us` senha (`P@lm315@s`) em logs/commits
+    - ✅ Para produção: alterar senha e usar SSL
+
+17. **Permissões**:
+    - ✅ Dar ownership de tabelas para `aian_db`:
+      ```sql
+      ALTER TABLE cnpj_brasil.empresas OWNER TO aian_db;
+      ```
+    - ✅ Garantir privilégios para `dev4us`:
+      ```sql
+      GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA cnpj_brasil TO dev4us;
+      GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA cnpj_brasil TO dev4us;
+      ```
 
 ---
 
 ## 📚 REFERÊNCIAS
 
-- **Metadados RFB**: `backup_importacao_old/receitafederal/cnpj-metadados.pdf`
-- **Schema anterior**: `backup_importacao_old/migrations/002_create_cnpj_structure.py`
-- **Configurações PostgreSQL**: `ACESSO_POSTGRESQL.md`
-- **Arquivos fonte**: `/Volumes/ExtMB/BaseCNPJ/dez2025/`
+### 📖 Documentação Essencial (Leia PRIMEIRO)
+
+1. **`ACESSO_POSTGRESQL.md`** (raiz do projeto)
+   - ✅ Guia completo de orientação para IA
+   - ✅ Infraestrutura PostgreSQL detalhada
+   - ✅ Configurações aplicadas e otimizações
+   - ✅ Usuários, permissões, autenticação
+   - ✅ Strings de conexão para Python/Node.js/Java/PHP
+   - ✅ Troubleshooting completo
+   - ✅ Orientações sobre o que pode/não pode fazer
+   - ✅ Estrutura de armazenamento em SSD externo
+   - ✅ Estado atual do banco (vazio, pronto para uso)
+   - ✅ Histórico de limpeza e motivos
+
+### 📁 Arquivos de Referência
+
+2. **Metadados da Receita Federal**:
+   - `backup_importacao_old/receitafederal/cnpj-metadados.pdf` - Especificação oficial RFB
+   - `backup_importacao_old/receitafederal/ESTRUTURA_RECEITA_FEDERAL.md`
+   - `backup_importacao_old/receitafederal/GUIA_COMPLETO_IMPORTACAO_CNPJ.md`
+
+3. **Schemas e Migrations**:
+   - `backup_importacao_old/migrations/002_create_cnpj_structure.py` - Schema completo com índices
+   - `backup_importacao_old/migrations/003_create_cnpj_brasil_schema.py` - Tabelas principais
+   - `backup_importacao_old/create_database_schema.sql` - SQL direto
+
+4. **Scripts de Importação Anteriores** (⚠️ com problemas de RAM):
+   - `backup_importacao_old/import_cnpj.py` - Script principal (717 linhas)
+   - `backup_importacao_old/manage_checkpoints.py` - Gestão de checkpoints (200 linhas)
+   - `backup_importacao_old/postgres_tuning.py` - Otimizações PostgreSQL
+
+5. **Monitores e Dashboards**:
+   - `backup_importacao_old/monitor_importacao_visual.sh` - Monitor com barras de progresso
+   - `backup_importacao_old/monitor_reimportacao_mensal.sh` - Comparação mensal
+   - `backup_importacao_old/README_MONITORES.md` - Documentação completa
+
+6. **Configurações**:
+   - `backup_importacao_old/alembic.ini` - Config Alembic
+   - `/Volumes/ExtMB/postgresql/data/postgresql.auto.conf` - Configs aplicadas
+   - `/opt/homebrew/var/log/postgresql@17.log` - Logs do sistema
+
+### 🗂️ Arquivos Fonte (Dados RFB)
+
+7. **Localização dos ZIPs**: `/Volumes/ExtMB/BaseCNPJ/dez2025/`
+   ```bash
+   # Listar arquivos
+   ls -lh /Volumes/ExtMB/BaseCNPJ/dez2025/
+   
+   # Total: ~7GB compactados
+   # Empresas: 10 arquivos (Empresas0.zip ... Empresas9.zip)
+   # Estabelecimentos: ~20 arquivos
+   # Sócios: ~10 arquivos
+   # Auxiliares: Cnaes, Municípios, Naturezas, Países, Qualificações
+   ```
+
+### 🔗 Links e Comandos Úteis
+
+8. **Verificações de Sistema**:
+   ```bash
+   # Status PostgreSQL
+   brew services info postgresql@17
+   
+   # Verificar SSD montado (CRÍTICO!)
+   ls /Volumes/ExtMB || echo "❌ SSD não montado!"
+   
+   # Espaço livre no SSD
+   df -h /Volumes/ExtMB
+   
+   # Memória disponível
+   top -l 1 | grep PhysMem
+   
+   # Processos PostgreSQL
+   ps aux | grep postgres | grep -v grep
+   
+   # Testar conexão
+   psql -U code4us -d basecerta -c "SELECT version();"
+   ```
+
+### 🎓 Conhecimento Adquirido (Lições Aprendidas)
+
+9. **Do arquivo `ACESSO_POSTGRESQL.md` - Seção "Motivo da Limpeza"**:
+   - ⚠️ Importação CNPJ foi movida para outro projeto devido a:
+     - Limitação de RAM (Mac 16GB vs necessário 20GB+ para MERGE de 4.5M registros)
+     - Importação repetidamente travando por OOM (Out of Memory)
+     - Decisão de criar infraestrutura separada para importação massiva
+   - ✅ Solução implementada neste prompt: Chunks + Checkpoints + Recovery
+
+10. **Estado Atual do Banco** (conforme `ACESSO_POSTGRESQL.md`):
+    ```sql
+    -- Verificar tabelas
+    SELECT COUNT(*) FROM pg_tables 
+    WHERE schemaname NOT IN ('pg_catalog', 'information_schema');
+    -- Resultado: 0 (banco vazio)
+    
+    -- Schemas existentes
+    \dn
+    -- Resultado: apenas 'public' (cnpj_brasil será criado)
+    
+    -- Usuários existentes
+    \du
+    -- code4us (superuser), aian_db (owner), dev4us (app)
+    ```
+
+11. **Histórico de Remoção** (23/01/2026 - conforme `ACESSO_POSTGRESQL.md`):
+    - ❌ Removido: Schema `cnpj_brasil` CASCADE (5 tabelas + 3 views + 1 function)
+    - ❌ Removido: Tabelas principais (empresas, estabelecimentos, socios, simples_nacional, import_log)
+    - ❌ Removido: Tabelas auxiliares (6 tabelas)
+    - ❌ Removido: Tabelas temporárias (temp_empresas, temp_estabelecimentos)
+    - ❌ Removido: 54 arquivos de log de importação (tentativas falhadas)
+    - ✅ Preservado: Usuários, configurações PostgreSQL, arquivos RFB (7GB), backup scripts (46MB)
+
+### 📞 Suporte e Troubleshooting
+
+12. **Consultar `ACESSO_POSTGRESQL.md`** para:
+    - Seção "🚨 Troubleshooting para IA"
+    - Problema: "connection refused"
+    - Problema: "data directory not found"
+    - Problema: "database does not exist"
+    - Problema: "out of memory" durante importação
+    
+13. **Alternativas para RAM Insuficiente** (do `ACESSO_POSTGRESQL.md`):
+    - ✅ Processar em chunks de 100k registros (implementado neste prompt)
+    - ✅ Usar servidor com 32GB+ RAM (considerar para futuro)
+    - ✅ Usar servidor cloud (AWS RDS, DigitalOcean)
+    - ❌ Desabilitar aplicativos durante importação (não recomendado)
+
+### 🏗️ Estrutura do Projeto
+
+14. **Organização de Diretórios**:
+    ```
+    /Users/code4us/Documents/ADACODE/basecerta/
+    ├── ACESSO_POSTGRESQL.md          ← LEIA PRIMEIRO
+    ├── PROMPT_IA_IMPORTACAO_CNPJ.md  ← Este documento
+    ├── backup_importacao_old/         ← Referências (46MB, 96 arquivos)
+    │   ├── migrations/
+    │   ├── receitafederal/
+    │   ├── postgresql_logs/           ← 52 logs de tentativas
+    │   └── *.py, *.sh, *.md
+    ├── backend/
+    ├── frontend/
+    └── scripts/
+    
+    /Volumes/ExtMB/
+    ├── postgresql/data/               ← Data directory (62GB)
+    ├── postgresql/logs/               ← Criar logs aqui
+    └── BaseCNPJ/dez2025/              ← Arquivos RFB (7GB ZIPs)
+    ```
+
+### 🔖 Resumo de Referências Críticas
+
+| Tópico | Arquivo | Seção |
+|--------|---------|-------|
+| Infraestrutura completa | `ACESSO_POSTGRESQL.md` | Todo documento |
+| Conexões e credenciais | `ACESSO_POSTGRESQL.md` | "🔌 Strings de Conexão" |
+| SSD Externo | `ACESSO_POSTGRESQL.md` | "🗄️ Estrutura de Armazenamento" |
+| Configurações PostgreSQL | `ACESSO_POSTGRESQL.md` | "🛠️ Informações Técnicas" |
+| Troubleshooting | `ACESSO_POSTGRESQL.md` | "🚨 Troubleshooting para IA" |
+| Schema anterior | `backup_importacao_old/migrations/002_*.py` | - |
+| Metadados RFB | `backup_importacao_old/receitafederal/cnpj-metadados.pdf` | - |
+| Arquivos ZIP | `/Volumes/ExtMB/BaseCNPJ/dez2025/` | - |
 
 ---
 
