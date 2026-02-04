@@ -26,7 +26,6 @@ import {
 import { getGroupedInsights } from '@/lib/api/endpoints/insights'
 import type { InsightsGroupedResponse, InsightData } from '@/types/insights'
 import { useRouter } from 'next/navigation'
-import { ErrorBoundary } from '@/components/ErrorBoundary'
 
 /**
  * Skeleton loading para cards
