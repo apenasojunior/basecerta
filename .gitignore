@@ -3,6 +3,14 @@ node_modules/
 .pnp
 .pnp.js
 
+# Python virtual environment
+.venv/
+venv/
+env/
+ENV/
+*.pyc
+__pycache__/
+
 # Backups
 backups/
 *.sql

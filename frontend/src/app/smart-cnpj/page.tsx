@@ -10,6 +10,7 @@
 
 import { useEffect, useState } from 'react'
 import { InsightCard } from '@/components/smart-cnpj/InsightCard'
+import IntelligentInsightsWidget from '@/components/IntelligentInsightsWidget'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -165,6 +166,9 @@ export default function SmartCNPJInsightsPage() {
         {/* Success State - Insights Agrupados */}
         {insights && !isLoading && (
           <>
+            {/* Widget de Insights Inteligentes (P1 - IA) */}
+            <IntelligentInsightsWidget />
+
             {/* Seção: Setores com Alta Demanda */}
             {insights.setores && insights.setores.length > 0 && (
               <div>

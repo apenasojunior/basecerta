@@ -36,9 +36,9 @@ export interface NavGroup {
 
 export const NAVIGATION: (NavItem | NavGroup)[] = [
   {
-    title: 'Dashboard',
-    href: '/dashboard',
-    icon: LayoutDashboard,
+    title: 'Insights Estratégicos',
+    href: '/smart-cnpj',
+    icon: Sparkles,
   },
   {
     title: 'PRODUTOS',
@@ -48,11 +48,6 @@ export const NAVIGATION: (NavItem | NavGroup)[] = [
         href: '/smart-cnpj',
         icon: Building2,
         subitems: [
-          {
-            title: 'Insights Estratégicos',
-            href: '/smart-cnpj',
-            icon: Sparkles,
-          },
           {
             title: 'Busca Avançada',
             href: '/smart-cnpj/search',
@@ -81,18 +76,13 @@ export const NAVIGATION: (NavItem | NavGroup)[] = [
         href: '/radar-financeiro',
         icon: TrendingUp,
       },
-    ],
-  },
-  {
-    title: 'RADAR JURÍDICO',
-    items: [
       {
-        title: 'Pessoa Física',
+        title: 'Radar Jurídico - Pessoa Física',
         href: '/radar-juridico/pf/search',
         icon: Users,
       },
       {
-        title: 'Pessoa Jurídica',
+        title: 'Radar Jurídico - Pessoa Jurídica',
         href: '/radar-juridico/pj/search',
         icon: Building,
       },

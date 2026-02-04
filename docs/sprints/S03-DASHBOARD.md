@@ -1,77 +1,77 @@
-# Sprint S03 - Dashboard Principal
+# Sprint S03 - Insights Estratégicos
 
 ## 📋 Informações da Sprint
 
 - **Sprint:** S03
-- **Feature:** Dashboard Principal
+- **Feature:** Insights Estratégicos (Página Inicial)
 - **Complexidade:** Alta
 - **Story Points Estimados:** 55 pontos
 - **Dependências:** S02 (Backend CNPJ integrado)
-- **Status:** 🟡 Aguardando Início
+- **Status:** 🟢 Em Andamento (F01 Completa)
 
 ---
 
 ## 🎯 Objetivo da Sprint
 
-Criar um **dashboard inteligente e diferenciado** que:
-- Analise profundamente o menu lateral atual
-- Proponha melhorias baseadas em UX e inteligência de dados
-- Implemente funcionalidades que destacam a plataforma no mercado
-- Integre todas as visualizações com a base real de 322M+ CNPJs
+Evoluir a página de **Insights Estratégicos** (nova página inicial) para torná-la um diferencial de mercado:
+- Analisar profundamente a implementação atual de insights
+- Propor melhorias baseadas em inteligência de dados e UX
+- Implementar funcionalidades que destacam a plataforma
+- Integrar visualizações avançadas com a base de 322M+ CNPJs
 
 **Diferenciais esperados:**
-- Insights automáticos e preditivos
-- Dashboard adaptativo (personalizado por perfil de uso)
+- Insights preditivos e automáticos (ML/IA)
+- Personalização por perfil de usuário
 - Alertas inteligentes em tempo real
 - Visualizações interativas de alto impacto
+- Performance sub-100ms (cache otimizado)
 
 ---
 
 ## 📊 Features da Sprint
-
-### **Feature F01: Análise do Menu Atual** 
-**Complexidade:** Média | **Story Points:** 8 pontos
+s Insights Estratégicos Atuais** 
+**Complexidade:** Média | **Story Points:** 8 pontos | **Status:** ✅ Completa
 
 #### Descrição
-Realizar análise completa da estrutura atual do menu lateral, entendendo:
-- Organização hierárquica (5 grupos, 15 links)
-- Lógica de categorização
-- Rotas e componentes implementados
-- Funcionalidades já existentes vs. placeholders
-- Experiência de navegação atual
+Realizar análise completa da página de Insights Estratégicos (nova página inicial), entendendo:
+- Estrutura de dados dos 15 insights em cache
+- Componentes e arquitetura atual
+- Performance (<100ms com Redis)
+- Integração com backend (GET /insights/grouped)
+- Experiência do usuário e jornadas
 
 #### Tasks Técnicas
 
-**T01: Auditoria da Estrutura do Menu (3 pts)**
-- [ ] Mapear todos os 15 links navegáveis
-- [ ] Documentar hierarquia: Dashboard → 4 Grupos (PRODUTOS, RADAR JURÍDICO, GESTÃO, AJUDA)
-- [ ] Identificar submenu do Smart CNPJ (3 níveis)
-- [ ] Verificar estado atual (implementado/placeholder) de cada item
-- [ ] Analisar navigation.ts completo
+**T01: Auditoria da Página de Insights (3 pts)** ✅
+- [x] Mapear estrutura de dados (setores, estados, capital)
+- [x] Documentar 15 insights disponíveis (6 setores + 6 estados + 3 capital)
+- [x] Analisar agrupamento de insights (InsightsGroupedResponse)
+- [x] Verificar performance (Redis cache, <100ms)
+- [x] Analisar rota `/smart-cnpj` (página inicial)
 
-**T02: Análise de Componentes e Rotas (3 pts)**
-- [ ] Mapear componentes em `src/app/dashboard/`
-- [ ] Verificar componentes lazy loaded (SearchStatsCards, RecentSearches, SearchChart, TopSearched)
-- [ ] Analisar hooks utilizados (useDashboard, useCredits)
-- [ ] Documentar props e estados de cada componente
-- [ ] Verificar integração com API (endpoints já conectados)
+**T02: Análise de Componentes (3 pts)** ✅
+- [x] Mapear `src/app/smart-cnpj/page.tsx` (285 linhas)
+- [x] Analisar `InsightCard.tsx` (componente principal)
+- [x] Verificar skeleton loading (UX)
+- [x] Documentar integração com API (`getGroupedInsights()`)
+- [x] Analisar estados (loading, error, success)
 
-**T03: Documentação da Ideia/Conceito (2 pts)**
-- [ ] Entender propósito de cada seção do menu
-- [ ] Documentar jornada do usuário esperada
-- [ ] Identificar fluxos principais de navegação
-- [ ] Mapear relação entre menu e funcionalidades do dashboard
-- [ ] Criar diagrama de arquitetura de informação
+**T03: Documentação da Experiência (2 pts)** ✅
+- [x] Documentar jornada do usuário na página inicial
+- [x] Identificar proposta de valor (27M+ empresas, insights estratégicos)
+- [x] Mapear fluxo: Insights → Busca Avançada
+- [x] Analisar categorização (Setores, Estados, Capital Social)
+- [x] Criar diagrama de arquitetura de informação
 
 #### Critérios de Aceitação
-- ✅ Documento completo em `docs/estrutura/frontend/ANALISE-MENU-DASHBOARD.md`
-- ✅ Mapeamento de 100% dos 15 links navegáveis
-- ✅ Estado atual (implementado/não implementado) de cada item
-- ✅ Diagrama de arquitetura de informação
-- ✅ Análise de componentes e rotas existentes
+- ✅ Documento completo em `docs/frontend/ANALISE-INSIGHTS-ESTRATEGICOS.md`
+- ✅ Mapeamento dos 15 insights disponíveis
+- ✅ Análise de performance (<100ms)
+- ✅ Documentação da integração com backend
+- ✅ Jornadas do usuário mapeadas
 
 #### Entregáveis
-- `docs/estrutura/frontend/ANALISE-MENU-DASHBOARD.md`
+- ✅ `docs/frontend/ANALISE-INSIGHTS-ESTRATEGICOS.md`
 - `docs/estrutura/frontend/DIAGRAMA-NAVEGACAO.png` (opcional)
 
 ---

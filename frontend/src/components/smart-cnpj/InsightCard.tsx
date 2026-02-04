@@ -1,13 +1,16 @@
 /**
  * InsightCard Component
  * Sprint: Smart CNPJ Search - ISSUE-00-B
+ * Sprint S03: Feature P3 - Drill-Down Interativo
  * 
  * Card clicável que exibe estatísticas B2B em cache.
  * Ao clicar, navega para /results com filtros pré-aplicados.
+ * Com P3: Clique no ícone "Info" abre modal de drill-down detalhado.
  */
 
 'use client'
 
+import { useState } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -17,7 +20,8 @@ import {
   Info,
   MapPin,
   DollarSign,
-  Factory
+  Factory,
+  Maximize2
 } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import type { InsightCardProps } from '@/types/insights'
@@ -27,6 +31,7 @@ import {
   getDemandColor, 
   getBadgeLabel 
 } from '@/types/insights'
+import DrillDownModal from '@/components/DrillDownModal'
 
 /**
  * Card individual de insight
@@ -38,9 +43,32 @@ export function InsightCard({
   variant = 'default' 
 }: InsightCardProps) {
   const router = useRouter()
+  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [drillDownData, setDrillDownData] = useState<any>(null)
+  const [loadingDrillDown, setLoadingDrillDown] = useState(false)
   
   const badgeLabel = getBadgeLabel(insight)
   const demandColor = getDemandColor(insight.metadata.demanda_score)
+  
+  /**
+   * Carregar dados detalhados para drill-down
+   */
+  const loadDrillDownData = async () => {
+    setLoadingDrillDown(true)
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/v1/insights/${insight.insight_key}/details`
+      )
+      if (!response.ok) throw new Error('Erro ao carregar detalhes')
+      const data = await response.json()
+      setDrillDownData(data)
+      setIsModalOpen(true)
+    } catch (error) {
+      console.error('Erro ao carregar drill-down:', error)
+    } finally {
+      setLoadingDrillDown(false)
+    }
+  }
   
   /**
    * Handler de clique - navega para /results com filtros
@@ -84,24 +112,43 @@ export function InsightCard({
   }
   
   return (
-    <Card 
-      className={`
-        group cursor-pointer transition-all duration-200
-        hover:shadow-lg hover:border-primary-300 hover:-translate-y-1
-        ${className}
-      `}
-      onClick={handleClick}
-    >
-      <CardHeader>
-        <div className="flex items-start justify-between">
-          <CardTitle className="flex items-center gap-2 text-lg">
-            <span className="text-3xl">{insight.metadata.icone}</span>
-            <span className="group-hover:text-primary-600 transition-colors">
-              {insight.titulo}
-            </span>
-          </CardTitle>
-          {getCategoryIcon()}
-        </div>
+    <>
+      <Card 
+        className={`
+          group cursor-pointer transition-all duration-200
+          hover:shadow-lg hover:border-primary-300 hover:-translate-y-1
+          ${className}
+        `}
+        onClick={handleClick}
+      >
+        <CardHeader>
+          <div className="flex items-start justify-between">
+            <CardTitle className="flex items-center gap-2 text-lg">
+              <span className="text-3xl">{insight.metadata.icone}</span>
+              <span className="group-hover:text-primary-600 transition-colors">
+                {insight.titulo}
+              </span>
+            </CardTitle>
+            <div className="flex items-center gap-2">
+              {getCategoryIcon()}
+              {/* Botão de Drill-Down */}
+              <button
+                onClick={(e) => {
+                  e.stopPropagation()
+                  loadDrillDownData()
+                }}
+                disabled={loadingDrillDown}
+                className="p-1.5 hover:bg-orange-100 rounded-lg transition-colors group/drill disabled:opacity-50"
+                title="Ver análise detalhada"
+              >
+                <Maximize2 
+                  className={`w-4 h-4 text-gray-400 group-hover/drill:text-orange-600 transition-colors ${
+                    loadingDrillDown ? 'animate-pulse' : ''
+                  }`} 
+                />
+              </button>
+            </div>
+          </div>
         
         {/* Badge de destaque (se houver) */}
         {badgeLabel && (
@@ -209,9 +256,17 @@ export function InsightCard({
             )}
             
             {/* Ciclo de Venda */}
-            {insight.metadata.ciclo_venda && (
-              <div className="pt-3 border-t border-gray-200">
-                <p className="text-sm text-gray-500 mb-1">Ciclo de Venda</p>
+
+    {/* Modal de Drill-Down */}
+    <DrillDownModal
+      isOpen={isModalOpen}
+      onClose={() => setIsModalOpen(false)}
+      insight={insight}
+      detailsData={drillDownData}
+    />
+  </>
+  )
+}                <p className="text-sm text-gray-500 mb-1">Ciclo de Venda</p>
                 <p className="text-sm text-gray-900">{insight.metadata.ciclo_venda}</p>
               </div>
             )}
