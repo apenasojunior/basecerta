@@ -292,6 +292,7 @@ export default function SmartCNPJInsightsPage() {
             </Card>
           </>
         )}
+      </div>
     </div>
   )
 }

@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from 'react';
-import { Download, FileText, Image, FileSpreadsheet, Presentation, Loader2 } from 'lucide-react';
+import { Download, FileText, Image as ImageIcon, FileSpreadsheet, Loader2 } from 'lucide-react';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 
@@ -166,7 +166,7 @@ export default function ExportButton({
     {
       id: 'png',
       label: 'PNG (screenshot)',
-      icon: Image,
+      icon: ImageIcon,
       action: handleExportPNG,
       color: 'text-blue-600'
     },
