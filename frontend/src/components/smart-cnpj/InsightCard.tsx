@@ -10,7 +10,7 @@
 
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -32,6 +32,7 @@ import {
   getBadgeLabel 
 } from '@/types/insights'
 import DrillDownModal from '@/components/DrillDownModal'
+import MiniEvolutionChart from '@/components/MiniEvolutionChart'
 
 /**
  * Card individual de insight
@@ -46,9 +47,35 @@ export function InsightCard({
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [drillDownData, setDrillDownData] = useState<any>(null)
   const [loadingDrillDown, setLoadingDrillDown] = useState(false)
+  const [evolutionData, setEvolutionData] = useState<Array<{ month: string; total: number }> | null>(null)
+  const [loadingEvolution, setLoadingEvolution] = useState(false)
   
   const badgeLabel = getBadgeLabel(insight)
   const demandColor = getDemandColor(insight.metadata.demanda_score)
+  
+  /**
+   * Carregar dados de evolução (12 meses) ao montar o componente
+   */
+  useEffect(() => {
+    const loadEvolution = async () => {
+      setLoadingEvolution(true)
+      try {
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}/api/v1/insights/${insight.insight_key}/details`
+        )
+        if (!response.ok) throw new Error('Erro ao carregar evolução')
+        const data = await response.json()
+        setEvolutionData(data.evolution || [])
+      } catch (error) {
+        console.error('Erro ao carregar evolução:', error)
+        setEvolutionData([]) // Fallback vazio
+      } finally {
+        setLoadingEvolution(false)
+      }
+    }
+    
+    loadEvolution()
+  }, [insight.insight_key])
   
   /**
    * Carregar dados detalhados para drill-down
@@ -182,6 +209,30 @@ export function InsightCard({
             )}
           </div>
         </div>
+
+        {/* Mini Gráfico de Evolução (P6) */}
+        {evolutionData && evolutionData.length > 0 && (
+          <div className="pt-3 border-t border-gray-200">
+            <div className="flex items-center justify-between mb-2">
+              <p className="text-sm text-gray-500">Evolução (12 meses)</p>
+              {evolutionData.length >= 2 && (
+                <span className="text-xs font-semibold text-green-600">
+                  +{(((evolutionData[evolutionData.length - 1].total - evolutionData[0].total) / evolutionData[0].total) * 100).toFixed(1)}%
+                </span>
+              )}
+            </div>
+            <MiniEvolutionChart data={evolutionData} color="#EE4D2D" />
+            <p className="text-xs text-gray-400 mt-1 text-center">
+              Crescimento consistente detectado
+            </p>
+          </div>
+        )}
+        
+        {loadingEvolution && (
+          <div className="pt-3 border-t border-gray-200">
+            <div className="h-16 bg-gray-100 animate-pulse rounded" />
+          </div>
+        )}
         
         {/* Metadata dinâmica baseada na categoria */}
         {insight.categoria === 'setor' && (

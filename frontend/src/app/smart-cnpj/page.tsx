@@ -11,6 +11,7 @@
 import { useEffect, useState } from 'react'
 import { InsightCard } from '@/components/smart-cnpj/InsightCard'
 import IntelligentInsightsWidget from '@/components/IntelligentInsightsWidget'
+import ExportButton from '@/components/ExportButton'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -93,8 +94,7 @@ export default function SmartCNPJInsightsPage() {
   }, [])
 
   return (
-    <ErrorBoundary>
-      <div className="space-y-8">
+    <ErrorBoundary> id="insights-page">
         {/* Header */}
         <div>
           <div className="flex items-center justify-between mb-2">
@@ -120,14 +120,28 @@ export default function SmartCNPJInsightsPage() {
             )}
           </div>
           
-          {/* Botão Busca Avançada */}
-          <div className="mt-4">
+          {/* Botões de Ação */}
+          <div className="mt-4 flex items-center gap-3">
             <Button 
               onClick={() => router.push('/smart-cnpj/search')}
               className="gap-2"
             >
               <Search className="h-4 w-4" />
               Ir para Busca Avançada
+            </Button>
+            
+            {/* Botão de Exportação (P8) */}
+            {insights && (
+              <ExportButton 
+                targetElementId="insights-page"
+                fileName={`basecerta-insights-${new Date().toISOString().split('T')[0]}`}
+                data={[
+                  ...(insights.setores || []),
+                  ...(insights.estados || []),
+                  ...(insights.capital || [])
+                ]}
+              />
+            )} Busca Avançada
             </Button>
           </div>
         </div>
