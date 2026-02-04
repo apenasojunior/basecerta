@@ -94,7 +94,7 @@ export default function SmartCNPJInsightsPage() {
   }, [])
 
   return (
-    <ErrorBoundary> id="insights-page">
+    <div id="insights-page">
         {/* Header */}
         <div>
           <div className="flex items-center justify-between mb-2">
@@ -141,8 +141,7 @@ export default function SmartCNPJInsightsPage() {
                   ...(insights.capital || [])
                 ]}
               />
-            )} Busca Avançada
-            </Button>
+            )}
           </div>
         </div>
 
@@ -297,6 +296,6 @@ export default function SmartCNPJInsightsPage() {
           </>
         )}
       </div>
-    </ErrorBoundary>
+    </div>
   )
 }
