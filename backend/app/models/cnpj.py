@@ -36,20 +36,32 @@ class Empresa(Base):
     
     # Dados Básicos
     razao_social = Column(String(500), nullable=False, index=True, comment="Razão social da empresa")
-    natureza_juridica = Column(String(10), ForeignKey('cnpj.naturezas_juridicas.codigo'), comment="Código da natureza jurídica")
-    qualificacao_responsavel = Column(String(5), ForeignKey('cnpj.qualificacoes_socios.codigo'), comment="Qualificação do responsável")
+    natureza_juridica = Column(String(10), comment="Código da natureza jurídica")
+    qualificacao_responsavel = Column(String(10), comment="Qualificação do responsável")
     capital_social = Column(Numeric(18, 2), index=True, comment="Capital social da empresa")
     porte_empresa = Column(String(2), index=True, comment="Porte: 01=Micro, 03=Pequena, 05=Grande")
-    ente_federativo_responsavel = Column(String(100), comment="Ente federativo responsável")
+    ente_federativo = Column(String(100), comment="Ente federativo")
     
     # Relacionamentos
     estabelecimentos = relationship("Estabelecimento", back_populates="empresa", lazy="select")
     socios = relationship("Socio", back_populates="empresa", lazy="select")
     simples_nacional = relationship("SimplesNacional", back_populates="empresa", uselist=False, lazy="select")
     
-    # FK Relationships
-    natureza = relationship("NaturezaJuridica", foreign_keys=[natureza_juridica], lazy="joined")
-    qualificacao_resp = relationship("QualificacaoSocio", foreign_keys=[qualificacao_responsavel], lazy="joined")
+    # Relationships (sem FK constraints, apenas para ORM)
+    natureza = relationship(
+        "NaturezaJuridica",
+        primaryjoin="Empresa.natureza_juridica==foreign(NaturezaJuridica.codigo)",
+        foreign_keys="[Empresa.natureza_juridica]",
+        uselist=False,
+        lazy="joined"
+    )
+    qualificacao_resp = relationship(
+        "QualificacaoSocio",
+        primaryjoin="Empresa.qualificacao_responsavel==foreign(QualificacaoSocio.codigo)",
+        foreign_keys="[Empresa.qualificacao_responsavel]",
+        uselist=False,
+        lazy="joined"
+    )
     
     def __repr__(self):
         return f"<Empresa(cnpj_basico={self.cnpj_basico}, razao_social={self.razao_social[:50]})>"
@@ -81,13 +93,13 @@ class Estabelecimento(Base):
     # Situação Cadastral
     situacao_cadastral = Column(String(2), index=True, comment="02=Ativa, 03=Suspensa, 04=Inapta, 08=Baixada")
     data_situacao_cadastral = Column(Date, comment="Data da situação cadastral")
-    motivo_situacao_cadastral = Column(String(5), ForeignKey('cnpj.motivos_situacao_cadastral.codigo'))
+    motivo_situacao_cadastral = Column(String(10), comment="Motivo da situação cadastral")
     
     # Datas
     data_inicio_atividade = Column(Date, index=True, comment="Data de abertura")
     
-    # CNAEs
-    cnae_fiscal_principal = Column(String(10), ForeignKey('cnpj.cnaes.codigo'), index=True, comment="CNAE principal")
+    # CNAEs (sem FK constraint)
+    cnae_fiscal_principal = Column(String(10), index=True, comment="CNAE principal")
     cnae_fiscal_secundaria = Column(Text, comment="CNAEs secundários separados por vírgula")
     
     # Endereço
@@ -98,11 +110,11 @@ class Estabelecimento(Base):
     bairro = Column(String(100), comment="Bairro")
     cep = Column(String(8), index=True, comment="CEP sem formatação")
     uf = Column(String(2), index=True, comment="Sigla UF")
-    municipio = Column(String(10), ForeignKey('cnpj.municipios.codigo'), index=True, comment="Código do município")
+    municipio = Column(String(10), index=True, comment="Código do município")
     
     # Localização Externa
     nome_cidade_exterior = Column(String(100), comment="Nome da cidade no exterior")
-    pais = Column(String(5), ForeignKey('cnpj.paises.codigo'), comment="Código do país")
+    pais = Column(String(10), comment="Código do país")
     
     # Contatos
     ddd_1 = Column(String(5), comment="DDD telefone 1")
@@ -119,10 +131,34 @@ class Estabelecimento(Base):
     
     # Relacionamentos
     empresa = relationship("Empresa", back_populates="estabelecimentos")
-    cnae_principal = relationship("CNAE", foreign_keys=[cnae_fiscal_principal], lazy="joined")
-    municipio_obj = relationship("Municipio", foreign_keys=[municipio], lazy="joined")
-    pais_obj = relationship("Pais", foreign_keys=[pais], lazy="joined")
-    motivo_situacao = relationship("MotivoSituacaoCadastral", foreign_keys=[motivo_situacao_cadastral], lazy="joined")
+    cnae_principal = relationship(
+        "CNAE",
+        primaryjoin="Estabelecimento.cnae_fiscal_principal==foreign(CNAE.codigo)",
+        foreign_keys="[Estabelecimento.cnae_fiscal_principal]",
+        uselist=False,
+        lazy="joined"
+    )
+    municipio_obj = relationship(
+        "Municipio",
+        primaryjoin="Estabelecimento.municipio==foreign(Municipio.codigo)",
+        foreign_keys="[Estabelecimento.municipio]",
+        uselist=False,
+        lazy="joined"
+    )
+    pais_obj = relationship(
+        "Pais",
+        primaryjoin="Estabelecimento.pais==foreign(Pais.codigo)",
+        foreign_keys="[Estabelecimento.pais]",
+        uselist=False,
+        lazy="joined"
+    )
+    motivo_situacao = relationship(
+        "MotivoSituacaoCadastral",
+        primaryjoin="Estabelecimento.motivo_situacao_cadastral==foreign(MotivoSituacaoCadastral.codigo)",
+        foreign_keys="[Estabelecimento.motivo_situacao_cadastral]",
+        uselist=False,
+        lazy="joined"
+    )
     
     @property
     def cnpj_completo(self) -> str:
@@ -166,45 +202,65 @@ class Socio(Base):
     """
     Sócio - Quadro societário da empresa
     Tabela: cnpj.socios
-    PK: id (autoincrement)
+    PK: Composta (cnpj_basico, identificador_socio)
+    Nota: Banco não tem PK explícita, mas tem unique index socios_unique_idx
     """
     
     __tablename__ = 'socios'
-    __table_args__ = {'schema': 'cnpj', 'extend_existing': True}
+    __table_args__ = (
+        # Unique constraint que existe no banco
+        # UniqueConstraint('cnpj_basico', 'identificador_socio', name='socios_unique_idx'),
+        {'schema': 'cnpj', 'extend_existing': True}
+    )
     
-    # Primary Key
-    id = Column(Integer, primary_key=True, autoincrement=True)
-    
-    # FK Empresa
-    cnpj_basico = Column(String(8), ForeignKey('cnpj.empresas.cnpj_basico'), nullable=False, index=True)
+    # Primary Key Composta (para ORM funcionar)
+    cnpj_basico = Column(String(8), ForeignKey('cnpj.empresas.cnpj_basico'), primary_key=True, index=True, comment="FK para empresas")
+    identificador_socio = Column(String(1), primary_key=True, comment="1=PF, 2=PJ, 3=Estrangeiro")
     
     # Identificação do Sócio
-    identificador_socio = Column(String(1), index=True, comment="1=PF, 2=PJ, 3=Estrangeiro")
     nome_socio = Column(String(500), comment="Nome do sócio")
     cnpj_cpf_socio = Column(String(14), index=True, comment="CPF ou CNPJ do sócio")
     
-    # Qualificação
-    qualificacao_socio = Column(String(5), ForeignKey('cnpj.qualificacoes_socios.codigo'), comment="Qualificação do sócio")
+    # Qualificação (sem FK constraint)
+    qualificacao_socio = Column(String(10), comment="Qualificação do sócio")
     
     # Datas
     data_entrada_sociedade = Column(Date, comment="Data de entrada na sociedade")
     
-    # País
-    pais = Column(String(5), ForeignKey('cnpj.paises.codigo'), comment="País do sócio")
+    # País (sem FK constraint)
+    pais = Column(String(10), comment="País do sócio")
     
     # Representante Legal
-    representante_legal = Column(String(11), comment="CPF do representante legal")
-    nome_representante = Column(String(300), comment="Nome do representante")
-    qualificacao_representante_legal = Column(String(5), ForeignKey('cnpj.qualificacoes_socios.codigo'))
+    representante_legal = Column(String(14), comment="CPF/CNPJ do representante legal")
+    nome_representante = Column(String(500), comment="Nome do representante")
+    qualificacao_representante = Column(String(10), comment="Qualificação do representante")
     
     # Faixa Etária
     faixa_etaria = Column(String(1), comment="Faixa etária do sócio")
     
     # Relacionamentos
     empresa = relationship("Empresa", back_populates="socios")
-    qualificacao = relationship("QualificacaoSocio", foreign_keys=[qualificacao_socio], lazy="joined")
-    qualificacao_rep = relationship("QualificacaoSocio", foreign_keys=[qualificacao_representante_legal], lazy="joined")
-    pais_obj = relationship("Pais", foreign_keys=[pais], lazy="joined")
+    qualificacao = relationship(
+        "QualificacaoSocio",
+        primaryjoin="Socio.qualificacao_socio==foreign(QualificacaoSocio.codigo)",
+        foreign_keys="[Socio.qualificacao_socio]",
+        uselist=False,
+        lazy="joined"
+    )
+    qualificacao_rep = relationship(
+        "QualificacaoSocio",
+        primaryjoin="Socio.qualificacao_representante==foreign(QualificacaoSocio.codigo)",
+        foreign_keys="[Socio.qualificacao_representante]",
+        uselist=False,
+        lazy="joined"
+    )
+    pais_obj = relationship(
+        "Pais",
+        primaryjoin="Socio.pais==foreign(Pais.codigo)",
+        foreign_keys="[Socio.pais]",
+        uselist=False,
+        lazy="joined"
+    )
     
     @property
     def cpf_cnpj_formatado(self) -> Optional[str]:
@@ -220,7 +276,8 @@ class Socio(Base):
         return doc
     
     def __repr__(self):
-        return f"<Socio(id={self.id}, nome={self.nome_socio[:30]}, cnpj_basico={self.cnpj_basico})>"
+        nome = self.nome_socio[:30] if self.nome_socio else 'N/A'
+        return f"<Socio(cnpj_basico={self.cnpj_basico}, id_socio={self.identificador_socio}, nome={nome})>"
 
 
 # ================================================================

@@ -1,0 +1,2182 @@
+{
+  "timestamp": "2026-02-01T22:19:37.403232",
+  "database": "basecerta",
+  "schema": "cnpj",
+  "tables": {
+    "cnaes": {
+      "columns": [
+        {
+          "column_name": "codigo",
+          "data_type": "character varying",
+          "character_maximum_length": 10,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": "YES",
+          "column_default": null,
+          "column_comment": null
+        },
+        {
+          "column_name": "descricao",
+          "data_type": "text",
+          "character_maximum_length": null,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": "NO",
+          "column_default": null,
+          "column_comment": null
+        }
+      ],
+      "primary_keys": [],
+      "foreign_keys": [],
+      "indexes": [],
+      "stats": {
+        "row_count": 4077,
+        "total_size": "576 kB"
+      }
+    },
+    "control_audit": {
+      "columns": [
+        {
+          "column_name": "audit_id",
+          "data_type": "integer",
+          "character_maximum_length": null,
+          "numeric_precision": 32,
+          "numeric_scale": 0,
+          "is_nullable": "NO",
+          "column_default": "nextval('cnpj.control_audit_audit_id_seq'::regclass)",
+          "column_comment": null
+        },
+        {
+          "column_name": "batch_id",
+          "data_type": "integer",
+          "character_maximum_length": null,
+          "numeric_precision": 32,
+          "numeric_scale": 0,
+          "is_nullable": "NO",
+          "column_default": null,
+          "column_comment": null
+        },
+        {
+          "column_name": "table_name",
+          "data_type": "character varying",
+          "character_maximum_length": 100,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": "NO",
+          "column_default": null,
+          "column_comment": null
+        },
+        {
+          "column_name": "inserts",
+          "data_type": "integer",
+          "character_maximum_length": null,
+          "numeric_precision": 32,
+          "numeric_scale": 0,
+          "is_nullable": "YES",
+          "column_default": "0",
+          "column_comment": null
+        },
+        {
+          "column_name": "updates",
+          "data_type": "integer",
+          "character_maximum_length": null,
+          "numeric_precision": 32,
+          "numeric_scale": 0,
+          "is_nullable": "YES",
+          "column_default": "0",
+          "column_comment": null
+        },
+        {
+          "column_name": "deletes",
+          "data_type": "integer",
+          "character_maximum_length": null,
+          "numeric_precision": 32,
+          "numeric_scale": 0,
+          "is_nullable": "YES",
+          "column_default": "0",
+          "column_comment": null
+        },
+        {
+          "column_name": "timestamp",
+          "data_type": "timestamp without time zone",
+          "character_maximum_length": null,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": "NO",
+          "column_default": "CURRENT_TIMESTAMP",
+          "column_comment": null
+        }
+      ],
+      "primary_keys": [
+        "audit_id"
+      ],
+      "foreign_keys": [
+        {
+          "column_name": "batch_id",
+          "foreign_table_schema": "cnpj",
+          "foreign_table_name": "control_batches",
+          "foreign_column_name": "batch_id",
+          "constraint_name": "control_audit_batch_id_fkey"
+        }
+      ],
+      "indexes": [
+        {
+          "index_name": "control_audit_pkey",
+          "column_names": [
+            "audit_id"
+          ],
+          "is_unique": true,
+          "is_primary": true
+        },
+        {
+          "index_name": "idx_audit_batch",
+          "column_names": [
+            "batch_id"
+          ],
+          "is_unique": false,
+          "is_primary": false
+        },
+        {
+          "index_name": "idx_audit_table",
+          "column_names": [
+            "table_name"
+          ],
+          "is_unique": false,
+          "is_primary": false
+        }
+      ],
+      "stats": {
+        "row_count": 33,
+        "total_size": "56 kB"
+      }
+    },
+    "control_batches": {
+      "columns": [
+        {
+          "column_name": "batch_id",
+          "data_type": "integer",
+          "character_maximum_length": null,
+          "numeric_precision": 32,
+          "numeric_scale": 0,
+          "is_nullable": "NO",
+          "column_default": "nextval('cnpj.control_batches_batch_id_seq'::regclass)",
+          "column_comment": null
+        },
+        {
+          "column_name": "tipo",
+          "data_type": "character varying",
+          "character_maximum_length": 100,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": "NO",
+          "column_default": null,
+          "column_comment": "Load type: full or mensal (incremental)"
+        },
+        {
+          "column_name": "competencia",
+          "data_type": "character varying",
+          "character_maximum_length": 7,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": "NO",
+          "column_default": null,
+          "column_comment": "Reference period (YYYY-MM)"
+        },
+        {
+          "column_name": "inicio",
+          "data_type": "timestamp without time zone",
+          "character_maximum_length": null,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": "NO",
+          "column_default": "CURRENT_TIMESTAMP",
+          "column_comment": null
+        },
+        {
+          "column_name": "fim",
+          "data_type": "timestamp without time zone",
+          "character_maximum_length": null,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": "YES",
+          "column_default": null,
+          "column_comment": null
+        },
+        {
+          "column_name": "status",
+          "data_type": "character varying",
+          "character_maximum_length": 20,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": "NO",
+          "column_default": "'in_progress'::character varying",
+          "column_comment": null
+        },
+        {
+          "column_name": "total_arquivos",
+          "data_type": "integer",
+          "character_maximum_length": null,
+          "numeric_precision": 32,
+          "numeric_scale": 0,
+          "is_nullable": "YES",
+          "column_default": "0",
+          "column_comment": null
+        },
+        {
+          "column_name": "total_registros",
+          "data_type": "bigint",
+          "character_maximum_length": null,
+          "numeric_precision": 64,
+          "numeric_scale": 0,
+          "is_nullable": "YES",
+          "column_default": "0",
+          "column_comment": null
+        },
+        {
+          "column_name": "erro",
+          "data_type": "text",
+          "character_maximum_length": null,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": "YES",
+          "column_default": null,
+          "column_comment": null
+        }
+      ],
+      "primary_keys": [
+        "batch_id"
+      ],
+      "foreign_keys": [],
+      "indexes": [
+        {
+          "index_name": "control_batches_pkey",
+          "column_names": [
+            "batch_id"
+          ],
+          "is_unique": true,
+          "is_primary": true
+        },
+        {
+          "index_name": "idx_batches_competencia",
+          "column_names": [
+            "competencia"
+          ],
+          "is_unique": false,
+          "is_primary": false
+        },
+        {
+          "index_name": "idx_batches_status",
+          "column_names": [
+            "status"
+          ],
+          "is_unique": false,
+          "is_primary": false
+        },
+        {
+          "index_name": "idx_batches_tipo",
+          "column_names": [
+            "tipo"
+          ],
+          "is_unique": false,
+          "is_primary": false
+        }
+      ],
+      "stats": {
+        "row_count": 12,
+        "total_size": "80 kB"
+      }
+    },
+    "control_checkpoints": {
+      "columns": [
+        {
+          "column_name": "checkpoint_id",
+          "data_type": "integer",
+          "character_maximum_length": null,
+          "numeric_precision": 32,
+          "numeric_scale": 0,
+          "is_nullable": "NO",
+          "column_default": "nextval('cnpj.control_checkpoints_checkpoint_id_seq'::regclass)",
+          "column_comment": null
+        },
+        {
+          "column_name": "batch_id",
+          "data_type": "integer",
+          "character_maximum_length": null,
+          "numeric_precision": 32,
+          "numeric_scale": 0,
+          "is_nullable": "NO",
+          "column_default": null,
+          "column_comment": null
+        },
+        {
+          "column_name": "arquivo_nome",
+          "data_type": "character varying",
+          "character_maximum_length": 500,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": "NO",
+          "column_default": null,
+          "column_comment": null
+        },
+        {
+          "column_name": "arquivo_hash",
+          "data_type": "character varying",
+          "character_maximum_length": 64,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": "NO",
+          "column_default": null,
+          "column_comment": "SHA256 hash of filename + size + mtime"
+        },
+        {
+          "column_name": "chunk_numero",
+          "data_type": "integer",
+          "character_maximum_length": null,
+          "numeric_precision": 32,
+          "numeric_scale": 0,
+          "is_nullable": "YES",
+          "column_default": "0",
+          "column_comment": "Chunk number within file (0 for whole file)"
+        },
+        {
+          "column_name": "rows_processed",
+          "data_type": "integer",
+          "character_maximum_length": null,
+          "numeric_precision": 32,
+          "numeric_scale": 0,
+          "is_nullable": "YES",
+          "column_default": "0",
+          "column_comment": null
+        },
+        {
+          "column_name": "status",
+          "data_type": "character varying",
+          "character_maximum_length": 20,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": "NO",
+          "column_default": "'pending'::character varying",
+          "column_comment": null
+        },
+        {
+          "column_name": "erro",
+          "data_type": "text",
+          "character_maximum_length": null,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": "YES",
+          "column_default": null,
+          "column_comment": null
+        },
+        {
+          "column_name": "inicio",
+          "data_type": "timestamp without time zone",
+          "character_maximum_length": null,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": "YES",
+          "column_default": null,
+          "column_comment": null
+        },
+        {
+          "column_name": "fim",
+          "data_type": "timestamp without time zone",
+          "character_maximum_length": null,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": "YES",
+          "column_default": null,
+          "column_comment": null
+        }
+      ],
+      "primary_keys": [
+        "checkpoint_id"
+      ],
+      "foreign_keys": [
+        {
+          "column_name": "batch_id",
+          "foreign_table_schema": "cnpj",
+          "foreign_table_name": "control_batches",
+          "foreign_column_name": "batch_id",
+          "constraint_name": "control_checkpoints_batch_id_fkey"
+        }
+      ],
+      "indexes": [
+        {
+          "index_name": "control_checkpoints_pkey",
+          "column_names": [
+            "checkpoint_id"
+          ],
+          "is_unique": true,
+          "is_primary": true
+        },
+        {
+          "index_name": "idx_checkpoints_batch",
+          "column_names": [
+            "batch_id"
+          ],
+          "is_unique": false,
+          "is_primary": false
+        },
+        {
+          "index_name": "idx_checkpoints_hash",
+          "column_names": [
+            "arquivo_hash"
+          ],
+          "is_unique": false,
+          "is_primary": false
+        },
+        {
+          "index_name": "idx_checkpoints_status",
+          "column_names": [
+            "status"
+          ],
+          "is_unique": false,
+          "is_primary": false
+        }
+      ],
+      "stats": {
+        "row_count": 44,
+        "total_size": "112 kB"
+      }
+    },
+    "empresas": {
+      "columns": [
+        {
+          "column_name": "cnpj_basico",
+          "data_type": "character varying",
+          "character_maximum_length": 8,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": "NO",
+          "column_default": null,
+          "column_comment": "8 primeiros d\u00edgitos do CNPJ"
+        },
+        {
+          "column_name": "razao_social",
+          "data_type": "character varying",
+          "character_maximum_length": 500,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": "YES",
+          "column_default": null,
+          "column_comment": "Raz\u00e3o social da empresa"
+        },
+        {
+          "column_name": "natureza_juridica",
+          "data_type": "character varying",
+          "character_maximum_length": 10,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": "YES",
+          "column_default": null,
+          "column_comment": "C\u00f3digo de natureza jur\u00eddica (pode conter valores n\u00e3o catalogados pela Receita)"
+        },
+        {
+          "column_name": "qualificacao_responsavel",
+          "data_type": "character varying",
+          "character_maximum_length": 10,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": "YES",
+          "column_default": null,
+          "column_comment": "C\u00f3digo de qualifica\u00e7\u00e3o (pode conter valores n\u00e3o catalogados pela Receita)"
+        },
+        {
+          "column_name": "capital_social",
+          "data_type": "numeric",
+          "character_maximum_length": null,
+          "numeric_precision": 18,
+          "numeric_scale": 2,
+          "is_nullable": "YES",
+          "column_default": null,
+          "column_comment": "Capital social em reais"
+        },
+        {
+          "column_name": "porte_empresa",
+          "data_type": "character varying",
+          "character_maximum_length": 2,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": "YES",
+          "column_default": null,
+          "column_comment": "01=ME, 03=EPP, 05=Demais"
+        },
+        {
+          "column_name": "ente_federativo",
+          "data_type": "character varying",
+          "character_maximum_length": 100,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": "YES",
+          "column_default": null,
+          "column_comment": null
+        }
+      ],
+      "primary_keys": [
+        "cnpj_basico"
+      ],
+      "foreign_keys": [],
+      "indexes": [
+        {
+          "index_name": "idx_empresas_natureza_juridica",
+          "column_names": [
+            "natureza_juridica"
+          ],
+          "is_unique": false,
+          "is_primary": false
+        },
+        {
+          "index_name": "idx_empresas_porte",
+          "column_names": [
+            "porte_empresa"
+          ],
+          "is_unique": false,
+          "is_primary": false
+        },
+        {
+          "index_name": "idx_empresas_razao_social",
+          "column_names": [
+            "razao_social"
+          ],
+          "is_unique": false,
+          "is_primary": false
+        },
+        {
+          "index_name": "pk_empresas",
+          "column_names": [
+            "cnpj_basico"
+          ],
+          "is_unique": true,
+          "is_primary": true
+        }
+      ],
+      "stats": {
+        "row_count": 65696874,
+        "total_size": "14 GB"
+      }
+    },
+    "estabelecimentos": {
+      "columns": [
+        {
+          "column_name": "cnpj_basico",
+          "data_type": "character varying",
+          "character_maximum_length": 8,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": "NO",
+          "column_default": null,
+          "column_comment": null
+        },
+        {
+          "column_name": "cnpj_ordem",
+          "data_type": "character varying",
+          "character_maximum_length": 4,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": "NO",
+          "column_default": null,
+          "column_comment": null
+        },
+        {
+          "column_name": "cnpj_dv",
+          "data_type": "character varying",
+          "character_maximum_length": 2,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": "NO",
+          "column_default": null,
+          "column_comment": null
+        },
+        {
+          "column_name": "identificador_matriz_filial",
+          "data_type": "character varying",
+          "character_maximum_length": 1,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": "YES",
+          "column_default": null,
+          "column_comment": "1=Matriz, 2=Filial"
+        },
+        {
+          "column_name": "nome_fantasia",
+          "data_type": "character varying",
+          "character_maximum_length": 500,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": "YES",
+          "column_default": null,
+          "column_comment": null
+        },
+        {
+          "column_name": "situacao_cadastral",
+          "data_type": "character varying",
+          "character_maximum_length": 2,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": "YES",
+          "column_default": null,
+          "column_comment": "01=Nula, 02=Ativa, 03=Suspensa, 04=Inapta, 08=Baixada"
+        },
+        {
+          "column_name": "data_situacao_cadastral",
+          "data_type": "date",
+          "character_maximum_length": null,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": "YES",
+          "column_default": null,
+          "column_comment": null
+        },
+        {
+          "column_name": "motivo_situacao_cadastral",
+          "data_type": "character varying",
+          "character_maximum_length": 10,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": "YES",
+          "column_default": null,
+          "column_comment": "C\u00f3digo do motivo (pode conter valores n\u00e3o catalogados)"
+        },
+        {
+          "column_name": "nome_cidade_exterior",
+          "data_type": "character varying",
+          "character_maximum_length": 200,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": "YES",
+          "column_default": null,
+          "column_comment": null
+        },
+        {
+          "column_name": "pais",
+          "data_type": "character varying",
+          "character_maximum_length": 10,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": "YES",
+          "column_default": null,
+          "column_comment": "C\u00f3digo do pa\u00eds (pode conter valores n\u00e3o catalogados)"
+        },
+        {
+          "column_name": "data_inicio_atividade",
+          "data_type": "date",
+          "character_maximum_length": null,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": "YES",
+          "column_default": null,
+          "column_comment": null
+        },
+        {
+          "column_name": "cnae_fiscal_principal",
+          "data_type": "character varying",
+          "character_maximum_length": 10,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": "YES",
+          "column_default": null,
+          "column_comment": "C\u00f3digo CNAE principal (pode conter valores n\u00e3o catalogados)"
+        },
+        {
+          "column_name": "cnae_fiscal_secundaria",
+          "data_type": "text",
+          "character_maximum_length": null,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": "YES",
+          "column_default": null,
+          "column_comment": "CNAEs secund\u00e1rios separados por v\u00edrgula"
+        },
+        {
+          "column_name": "tipo_logradouro",
+          "data_type": "character varying",
+          "character_maximum_length": 100,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": "YES",
+          "column_default": null,
+          "column_comment": null
+        },
+        {
+          "column_name": "logradouro",
+          "data_type": "character varying",
+          "character_maximum_length": 500,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": "YES",
+          "column_default": null,
+          "column_comment": null
+        },
+        {
+          "column_name": "numero",
+          "data_type": "character varying",
+          "character_maximum_length": 50,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": "YES",
+          "column_default": null,
+          "column_comment": null
+        },
+        {
+          "column_name": "complemento",
+          "data_type": "character varying",
+          "character_maximum_length": 200,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": "YES",
+          "column_default": null,
+          "column_comment": null
+        },
+        {
+          "column_name": "bairro",
+          "data_type": "character varying",
+          "character_maximum_length": 200,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": "YES",
+          "column_default": null,
+          "column_comment": null
+        },
+        {
+          "column_name": "cep",
+          "data_type": "character varying",
+          "character_maximum_length": 8,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": "YES",
+          "column_default": null,
+          "column_comment": null
+        },
+        {
+          "column_name": "uf",
+          "data_type": "character varying",
+          "character_maximum_length": 2,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": "YES",
+          "column_default": null,
+          "column_comment": null
+        },
+        {
+          "column_name": "municipio",
+          "data_type": "character varying",
+          "character_maximum_length": 10,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": "YES",
+          "column_default": null,
+          "column_comment": "C\u00f3digo do munic\u00edpio (pode conter valores n\u00e3o catalogados)"
+        },
+        {
+          "column_name": "ddd_1",
+          "data_type": "character varying",
+          "character_maximum_length": 4,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": "YES",
+          "column_default": null,
+          "column_comment": null
+        },
+        {
+          "column_name": "telefone_1",
+          "data_type": "character varying",
+          "character_maximum_length": 20,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": "YES",
+          "column_default": null,
+          "column_comment": null
+        },
+        {
+          "column_name": "ddd_2",
+          "data_type": "character varying",
+          "character_maximum_length": 4,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": "YES",
+          "column_default": null,
+          "column_comment": null
+        },
+        {
+          "column_name": "telefone_2",
+          "data_type": "character varying",
+          "character_maximum_length": 20,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": "YES",
+          "column_default": null,
+          "column_comment": null
+        },
+        {
+          "column_name": "ddd_fax",
+          "data_type": "character varying",
+          "character_maximum_length": 4,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": "YES",
+          "column_default": null,
+          "column_comment": null
+        },
+        {
+          "column_name": "fax",
+          "data_type": "character varying",
+          "character_maximum_length": 20,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": "YES",
+          "column_default": null,
+          "column_comment": null
+        },
+        {
+          "column_name": "correio_eletronico",
+          "data_type": "character varying",
+          "character_maximum_length": 200,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": "YES",
+          "column_default": null,
+          "column_comment": null
+        },
+        {
+          "column_name": "situacao_especial",
+          "data_type": "character varying",
+          "character_maximum_length": 200,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": "YES",
+          "column_default": null,
+          "column_comment": null
+        },
+        {
+          "column_name": "data_situacao_especial",
+          "data_type": "date",
+          "character_maximum_length": null,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": "YES",
+          "column_default": null,
+          "column_comment": null
+        }
+      ],
+      "primary_keys": [
+        "cnpj_basico",
+        "cnpj_ordem",
+        "cnpj_dv"
+      ],
+      "foreign_keys": [
+        {
+          "column_name": "cnpj_basico",
+          "foreign_table_schema": "cnpj",
+          "foreign_table_name": "empresas",
+          "foreign_column_name": "cnpj_basico",
+          "constraint_name": "fk_estabelecimentos_empresa"
+        }
+      ],
+      "indexes": [
+        {
+          "index_name": "idx_estabelecimentos_cep",
+          "column_names": [
+            "cep"
+          ],
+          "is_unique": false,
+          "is_primary": false
+        },
+        {
+          "index_name": "idx_estabelecimentos_cnae_principal",
+          "column_names": [
+            "cnae_fiscal_principal"
+          ],
+          "is_unique": false,
+          "is_primary": false
+        },
+        {
+          "index_name": "idx_estabelecimentos_cnpj_basico",
+          "column_names": [
+            "cnpj_basico"
+          ],
+          "is_unique": false,
+          "is_primary": false
+        },
+        {
+          "index_name": "idx_estabelecimentos_data_inicio",
+          "column_names": [
+            "data_inicio_atividade"
+          ],
+          "is_unique": false,
+          "is_primary": false
+        },
+        {
+          "index_name": "idx_estabelecimentos_data_situacao",
+          "column_names": [
+            "data_situacao_cadastral"
+          ],
+          "is_unique": false,
+          "is_primary": false
+        },
+        {
+          "index_name": "idx_estabelecimentos_matriz_filial",
+          "column_names": [
+            "identificador_matriz_filial"
+          ],
+          "is_unique": false,
+          "is_primary": false
+        },
+        {
+          "index_name": "idx_estabelecimentos_municipio",
+          "column_names": [
+            "municipio"
+          ],
+          "is_unique": false,
+          "is_primary": false
+        },
+        {
+          "index_name": "idx_estabelecimentos_situacao",
+          "column_names": [
+            "situacao_cadastral"
+          ],
+          "is_unique": false,
+          "is_primary": false
+        },
+        {
+          "index_name": "idx_estabelecimentos_uf",
+          "column_names": [
+            "uf"
+          ],
+          "is_unique": false,
+          "is_primary": false
+        },
+        {
+          "index_name": "idx_estabelecimentos_uf_cnae_situacao",
+          "column_names": [
+            "situacao_cadastral",
+            "cnae_fiscal_principal",
+            "uf"
+          ],
+          "is_unique": false,
+          "is_primary": false
+        },
+        {
+          "index_name": "pk_estabelecimentos",
+          "column_names": [
+            "cnpj_basico",
+            "cnpj_ordem",
+            "cnpj_dv"
+          ],
+          "is_unique": true,
+          "is_primary": true
+        }
+      ],
+      "stats": {
+        "row_count": 68879494,
+        "total_size": "23 GB"
+      }
+    },
+    "estabelecimentos_cnaes_secundarios": {
+      "columns": [
+        {
+          "column_name": "cnpj_basico",
+          "data_type": "character varying",
+          "character_maximum_length": 8,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": "NO",
+          "column_default": null,
+          "column_comment": null
+        },
+        {
+          "column_name": "cnpj_ordem",
+          "data_type": "character varying",
+          "character_maximum_length": 4,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": "NO",
+          "column_default": null,
+          "column_comment": null
+        },
+        {
+          "column_name": "cnpj_dv",
+          "data_type": "character varying",
+          "character_maximum_length": 2,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": "NO",
+          "column_default": null,
+          "column_comment": null
+        },
+        {
+          "column_name": "cnae_secundario",
+          "data_type": "character varying",
+          "character_maximum_length": 10,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": "NO",
+          "column_default": null,
+          "column_comment": null
+        }
+      ],
+      "primary_keys": [],
+      "foreign_keys": [
+        {
+          "column_name": "cnpj_basico",
+          "foreign_table_schema": "cnpj",
+          "foreign_table_name": "estabelecimentos",
+          "foreign_column_name": "cnpj_basico",
+          "constraint_name": "fk_cnaes_sec_estabelecimento"
+        },
+        {
+          "column_name": "cnpj_basico",
+          "foreign_table_schema": "cnpj",
+          "foreign_table_name": "estabelecimentos",
+          "foreign_column_name": "cnpj_dv",
+          "constraint_name": "fk_cnaes_sec_estabelecimento"
+        },
+        {
+          "column_name": "cnpj_basico",
+          "foreign_table_schema": "cnpj",
+          "foreign_table_name": "estabelecimentos",
+          "foreign_column_name": "cnpj_ordem",
+          "constraint_name": "fk_cnaes_sec_estabelecimento"
+        },
+        {
+          "column_name": "cnpj_ordem",
+          "foreign_table_schema": "cnpj",
+          "foreign_table_name": "estabelecimentos",
+          "foreign_column_name": "cnpj_basico",
+          "constraint_name": "fk_cnaes_sec_estabelecimento"
+        },
+        {
+          "column_name": "cnpj_ordem",
+          "foreign_table_schema": "cnpj",
+          "foreign_table_name": "estabelecimentos",
+          "foreign_column_name": "cnpj_dv",
+          "constraint_name": "fk_cnaes_sec_estabelecimento"
+        },
+        {
+          "column_name": "cnpj_ordem",
+          "foreign_table_schema": "cnpj",
+          "foreign_table_name": "estabelecimentos",
+          "foreign_column_name": "cnpj_ordem",
+          "constraint_name": "fk_cnaes_sec_estabelecimento"
+        },
+        {
+          "column_name": "cnpj_dv",
+          "foreign_table_schema": "cnpj",
+          "foreign_table_name": "estabelecimentos",
+          "foreign_column_name": "cnpj_basico",
+          "constraint_name": "fk_cnaes_sec_estabelecimento"
+        },
+        {
+          "column_name": "cnpj_dv",
+          "foreign_table_schema": "cnpj",
+          "foreign_table_name": "estabelecimentos",
+          "foreign_column_name": "cnpj_dv",
+          "constraint_name": "fk_cnaes_sec_estabelecimento"
+        },
+        {
+          "column_name": "cnpj_dv",
+          "foreign_table_schema": "cnpj",
+          "foreign_table_name": "estabelecimentos",
+          "foreign_column_name": "cnpj_ordem",
+          "constraint_name": "fk_cnaes_sec_estabelecimento"
+        }
+      ],
+      "indexes": [
+        {
+          "index_name": "idx_cnaes_sec_cnae",
+          "column_names": [
+            "cnae_secundario"
+          ],
+          "is_unique": false,
+          "is_primary": false
+        },
+        {
+          "index_name": "idx_cnaes_sec_cnpj_basico",
+          "column_names": [
+            "cnpj_basico"
+          ],
+          "is_unique": false,
+          "is_primary": false
+        },
+        {
+          "index_name": "idx_cnaes_sec_estabelecimento",
+          "column_names": [
+            "cnpj_basico",
+            "cnpj_ordem",
+            "cnpj_dv"
+          ],
+          "is_unique": false,
+          "is_primary": false
+        }
+      ],
+      "stats": {
+        "row_count": 114636559,
+        "total_size": "11 GB"
+      }
+    },
+    "historico_empresas": {
+      "columns": [
+        {
+          "column_name": "historico_id",
+          "data_type": "bigint",
+          "character_maximum_length": null,
+          "numeric_precision": 64,
+          "numeric_scale": 0,
+          "is_nullable": "NO",
+          "column_default": "nextval('cnpj.historico_empresas_historico_id_seq'::regclass)",
+          "column_comment": null
+        },
+        {
+          "column_name": "cnpj_basico",
+          "data_type": "character varying",
+          "character_maximum_length": 8,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": "NO",
+          "column_default": null,
+          "column_comment": null
+        },
+        {
+          "column_name": "operacao",
+          "data_type": "character varying",
+          "character_maximum_length": 10,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": "NO",
+          "column_default": null,
+          "column_comment": null
+        },
+        {
+          "column_name": "hash_anterior",
+          "data_type": "character varying",
+          "character_maximum_length": 32,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": "YES",
+          "column_default": null,
+          "column_comment": null
+        },
+        {
+          "column_name": "hash_novo",
+          "data_type": "character varying",
+          "character_maximum_length": 32,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": "YES",
+          "column_default": null,
+          "column_comment": null
+        },
+        {
+          "column_name": "batch_id",
+          "data_type": "integer",
+          "character_maximum_length": null,
+          "numeric_precision": 32,
+          "numeric_scale": 0,
+          "is_nullable": "YES",
+          "column_default": null,
+          "column_comment": null
+        },
+        {
+          "column_name": "timestamp",
+          "data_type": "timestamp without time zone",
+          "character_maximum_length": null,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": "NO",
+          "column_default": "CURRENT_TIMESTAMP",
+          "column_comment": null
+        }
+      ],
+      "primary_keys": [
+        "historico_id"
+      ],
+      "foreign_keys": [
+        {
+          "column_name": "batch_id",
+          "foreign_table_schema": "cnpj",
+          "foreign_table_name": "control_batches",
+          "foreign_column_name": "batch_id",
+          "constraint_name": "historico_empresas_batch_id_fkey"
+        }
+      ],
+      "indexes": [
+        {
+          "index_name": "historico_empresas_pkey",
+          "column_names": [
+            "historico_id"
+          ],
+          "is_unique": true,
+          "is_primary": true
+        },
+        {
+          "index_name": "idx_hist_empresas_batch",
+          "column_names": [
+            "batch_id"
+          ],
+          "is_unique": false,
+          "is_primary": false
+        },
+        {
+          "index_name": "idx_hist_empresas_cnpj",
+          "column_names": [
+            "cnpj_basico"
+          ],
+          "is_unique": false,
+          "is_primary": false
+        },
+        {
+          "index_name": "idx_hist_empresas_timestamp",
+          "column_names": [
+            "timestamp"
+          ],
+          "is_unique": false,
+          "is_primary": false
+        }
+      ],
+      "stats": {
+        "row_count": 0,
+        "total_size": "32 kB"
+      }
+    },
+    "historico_estabelecimentos": {
+      "columns": [
+        {
+          "column_name": "historico_id",
+          "data_type": "bigint",
+          "character_maximum_length": null,
+          "numeric_precision": 64,
+          "numeric_scale": 0,
+          "is_nullable": "NO",
+          "column_default": "nextval('cnpj.historico_estabelecimentos_historico_id_seq'::regclass)",
+          "column_comment": null
+        },
+        {
+          "column_name": "cnpj_basico",
+          "data_type": "character varying",
+          "character_maximum_length": 8,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": "NO",
+          "column_default": null,
+          "column_comment": null
+        },
+        {
+          "column_name": "operacao",
+          "data_type": "character varying",
+          "character_maximum_length": 10,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": "NO",
+          "column_default": null,
+          "column_comment": null
+        },
+        {
+          "column_name": "hash_anterior",
+          "data_type": "character varying",
+          "character_maximum_length": 32,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": "YES",
+          "column_default": null,
+          "column_comment": null
+        },
+        {
+          "column_name": "hash_novo",
+          "data_type": "character varying",
+          "character_maximum_length": 32,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": "YES",
+          "column_default": null,
+          "column_comment": null
+        },
+        {
+          "column_name": "batch_id",
+          "data_type": "integer",
+          "character_maximum_length": null,
+          "numeric_precision": 32,
+          "numeric_scale": 0,
+          "is_nullable": "YES",
+          "column_default": null,
+          "column_comment": null
+        },
+        {
+          "column_name": "timestamp",
+          "data_type": "timestamp without time zone",
+          "character_maximum_length": null,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": "NO",
+          "column_default": "CURRENT_TIMESTAMP",
+          "column_comment": null
+        }
+      ],
+      "primary_keys": [
+        "historico_id"
+      ],
+      "foreign_keys": [
+        {
+          "column_name": "batch_id",
+          "foreign_table_schema": "cnpj",
+          "foreign_table_name": "control_batches",
+          "foreign_column_name": "batch_id",
+          "constraint_name": "historico_estabelecimentos_batch_id_fkey"
+        }
+      ],
+      "indexes": [
+        {
+          "index_name": "historico_estabelecimentos_pkey",
+          "column_names": [
+            "historico_id"
+          ],
+          "is_unique": true,
+          "is_primary": true
+        },
+        {
+          "index_name": "idx_hist_estabelecimentos_batch",
+          "column_names": [
+            "batch_id"
+          ],
+          "is_unique": false,
+          "is_primary": false
+        },
+        {
+          "index_name": "idx_hist_estabelecimentos_cnpj",
+          "column_names": [
+            "cnpj_basico"
+          ],
+          "is_unique": false,
+          "is_primary": false
+        },
+        {
+          "index_name": "idx_hist_estabelecimentos_timestamp",
+          "column_names": [
+            "timestamp"
+          ],
+          "is_unique": false,
+          "is_primary": false
+        }
+      ],
+      "stats": {
+        "row_count": 0,
+        "total_size": "32 kB"
+      }
+    },
+    "historico_simples": {
+      "columns": [
+        {
+          "column_name": "historico_id",
+          "data_type": "bigint",
+          "character_maximum_length": null,
+          "numeric_precision": 64,
+          "numeric_scale": 0,
+          "is_nullable": "NO",
+          "column_default": "nextval('cnpj.historico_simples_historico_id_seq'::regclass)",
+          "column_comment": null
+        },
+        {
+          "column_name": "cnpj_basico",
+          "data_type": "character varying",
+          "character_maximum_length": 8,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": "NO",
+          "column_default": null,
+          "column_comment": null
+        },
+        {
+          "column_name": "operacao",
+          "data_type": "character varying",
+          "character_maximum_length": 10,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": "NO",
+          "column_default": null,
+          "column_comment": null
+        },
+        {
+          "column_name": "hash_anterior",
+          "data_type": "character varying",
+          "character_maximum_length": 32,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": "YES",
+          "column_default": null,
+          "column_comment": null
+        },
+        {
+          "column_name": "hash_novo",
+          "data_type": "character varying",
+          "character_maximum_length": 32,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": "YES",
+          "column_default": null,
+          "column_comment": null
+        },
+        {
+          "column_name": "batch_id",
+          "data_type": "integer",
+          "character_maximum_length": null,
+          "numeric_precision": 32,
+          "numeric_scale": 0,
+          "is_nullable": "YES",
+          "column_default": null,
+          "column_comment": null
+        },
+        {
+          "column_name": "timestamp",
+          "data_type": "timestamp without time zone",
+          "character_maximum_length": null,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": "NO",
+          "column_default": "CURRENT_TIMESTAMP",
+          "column_comment": null
+        }
+      ],
+      "primary_keys": [
+        "historico_id"
+      ],
+      "foreign_keys": [
+        {
+          "column_name": "batch_id",
+          "foreign_table_schema": "cnpj",
+          "foreign_table_name": "control_batches",
+          "foreign_column_name": "batch_id",
+          "constraint_name": "historico_simples_batch_id_fkey"
+        }
+      ],
+      "indexes": [
+        {
+          "index_name": "historico_simples_pkey",
+          "column_names": [
+            "historico_id"
+          ],
+          "is_unique": true,
+          "is_primary": true
+        },
+        {
+          "index_name": "idx_hist_simples_batch",
+          "column_names": [
+            "batch_id"
+          ],
+          "is_unique": false,
+          "is_primary": false
+        },
+        {
+          "index_name": "idx_hist_simples_cnpj",
+          "column_names": [
+            "cnpj_basico"
+          ],
+          "is_unique": false,
+          "is_primary": false
+        },
+        {
+          "index_name": "idx_hist_simples_timestamp",
+          "column_names": [
+            "timestamp"
+          ],
+          "is_unique": false,
+          "is_primary": false
+        }
+      ],
+      "stats": {
+        "row_count": 0,
+        "total_size": "32 kB"
+      }
+    },
+    "historico_socios": {
+      "columns": [
+        {
+          "column_name": "historico_id",
+          "data_type": "bigint",
+          "character_maximum_length": null,
+          "numeric_precision": 64,
+          "numeric_scale": 0,
+          "is_nullable": "NO",
+          "column_default": "nextval('cnpj.historico_socios_historico_id_seq'::regclass)",
+          "column_comment": null
+        },
+        {
+          "column_name": "cnpj_basico",
+          "data_type": "character varying",
+          "character_maximum_length": 8,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": "NO",
+          "column_default": null,
+          "column_comment": null
+        },
+        {
+          "column_name": "operacao",
+          "data_type": "character varying",
+          "character_maximum_length": 10,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": "NO",
+          "column_default": null,
+          "column_comment": null
+        },
+        {
+          "column_name": "hash_anterior",
+          "data_type": "character varying",
+          "character_maximum_length": 32,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": "YES",
+          "column_default": null,
+          "column_comment": null
+        },
+        {
+          "column_name": "hash_novo",
+          "data_type": "character varying",
+          "character_maximum_length": 32,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": "YES",
+          "column_default": null,
+          "column_comment": null
+        },
+        {
+          "column_name": "batch_id",
+          "data_type": "integer",
+          "character_maximum_length": null,
+          "numeric_precision": 32,
+          "numeric_scale": 0,
+          "is_nullable": "YES",
+          "column_default": null,
+          "column_comment": null
+        },
+        {
+          "column_name": "timestamp",
+          "data_type": "timestamp without time zone",
+          "character_maximum_length": null,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": "NO",
+          "column_default": "CURRENT_TIMESTAMP",
+          "column_comment": null
+        }
+      ],
+      "primary_keys": [
+        "historico_id"
+      ],
+      "foreign_keys": [
+        {
+          "column_name": "batch_id",
+          "foreign_table_schema": "cnpj",
+          "foreign_table_name": "control_batches",
+          "foreign_column_name": "batch_id",
+          "constraint_name": "historico_socios_batch_id_fkey"
+        }
+      ],
+      "indexes": [
+        {
+          "index_name": "historico_socios_pkey",
+          "column_names": [
+            "historico_id"
+          ],
+          "is_unique": true,
+          "is_primary": true
+        },
+        {
+          "index_name": "idx_hist_socios_batch",
+          "column_names": [
+            "batch_id"
+          ],
+          "is_unique": false,
+          "is_primary": false
+        },
+        {
+          "index_name": "idx_hist_socios_cnpj",
+          "column_names": [
+            "cnpj_basico"
+          ],
+          "is_unique": false,
+          "is_primary": false
+        },
+        {
+          "index_name": "idx_hist_socios_timestamp",
+          "column_names": [
+            "timestamp"
+          ],
+          "is_unique": false,
+          "is_primary": false
+        }
+      ],
+      "stats": {
+        "row_count": 0,
+        "total_size": "32 kB"
+      }
+    },
+    "motivos_situacao_cadastral": {
+      "columns": [
+        {
+          "column_name": "codigo",
+          "data_type": "character varying",
+          "character_maximum_length": 10,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": "YES",
+          "column_default": null,
+          "column_comment": null
+        },
+        {
+          "column_name": "descricao",
+          "data_type": "character varying",
+          "character_maximum_length": 200,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": "NO",
+          "column_default": null,
+          "column_comment": null
+        }
+      ],
+      "primary_keys": [],
+      "foreign_keys": [],
+      "indexes": [],
+      "stats": {
+        "row_count": 189,
+        "total_size": "40 kB"
+      }
+    },
+    "municipios": {
+      "columns": [
+        {
+          "column_name": "codigo",
+          "data_type": "character varying",
+          "character_maximum_length": 10,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": "YES",
+          "column_default": null,
+          "column_comment": null
+        },
+        {
+          "column_name": "descricao",
+          "data_type": "character varying",
+          "character_maximum_length": 200,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": "NO",
+          "column_default": null,
+          "column_comment": null
+        }
+      ],
+      "primary_keys": [],
+      "foreign_keys": [],
+      "indexes": [
+        {
+          "index_name": "idx_municipios_descricao",
+          "column_names": [
+            "descricao"
+          ],
+          "is_unique": false,
+          "is_primary": false
+        }
+      ],
+      "stats": {
+        "row_count": 16716,
+        "total_size": "1160 kB"
+      }
+    },
+    "naturezas_juridicas": {
+      "columns": [
+        {
+          "column_name": "codigo",
+          "data_type": "character varying",
+          "character_maximum_length": 10,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": "YES",
+          "column_default": null,
+          "column_comment": null
+        },
+        {
+          "column_name": "descricao",
+          "data_type": "character varying",
+          "character_maximum_length": 200,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": "NO",
+          "column_default": null,
+          "column_comment": null
+        }
+      ],
+      "primary_keys": [],
+      "foreign_keys": [],
+      "indexes": [],
+      "stats": {
+        "row_count": 273,
+        "total_size": "48 kB"
+      }
+    },
+    "paises": {
+      "columns": [
+        {
+          "column_name": "codigo",
+          "data_type": "character varying",
+          "character_maximum_length": 10,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": "YES",
+          "column_default": null,
+          "column_comment": null
+        },
+        {
+          "column_name": "descricao",
+          "data_type": "character varying",
+          "character_maximum_length": 200,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": "NO",
+          "column_default": null,
+          "column_comment": null
+        }
+      ],
+      "primary_keys": [],
+      "foreign_keys": [],
+      "indexes": [],
+      "stats": {
+        "row_count": 765,
+        "total_size": "64 kB"
+      }
+    },
+    "qualificacoes_socios": {
+      "columns": [
+        {
+          "column_name": "codigo",
+          "data_type": "character varying",
+          "character_maximum_length": 10,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": "YES",
+          "column_default": null,
+          "column_comment": null
+        },
+        {
+          "column_name": "descricao",
+          "data_type": "character varying",
+          "character_maximum_length": 200,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": "NO",
+          "column_default": null,
+          "column_comment": null
+        }
+      ],
+      "primary_keys": [],
+      "foreign_keys": [],
+      "indexes": [],
+      "stats": {
+        "row_count": 204,
+        "total_size": "40 kB"
+      }
+    },
+    "simples": {
+      "columns": [
+        {
+          "column_name": "cnpj_basico",
+          "data_type": "character varying",
+          "character_maximum_length": 8,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": "NO",
+          "column_default": null,
+          "column_comment": null
+        },
+        {
+          "column_name": "opcao_simples",
+          "data_type": "character varying",
+          "character_maximum_length": 1,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": "YES",
+          "column_default": null,
+          "column_comment": "S=Optante pelo Simples, N=N\u00e3o optante"
+        },
+        {
+          "column_name": "data_opcao_simples",
+          "data_type": "date",
+          "character_maximum_length": null,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": "YES",
+          "column_default": null,
+          "column_comment": null
+        },
+        {
+          "column_name": "data_exclusao_simples",
+          "data_type": "date",
+          "character_maximum_length": null,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": "YES",
+          "column_default": null,
+          "column_comment": null
+        },
+        {
+          "column_name": "opcao_mei",
+          "data_type": "character varying",
+          "character_maximum_length": 1,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": "YES",
+          "column_default": null,
+          "column_comment": "S=Optante pelo MEI, N=N\u00e3o optante"
+        },
+        {
+          "column_name": "data_opcao_mei",
+          "data_type": "date",
+          "character_maximum_length": null,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": "YES",
+          "column_default": null,
+          "column_comment": null
+        },
+        {
+          "column_name": "data_exclusao_mei",
+          "data_type": "date",
+          "character_maximum_length": null,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": "YES",
+          "column_default": null,
+          "column_comment": null
+        }
+      ],
+      "primary_keys": [
+        "cnpj_basico"
+      ],
+      "foreign_keys": [
+        {
+          "column_name": "cnpj_basico",
+          "foreign_table_schema": "cnpj",
+          "foreign_table_name": "empresas",
+          "foreign_column_name": "cnpj_basico",
+          "constraint_name": "fk_simples_empresa"
+        }
+      ],
+      "indexes": [
+        {
+          "index_name": "idx_simples_data_mei",
+          "column_names": [
+            "data_opcao_mei"
+          ],
+          "is_unique": false,
+          "is_primary": false
+        },
+        {
+          "index_name": "idx_simples_data_opcao",
+          "column_names": [
+            "data_opcao_simples"
+          ],
+          "is_unique": false,
+          "is_primary": false
+        },
+        {
+          "index_name": "idx_simples_mei_optante",
+          "column_names": [
+            "opcao_mei"
+          ],
+          "is_unique": false,
+          "is_primary": false
+        },
+        {
+          "index_name": "idx_simples_optante",
+          "column_names": [
+            "opcao_simples"
+          ],
+          "is_unique": false,
+          "is_primary": false
+        },
+        {
+          "index_name": "pk_simples",
+          "column_names": [
+            "cnpj_basico"
+          ],
+          "is_unique": true,
+          "is_primary": true
+        }
+      ],
+      "stats": {
+        "row_count": 46180707,
+        "total_size": "4713 MB"
+      }
+    },
+    "socios": {
+      "columns": [
+        {
+          "column_name": "cnpj_basico",
+          "data_type": "character varying",
+          "character_maximum_length": 8,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": "NO",
+          "column_default": null,
+          "column_comment": null
+        },
+        {
+          "column_name": "identificador_socio",
+          "data_type": "character varying",
+          "character_maximum_length": 1,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": "NO",
+          "column_default": null,
+          "column_comment": "1=PJ, 2=PF, 3=Estrangeiro"
+        },
+        {
+          "column_name": "nome_socio",
+          "data_type": "character varying",
+          "character_maximum_length": 500,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": "YES",
+          "column_default": null,
+          "column_comment": "Nome do s\u00f3cio - NULL para registros incompletos na Receita Federal"
+        },
+        {
+          "column_name": "cnpj_cpf_socio",
+          "data_type": "character varying",
+          "character_maximum_length": 14,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": "YES",
+          "column_default": null,
+          "column_comment": null
+        },
+        {
+          "column_name": "qualificacao_socio",
+          "data_type": "character varying",
+          "character_maximum_length": 10,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": "YES",
+          "column_default": null,
+          "column_comment": "C\u00f3digo de qualifica\u00e7\u00e3o (pode conter valores n\u00e3o catalogados)"
+        },
+        {
+          "column_name": "data_entrada_sociedade",
+          "data_type": "date",
+          "character_maximum_length": null,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": "YES",
+          "column_default": null,
+          "column_comment": null
+        },
+        {
+          "column_name": "pais",
+          "data_type": "character varying",
+          "character_maximum_length": 10,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": "YES",
+          "column_default": null,
+          "column_comment": "C\u00f3digo do pa\u00eds (pode conter valores n\u00e3o catalogados)"
+        },
+        {
+          "column_name": "representante_legal",
+          "data_type": "character varying",
+          "character_maximum_length": 14,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": "YES",
+          "column_default": null,
+          "column_comment": null
+        },
+        {
+          "column_name": "nome_representante",
+          "data_type": "character varying",
+          "character_maximum_length": 500,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": "YES",
+          "column_default": null,
+          "column_comment": null
+        },
+        {
+          "column_name": "qualificacao_representante",
+          "data_type": "character varying",
+          "character_maximum_length": 10,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": "YES",
+          "column_default": null,
+          "column_comment": "C\u00f3digo de qualifica\u00e7\u00e3o do representante (pode conter valores n\u00e3o catalogados)"
+        },
+        {
+          "column_name": "faixa_etaria",
+          "data_type": "character varying",
+          "character_maximum_length": 2,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": "YES",
+          "column_default": null,
+          "column_comment": "1=0-12, 2=13-20, 3=21-30, etc."
+        }
+      ],
+      "primary_keys": [],
+      "foreign_keys": [
+        {
+          "column_name": "cnpj_basico",
+          "foreign_table_schema": "cnpj",
+          "foreign_table_name": "empresas",
+          "foreign_column_name": "cnpj_basico",
+          "constraint_name": "fk_socios_empresa"
+        }
+      ],
+      "indexes": [
+        {
+          "index_name": "idx_socios_cnpj_basico",
+          "column_names": [
+            "cnpj_basico"
+          ],
+          "is_unique": false,
+          "is_primary": false
+        },
+        {
+          "index_name": "idx_socios_cnpj_cpf_socio",
+          "column_names": [
+            "cnpj_cpf_socio"
+          ],
+          "is_unique": false,
+          "is_primary": false
+        },
+        {
+          "index_name": "idx_socios_nome",
+          "column_names": [
+            "nome_socio"
+          ],
+          "is_unique": false,
+          "is_primary": false
+        },
+        {
+          "index_name": "idx_socios_qualificacao",
+          "column_names": [
+            "qualificacao_socio"
+          ],
+          "is_unique": false,
+          "is_primary": false
+        },
+        {
+          "index_name": "socios_unique_idx",
+          "column_names": [
+            "cnpj_basico",
+            "identificador_socio"
+          ],
+          "is_unique": true,
+          "is_primary": false
+        }
+      ],
+      "stats": {
+        "row_count": 26806317,
+        "total_size": "7034 MB"
+      }
+    },
+    "v_batches_summary": {
+      "columns": [
+        {
+          "column_name": "batch_id",
+          "data_type": "integer",
+          "character_maximum_length": null,
+          "numeric_precision": 32,
+          "numeric_scale": 0,
+          "is_nullable": "YES",
+          "column_default": null,
+          "column_comment": null
+        },
+        {
+          "column_name": "tipo",
+          "data_type": "character varying",
+          "character_maximum_length": 100,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": "YES",
+          "column_default": null,
+          "column_comment": null
+        },
+        {
+          "column_name": "competencia",
+          "data_type": "character varying",
+          "character_maximum_length": 7,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": "YES",
+          "column_default": null,
+          "column_comment": null
+        },
+        {
+          "column_name": "status",
+          "data_type": "character varying",
+          "character_maximum_length": 20,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": "YES",
+          "column_default": null,
+          "column_comment": null
+        },
+        {
+          "column_name": "inicio",
+          "data_type": "timestamp without time zone",
+          "character_maximum_length": null,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": "YES",
+          "column_default": null,
+          "column_comment": null
+        },
+        {
+          "column_name": "fim",
+          "data_type": "timestamp without time zone",
+          "character_maximum_length": null,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": "YES",
+          "column_default": null,
+          "column_comment": null
+        },
+        {
+          "column_name": "total_arquivos",
+          "data_type": "integer",
+          "character_maximum_length": null,
+          "numeric_precision": 32,
+          "numeric_scale": 0,
+          "is_nullable": "YES",
+          "column_default": null,
+          "column_comment": null
+        },
+        {
+          "column_name": "total_registros",
+          "data_type": "bigint",
+          "character_maximum_length": null,
+          "numeric_precision": 64,
+          "numeric_scale": 0,
+          "is_nullable": "YES",
+          "column_default": null,
+          "column_comment": null
+        },
+        {
+          "column_name": "duracao_minutos",
+          "data_type": "numeric",
+          "character_maximum_length": null,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": "YES",
+          "column_default": null,
+          "column_comment": null
+        }
+      ],
+      "primary_keys": [],
+      "foreign_keys": [],
+      "indexes": [],
+      "stats": {
+        "row_count": 12,
+        "total_size": "0 bytes"
+      }
+    }
+  }
+}

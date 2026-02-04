@@ -141,6 +141,14 @@ async def health_check():
 # DELIVERY 1: Nenhum router - Frontend usa mockdata
 # DELIVERY 2: Incluir routers reconstruídos aqui
 from app.api.v1.endpoints import smart_cnpj, insights, similares
+from app.api.v1 import cnpj
+
+# Router CNPJ (Sprint S02)
+app.include_router(
+    cnpj.router,
+    prefix=f"/api/{settings.API_VERSION}",
+    tags=["CNPJ - Receita Federal"]
+)
 
 app.include_router(
     insights.router,
