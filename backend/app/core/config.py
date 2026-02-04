@@ -55,6 +55,9 @@ class Settings(BaseSettings):
     DIRECTDATA_API_KEY: Optional[str] = None
     DIRECTDATA_API_URL: Optional[str] = None
     
+    # AI/ML APIs
+    GOOGLE_GEMINI_API_KEY: Optional[str] = None
+    
     # CORS
     CORS_ORIGINS: str = "http://localhost:3000,http://localhost:8000"
     
