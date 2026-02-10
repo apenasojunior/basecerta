@@ -115,6 +115,60 @@ def list_insights_grouped(
     }
 
 
+@router.get("/intelligent", response_model=List[Dict[str, Any]])
+def get_intelligent_insights(
+    limit: int = Query(3, ge=1, le=10, description="Número de insights a retornar"),
+    db: Session = Depends(get_db)
+):
+    """
+    **Retorna insights inteligentes detectados por IA** (P1 - Insights Automáticos).
+    
+    Usa análise estatística (Z-score, IQR, tendências) para detectar:
+    - 🚀 Crescimentos excepcionais (alta prioridade)
+    - ⚠️ Quedas incomuns (atenção)
+    - 💡 Setores emergentes (oportunidades)
+    
+    **Performance:** <50ms (análise em memória)
+    
+    **Response:**
+    ```json
+    [
+      {
+        "id": "setor_tecnologia",
+        "priority": "high",
+        "emoji": "🚀",
+        "title": "Tecnologia: Crescimento Excepcional",
+        "description": "+2.500 empresas esta semana (vs. média: 1.030)",
+        "recommendation": "Crescimento 145% acima da média...",
+        "growth_rate": 0.032,
+        "absolute_change": 2500,
+        "z_score": 2.45,
+        "insight_key": "setor_tecnologia",
+        "metadata": {...},
+        "filters": {...}
+      }
+    ]
+    ```
+    
+    **Uso típico:**
+    ```
+    GET /api/v1/insights/intelligent       → Top 3 insights (padrão)
+    GET /api/v1/insights/intelligent?limit=5  → Top 5 insights
+    ```
+    """
+    service = IntelligentInsightsService(db)
+    
+    try:
+        intelligent_insights = service.get_intelligent_insights(limit=limit)
+        return intelligent_insights
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Erro ao gerar insights inteligentes: {str(e)}"
+        )
+
+
+
 @router.get("/{insight_key}", response_model=Dict[str, Any])  # Dict genérico
 def get_insight_detail(
     insight_key: str,
@@ -256,58 +310,6 @@ def check_stale_insights(
         "oldest_update": stale[0].updated_at if stale else None
     }
 
-
-@router.get("/intelligent", response_model=List[Dict[str, Any]])
-def get_intelligent_insights(
-    limit: int = Query(3, ge=1, le=10, description="Número de insights a retornar"),
-    db: Session = Depends(get_db)
-):
-    """
-    **Retorna insights inteligentes detectados por IA** (P1 - Insights Automáticos).
-    
-    Usa análise estatística (Z-score, IQR, tendências) para detectar:
-    - 🚀 Crescimentos excepcionais (alta prioridade)
-    - ⚠️ Quedas incomuns (atenção)
-    - 💡 Setores emergentes (oportunidades)
-    
-    **Performance:** <50ms (análise em memória)
-    
-    **Response:**
-    ```json
-    [
-      {
-        "id": "setor_tecnologia",
-        "priority": "high",
-        "emoji": "🚀",
-        "title": "Tecnologia: Crescimento Excepcional",
-        "description": "+2.500 empresas esta semana (vs. média: 1.030)",
-        "recommendation": "Crescimento 145% acima da média...",
-        "growth_rate": 0.032,
-        "absolute_change": 2500,
-        "z_score": 2.45,
-        "insight_key": "setor_tecnologia",
-        "metadata": {...},
-        "filters": {...}
-      }
-    ]
-    ```
-    
-    **Uso típico:**
-    ```
-    GET /api/v1/insights/intelligent       → Top 3 insights (padrão)
-    GET /api/v1/insights/intelligent?limit=5  → Top 5 insights
-    ```
-    """
-    service = IntelligentInsightsService(db)
-    
-    try:
-        intelligent_insights = service.get_intelligent_insights(limit=limit)
-        return intelligent_insights
-    except Exception as e:
-        raise HTTPException(
-            status_code=500,
-            detail=f"Erro ao gerar insights inteligentes: {str(e)}"
-        )
 
 
 @router.get("/{insight_key}/details", response_model=Dict[str, Any])

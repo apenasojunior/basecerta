@@ -81,8 +81,8 @@ class IntelligentInsightsService:
                 ic.categoria,
                 ic.titulo,
                 ic.total_empresas,
-                ic.card_metadata,
-                ic.card_filters
+                ic.metadata,
+                ic.filtros
             FROM insights_cache ic
             WHERE ic.categoria IN ('setor', 'estado')
             ORDER BY ic.total_empresas DESC
@@ -114,8 +114,8 @@ class IntelligentInsightsService:
                 'titulo': row.titulo,
                 'current_total': current_total,
                 'weekly_totals': weekly_data,
-                'metadata': row.card_metadata,
-                'filters': row.card_filters
+                'metadata': row.metadata,
+                'filters': row.filtros
             })
         
         return historical
