@@ -26,12 +26,18 @@ def insight_to_dict(insight):
         "insight_key": insight.insight_key,
         "categoria": insight.categoria,
         "titulo": insight.titulo,
+        "descricao": insight.descricao,
         "total_empresas": insight.total_empresas,
         "percentual": float(insight.percentual) if insight.percentual else None,
+        "valor_medio": float(insight.valor_medio) if insight.valor_medio else None,
+        "taxa_crescimento": float(insight.taxa_crescimento) if insight.taxa_crescimento else None,
+        "classificacao_anomalia": insight.classificacao_anomalia,
+        "z_score": float(insight.z_score) if insight.z_score else None,
+        "prioridade_score": float(insight.prioridade_score) if insight.prioridade_score else None,
         "metadata": insight.card_metadata,  # Renomeia para 'metadata' na resposta
-        "filters": insight.card_filters,  # Renomeia para 'filters' na resposta
-        "updated_at": insight.updated_at.isoformat() if insight.updated_at else None,
-        "updated_by": insight.updated_by
+        "filtros": insight.card_filters,  # Renomeia para 'filtros' na resposta
+        "created_at": insight.created_at.isoformat() if insight.created_at else None,
+        "updated_at": insight.updated_at.isoformat() if insight.updated_at else None
     }
 
 

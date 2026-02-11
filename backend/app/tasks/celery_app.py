@@ -14,7 +14,10 @@ celery_app = Celery(
     "basecerta",
     broker=settings.CELERY_BROKER_URL,
     backend=settings.CELERY_RESULT_BACKEND,
-    include=["app.tasks.research_tasks"]  # Import task modules
+    include=[
+        "app.tasks.research_tasks",
+        "app.tasks.update_insights_job"  # FASE 4: Weekly insights update
+    ]
 )
 
 
@@ -35,6 +38,12 @@ celery_app.conf.update(
 
 # Celery Beat Schedule (periodic tasks)
 celery_app.conf.beat_schedule = {
+    # FASE 4: Update insights every Sunday at 3 AM
+    "update-insights-weekly": {
+        "task": "update_insights_weekly",
+        "schedule": crontab(hour=3, minute=0, day_of_week='sunday'),
+        "options": {"expires": 3600}  # Task expires in 1 hour if not executed
+    },
     # Example: Clean old data every day at 3 AM
     "cleanup-old-data": {
         "task": "app.tasks.research_tasks.cleanup_old_data",

@@ -3,7 +3,7 @@ Modelo para cache de insights/estatísticas pré-calculadas.
 Usado para carregamento rápido da página inicial Smart CNPJ.
 """
 
-from sqlalchemy import Column, Integer, String, Numeric, DateTime, CheckConstraint
+from sqlalchemy import Column, Integer, String, Numeric, DateTime, Date, Float, CheckConstraint
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.sql import func
 from app.core.database import Base
@@ -69,3 +69,43 @@ class InsightCache(Base):
     
     def __repr__(self):
         return f"<InsightCache({self.insight_key}: {self.total_empresas:,} empresas)>"
+
+
+class InsightHistory(Base):
+    """
+    Histórico de evolução temporal dos insights (12+ meses).
+    
+    Armazena snapshots mensais para gerar gráficos de evolução temporal.
+    
+    Attributes:
+        id: ID único do registro histórico
+        insight_key: Referência ao insight (FK para insights_cache.insight_key)
+        data_referencia: Data de referência do snapshot (primeiro dia do mês)
+        total_empresas: Total de empresas naquele momento
+        percentual: Percentual em relação ao total naquele momento
+        valor_medio: Valor médio (capital, funcionários, etc.)
+        variacao_mensal: Variação percentual em relação ao mês anterior
+        variacao_anual: Variação percentual em relação ao mesmo mês do ano anterior
+        created_at: Timestamp de criação do registro
+    """
+    __tablename__ = "insights_history"
+    __table_args__ = {'schema': 'public'}
+    
+    id = Column(Integer, primary_key=True, index=True)
+    insight_key = Column(String(255), nullable=False, index=True)
+    data_referencia = Column(Date, nullable=False, index=True)
+    total_empresas = Column(Integer, nullable=False, default=0)
+    percentual = Column(Float, nullable=False, default=0.0)
+    valor_medio = Column(Float, nullable=True)
+    variacao_mensal = Column(Float, nullable=True)
+    variacao_anual = Column(Float, nullable=True)
+    
+    # Timestamp automático
+    created_at = Column(
+        DateTime(timezone=True),
+        server_default=func.now(),
+        nullable=False
+    )
+    
+    def __repr__(self):
+        return f"<InsightHistory({self.insight_key} @ {self.data_referencia}: {self.total_empresas:,})>"
