@@ -2,8 +2,8 @@
 
 **Projeto:** BaseCerta - Insights Estratégicos  
 **Período:** Sprint S03, S04, S05  
-**Última Atualização:** 2026-02-09 22:50 UTC  
-**Status Geral:** 🟢 Em Progresso - FASE 1 Concluída
+**Última Atualização:** 2026-02-10 04:30 UTC  
+**Status Geral:** 🟢 Em Progresso - FASE 3 Concluída
 
 ---
 
@@ -25,19 +25,19 @@
 | Sprint | Story Points | Concluído | Em Andamento | Bloqueado | Não Iniciado |
 |--------|-------------|-----------|--------------|-----------|--------------|
 | **S03 - F03** | 34 pts | 34 pts (100%) | 0 pts | 0 pts | 0 pts |
-| **S03 - F03.0** | 47 pts | 5 pts (11%) | 0 pts | 0 pts | 42 pts |
+| **S03 - F03.0** | 47 pts | 26 pts (55%) | 0 pts | 0 pts | 21 pts |
 | **S04 - F04** | 29 pts | 0 pts | 0 pts | 0 pts | 29 pts |
 | **S05 - F05** | 21 pts | 0 pts | 0 pts | 0 pts | 21 pts |
-| **TOTAL** | **131 pts** | **39 pts (30%)** | **0 pts** | **0 pts** | **92 pts (70%)** |
+| **TOTAL** | **131 pts** | **60 pts (46%)** | **0 pts** | **0 pts** | **71 pts (54%)** |
 
 ### Status Visual
 
 ```
-📊 Progresso Geral: █████████░░░░░░░░░░░░░░░░ 30% (39/131 pts)
+📊 Progresso Geral: ██████████████░░░░░░░░░░ 46% (60/131 pts)
 
-✅ Completo:     ████████████████████ 39 pts (F03 + F03.0 FASE 1)
-🟢 Desbloqueado: ████████████         50 pts (F04, F05 - infraestrutura pronta)
-⏳ Não Iniciado: ██████████████████   42 pts (F03.0 FASE 2-4)
+✅ Completo:     ████████████████████████ 60 pts (F03 + F03.0 FASE 1-3)
+🟢 Desbloqueado: ████████████             50 pts (F04 + F05 - infraestrutura pronta)
+⏳ Não Iniciado: ████████                 21 pts (F03.0 FASE 4)
 ```
 
 ---
@@ -160,8 +160,8 @@ frontend/package.json (jspdf@2.5.2, html2canvas@1.4.1)
 ## 🏗️ Sprint S03 - F03.0: Infraestrutura de Dados
 
 **Story Points:** 47 pts (dividido em 4 fases)  
-**Status:** 🟢 **FASE 1 COMPLETA** (5 pts concluídos - 11%)  
-**Prioridade:** 🟢 **FASE 2 Próxima** (13 pts)
+**Status:** 🟢 **FASE 3 COMPLETA** (26 pts concluídos - 55%)  
+**Prioridade:** 🟢 **FASE 4 Próxima** (21 pts)
 
 ### 🎯 Objetivo
 Criar TODAS as tabelas necessárias para suportar F03, F04 e F05
@@ -172,30 +172,38 @@ Criar TODAS as tabelas necessárias para suportar F03, F04 e F05
 ┌─────────────────────┬──────────────────┬──────────────────┬─────────────────┐
 │   📋 TODO           │  🔄 IN PROGRESS  │   ✅ DONE        │  ⚠️ BLOCKED     │
 ├─────────────────────┼──────────────────┼──────────────────┼─────────────────┤
-│ FASE 2: F04         │                  │ FASE 1: Crítico  │                 │
-│   (13 pts)          │                  │   (5 pts) ✅     │                 │
-│ ⏳ users            │                  │ ✅ insights_cache│                 │
-│ ⏳ user_preferences │                  │ ✅ insights_hist │                 │
-│ ⏳ search_history   │                  │ ✅ Seed 19 insig │                 │
-│ ⏳ insights_views   │                  │ ✅ Seed 12 meses │                 │
-│ ⏳ ml_recommend...  │                  │ ✅ Migrations OK │                 │
-│ ⏳ comparisons_...  │                  │ ✅ API 200 OK    │                 │
-│ ⏳ comparison_cache │                  │                  │                 │
-│ ⏳ favorites        │                  │                  │                 │
-│ ⏳ favorite_cat...  │                  │                  │                 │
-│ ⏳ geographic_stats │                  │                  │                 │
-│ ⏳ map_cache        │                  │                  │                 │
+│ FASE 4: Dados Reais │                  │ FASE 1: Crítico  │                 │
+│   (21 pts)          │                  │   (5 pts) ✅     │                 │
+│ ⏳ Calculate script │                  │ ✅ insights_cache│                 │
+│ ⏳ Celery job       │                  │ ✅ insights_hist │                 │
+│                     │                  │ ✅ Seed 19 insig │                 │
+│                     │                  │ ✅ Seed 12 meses │                 │
+│                     │                  │ ✅ Migrations OK │                 │
+│                     │                  │ ✅ API 200 OK    │                 │
 │                     │                  │                  │                 │
-│ FASE 3: F05         │                  │                  │                 │
-│   (8 pts)           │                  │                  │                 │
-│ ⏳ nlp_queries      │                  │                  │                 │
-│ ⏳ insights_embed.. │                  │                  │                 │
-│ ⏳ Generate embedd. │                  │                  │                 │
+│                     │                  │ FASE 2: F04      │                 │
+│                     │                  │   (13 pts) ✅    │                 │
+│                     │                  │ ✅ users         │                 │
+│                     │                  │ ✅ user_preferen │                 │
+│                     │                  │ ✅ search_histor │                 │
+│                     │                  │ ✅ insights_view │                 │
+│                     │                  │ ✅ ml_recommend  │                 │
+│                     │                  │ ✅ comparisons_h │                 │
+│                     │                  │ ✅ comparison_ca │                 │
+│                     │                  │ ✅ favorites     │                 │
+│                     │                  │ ✅ favorite_cat  │                 │
+│                     │                  │ ✅ geographic_st │                 │
+│                     │                  │ ✅ map_cache     │                 │
 │                     │                  │                  │                 │
-│ FASE 4: Dados Reais │                  │                  │                 │
-│   (21 pts)          │                  │                  │                 │
-│ ⏳ Calculate script │                  │                  │                 │
-│ ⏳ Celery job       │                  │                  │                 │
+│                     │                  │ FASE 3: F05      │                 │
+│                     │                  │   (8 pts) ✅     │                 │
+│                     │                  │ ✅ nlp_queries   │                 │
+│                     │                  │ ✅ insights_embe │                 │
+│                     │                  │ ✅ pgvector ext  │                 │
+│                     │                  │ ✅ Generate embe │                 │
+│                     │                  │ ✅ 19 embeddings │                 │
+│                     │                  │ ✅ HNSW index    │                 │
+│                     │                  │ ✅ Similarity OK │                 │
 └─────────────────────┴──────────────────┴──────────────────┴─────────────────┘
 ```
 
@@ -224,43 +232,88 @@ curl http://localhost:8000/api/v1/insights/intelligent
 
 ---
 
-#### FASE 2: Infraestrutura F04 (ALTA) - 13 pts 📦
-**Tempo:** 2-3 horas | **Bloqueia:** F04
+#### FASE 2: Infraestrutura F04 (ALTA) - 13 pts 📦 ✅
+**Tempo:** 2-3 horas | **Bloqueia:** F04  
+**Status:** ✅ **CONCLUÍDA** (2026-02-10 02:15 UTC)
 
 **Tabelas (11):**
-- [ ] `users` (1 pt)
-- [ ] `user_preferences` (1 pt)
-- [ ] `search_history` (1 pt)
-- [ ] `insights_views` (1 pt)
-- [ ] `ml_recommendations` (2 pts)
-- [ ] `comparisons_history` (1 pt)
-- [ ] `comparison_cache` (1 pt)
-- [ ] `favorites` (1 pt)
-- [ ] `favorite_categories` (1 pt)
-- [ ] `geographic_stats` (2 pts)
-- [ ] `map_cache` (1 pt)
+- [x] `users` (1 pt) ✅
+- [x] `user_preferences` (1 pt) ✅
+- [x] `search_history` (1 pt) ✅
+- [x] `insights_views` (1 pt) ✅
+- [x] `ml_recommendations` (2 pts) ✅
+- [x] `comparisons_history` (1 pt) ✅
+- [x] `comparison_cache` (1 pt) ✅
+- [x] `favorites` (1 pt) ✅
+- [x] `favorite_categories` (1 pt) ✅
+- [x] `geographic_stats` (2 pts) ✅
+- [x] `map_cache` (1 pt) ✅
 
 **Scripts:**
-- [ ] Migrations `003` a `013`
-- [ ] Seed `seed_users_demo.py` (5 usuários)
-- [ ] Seed `seed_geographic_stats.py` (27 estados)
+- [x] Migrations `003` a `013` ✅
+- [x] Seed `seed_users_demo.py` (5 usuários) ✅
+- [x] Seed `seed_user_preferences.py` (5 preferências) ✅
+- [x] Seed `seed_geographic_stats.py` (27 estados + 20 municípios = 47 registros) ✅
+
+**Validação:**
+```bash
+# 13 tabelas criadas (2 FASE 1 + 11 FASE 2)
+psql -c "\dt public.*"  # ✅ 14 tabelas (incluindo alembic_version)
+
+# Dados populados
+users: 5 registros
+user_preferences: 5 registros
+geographic_stats: 47 registros
+insights_cache: 19 registros (FASE 1)
+insights_history: 228 registros (FASE 1)
+```
+
+**Resultado:** F04 **DESBLOQUEADO** - Infraestrutura completa para desenvolvimento
 
 ---
 
-#### FASE 3: Infraestrutura F05 (MÉDIA) - 8 pts 🔮
-**Tempo:** 1-2 horas | **Bloqueia:** F05
+#### FASE 3: Infraestrutura F05 (MÉDIA) - 8 pts 🔮 ✅
+**Tempo:** 1-2 horas | **Bloqueia:** F05  
+**Status:** ✅ **CONCLUÍDA** (2026-02-10 04:30 UTC)
 
-**Tabelas:**
-- [ ] `nlp_queries` (3 pts)
-- [ ] `insights_embeddings` (5 pts)
+**Tabelas (2):**
+- [x] `nlp_queries` (3 pts) ✅
+- [x] `insights_embeddings` (5 pts) ✅
 
 **Pré-requisitos:**
-- [ ] Extensão `pgvector` instalada
+- [x] Extensão `pgvector` 0.8.1 instalada ✅
 
 **Scripts:**
-- [ ] Migration `014_create_nlp_queries.py`
-- [ ] Migration `015_create_insights_embeddings.py`
-- [ ] Script `generate_embeddings.py`
+- [x] Migration `014_create_nlp_queries.py` (116 linhas) ✅
+- [x] Migration `015_create_insights_embeddings.py` (108 linhas) ✅
+- [x] Script `generate_embeddings.py` (134 linhas) ✅
+
+**Implementação:**
+- [x] pgvector instalado via Homebrew ✅
+- [x] CREATE EXTENSION vector ✅
+- [x] sentence-transformers instalado ✅
+- [x] Modelo: paraphrase-multilingual-mpnet-base-v2 (768 dims) ✅
+- [x] HNSW index para busca vetorial ✅
+- [x] Full-text search em português ✅
+
+**Validação:**
+```bash
+# 19 embeddings gerados
+psql -c "SELECT COUNT(*) FROM insights_embeddings;"  # ✅ 19 registros
+
+# Teste de busca semântica
+Query: "empresas de tecnologia que mais crescem"
+Top 3 resultados:
+  • Boom de Startups (0-2 anos) - Similaridade: 0.702
+  • Tecnologia da Informação em Alta - Similaridade: 0.620
+  • Empresas Jovens Consolidando - Similaridade: 0.589
+
+# Performance
+Tempo médio geração: 28ms por embedding
+Sistema de busca: FUNCIONAL ✅
+```
+
+**Resultado:** F05 **DESBLOQUEADO** - Busca NLP pronta para desenvolvimento
 
 ---
 
@@ -288,8 +341,8 @@ curl http://localhost:8000/api/v1/insights/intelligent
 ## 🚀 Sprint S04 - F04: Dashboard ML + Features Avançadas
 
 **Story Points:** 29 pts  
-**Status:** 🔴 **BLOQUEADO** (aguardando F03.0 FASE 2)  
-**Data Prevista:** Após F03.0 completo
+**Status:** � **DESBLOQUEADO** (infraestrutura F03.0 FASE 2 concluída)  
+**Data Prevista:** Pode iniciar imediatamente
 
 ### 🎯 Objetivo
 Implementar Dashboard Personalizado, Modo Comparativo, Mapa e Favoritos
@@ -300,23 +353,23 @@ Implementar Dashboard Personalizado, Modo Comparativo, Mapa e Favoritos
 ┌─────────────────────┬──────────────────┬──────────────────┬─────────────────┐
 │   📋 TODO           │  🔄 IN PROGRESS  │   ✅ DONE        │  ⚠️ BLOCKED     │
 ├─────────────────────┼──────────────────┼──────────────────┼─────────────────┤
-│                     │                  │                  │ P2: Dashboard   │
-│                     │                  │                  │   Personalizado │
-│                     │                  │                  │   (21 pts)      │
-│                     │                  │                  │ 🔴 BLOQUEADO    │
-│                     │                  │                  │   (sem tabelas) │
+│ P2: Dashboard       │                  │                  │                 │
+│   Personalizado     │                  │                  │                 │
+│   (21 pts)          │                  │                  │                 │
+│ 🟢 PRONTO           │                  │                  │                 │
+│   (tabelas OK)      │                  │                  │                 │
 │                     │                  │                  │                 │
-│                     │                  │                  │ P4: Comparativo │
-│                     │                  │                  │   (8 pts)       │
-│                     │                  │                  │ 🔴 BLOQUEADO    │
+│ P4: Comparativo     │                  │                  │                 │
+│   (8 pts)           │                  │                  │                 │
+│ 🟢 PRONTO           │                  │                  │                 │
 │                     │                  │                  │                 │
-│                     │                  │                  │ P9: Mapa        │
-│                     │                  │                  │   (13 pts)      │
-│                     │                  │                  │ 🔴 BLOQUEADO    │
+│ P9: Mapa            │                  │                  │                 │
+│   (13 pts)          │                  │                  │                 │
+│ 🟢 PRONTO           │                  │                  │                 │
 │                     │                  │                  │                 │
-│                     │                  │                  │ P10: Favoritos  │
-│                     │                  │                  │   (8 pts)       │
-│                     │                  │                  │ 🔴 BLOQUEADO    │
+│ P10: Favoritos      │                  │                  │                 │
+│   (8 pts)           │                  │                  │                 │
+│ 🟢 PRONTO           │                  │                  │                 │
 └─────────────────────┴──────────────────┴──────────────────┴─────────────────┘
 ```
 
